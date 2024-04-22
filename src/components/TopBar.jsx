@@ -67,7 +67,7 @@ const TopBar = ({ onChange, placeholder}) => {
               </div>
                 <div className="navigation my-8 mx-5">
                   {navLink.map((item, id) => (
-                    <div key={id} className={`py-2 border-b-2 border-primary-100 ${item.gap ? "mt-72" : ""}`}>
+                    <div key={id} className={`py-2 border-b-2 border-primary-100 ${item.gap ? "mt-48" : ""}`}>
                       <NavLink
                         onClick={handleVisible}
                         to={item.path}
