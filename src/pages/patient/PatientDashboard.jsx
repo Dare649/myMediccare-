@@ -7,16 +7,28 @@ import { IoIosArrowForward } from "react-icons/io";
 import { Link } from "react-router-dom";
 import { appointments, prescriptions, graphDetails } from "../../components/dummy";
 import GraphSlider from "../../components/graphSlider";
+import Modal from "../../components/Modal";
+import AppointmentBooking from "../../patientModalPages/AppointmentBooking";
+
 
 const PatientDashboard = () => {
   const [showBalance, setShowBalance] = useState(false);
   const dashboardAppointment = appointments.slice(0,3);
   const dashboardPrescription = prescriptions.slice(0,1);
+  const [visible, setVisible] = useState(false);
 
   //Toggle balance visiblity
   const handleBalance = () =>{
     setShowBalance((prev) =>!prev);
   }
+
+
+  // handle modal
+  const handleVisible = () => {
+    setVisible((prev) => !prev);
+};
+
+
   return (
     <section className='patientDashboard w-full h-screen lg:p-5 sm:p-0'>
       <main className='lg:p-10 sm:p-2 bg-white rounded-lg w-full h-fit'>
@@ -57,12 +69,17 @@ const PatientDashboard = () => {
                 <div className="lg:m-6 sm:m-3">
                   <h2 className="text-white font-medium first-letter:capitalize text-xl">an appointment is just a click away</h2>
                   <p className="text-white text-xs text-wrap mb-12">start your journey to affordable healthcare today</p>
-                  <button className="flex capitalize items-center space-x-2 py-3 px-8 bg-white rounded-lg text-primary-100 font-medium text-sm">book an appointment</button>
+                  <button onClick={handleVisible} className="flex capitalize items-center space-x-2 py-3 px-8 bg-white rounded-lg text-primary-100 font-medium text-sm">book an appointment</button>
                 </div>
                 <div className="sm:hidden lg:flex">
                   <img src={doc} alt="MyMedicare" className=""/>
                 </div>
               </div>
+              {visible && (
+                <Modal visible={visible} onClose={handleVisible}>
+                  <AppointmentBooking handleCancel={handleVisible} handleClose={handleVisible} />
+                </Modal>
+              )}
             </div>
           </div>
           
