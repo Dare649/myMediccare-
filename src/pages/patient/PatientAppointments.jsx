@@ -69,7 +69,7 @@ const PatientAppointments = () => {
                   })
                   .map((item, id) => (
                       <tr key={id} className="w-full border-2 border-x-0 border-t-0 border-b border-neutral-50 hover:bg-primary-100/10 cursor-pointer sm:overflow-x-scroll">
-                          <td className="flex flex-row items-center space-x-5 py-5 text-lg font-medium capitalize"><span><img src={item.img} alt="MyMedicare" className="h-10 w-10 rounded-full" /></span>{item.doctor}</td>
+                          <td className="py-5 text-lg font-medium capitalize">{item.doctor}</td>
                           <td className="text-lg font-medium capitalize  py-5 px-5">{item.speciality}</td>
                           <td className="text-lg font-medium capitalize  py-5 px-5">{item.date}</td>
                           <td className="text-lg font-medium capitalize  py-5 px-5">{item.time}</td>
