@@ -20,7 +20,7 @@ export const navLink = [
     {
         title: "prescriptions",
         icon: <GiMedicines size={30}/>,
-        path: "/patient-prescriptions"
+        path: "/patient-prescription"
     },
     {
         title: "wallet",
@@ -171,24 +171,257 @@ export const appointments = [
 
 export const prescriptions = [
     {
-        title: "pneumonia prescription",
+        title: "pneumonia prescription.pdf",
         doctor: "dr. osueze martin",
-        speciality: "general surgeon"
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
     },
     {
-        title: "pneumonia prescription",
+        title: "pneumonia prescription.pdf",
         doctor: "dr. osueze martin",
-        speciality: "general surgeon"
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
     },
     {
-        title: "pneumonia prescription",
+        title: "pneumonia prescription.pdf",
         doctor: "dr. osueze martin",
-        speciality: "general surgeon"
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
     },
     {
-        title: "pneumonia prescription",
+        title: "pneumonia prescription.pdf",
         doctor: "dr. osueze martin",
-        speciality: "general surgeon"
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
+    },
+    {
+        title: "pneumonia prescription.pdf",
+        doctor: "dr. osueze martin",
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
+    },
+    {
+        title: "pneumonia prescription.pdf",
+        doctor: "dr. osueze martin",
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
+    },
+    {
+        title: "pneumonia prescription.pdf",
+        doctor: "dr. osueze martin",
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
+    },
+    {
+        title: "pneumonia prescription.pdf",
+        doctor: "dr. osueze martin",
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
+    },
+    {
+        title: "pneumonia prescription.pdf",
+        doctor: "dr. osueze martin",
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
+    },
+    {
+        title: "pneumonia prescription.pdf",
+        doctor: "dr. osueze martin",
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
+    },
+    {
+        title: "pneumonia prescription.pdf",
+        doctor: "dr. osueze martin",
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
+    },
+    {
+        title: "pneumonia prescription.pdf",
+        doctor: "dr. osueze martin",
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
+    },
+    {
+        title: "pneumonia prescription.pdf",
+        doctor: "dr. osueze martin",
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
+    },
+    {
+        title: "pneumonia prescription.pdf",
+        doctor: "dr. osueze martin",
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
+    },
+    {
+        title: "pneumonia prescription.pdf",
+        doctor: "dr. osueze martin",
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
+    },
+    {
+        title: "pneumonia prescription.pdf",
+        doctor: "dr. osueze martin",
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
+    },
+    {
+        title: "pneumonia prescription.pdf",
+        doctor: "dr. osueze martin",
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
+    },
+    {
+        title: "pneumonia prescription.pdf",
+        doctor: "dr. osueze martin",
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
+    },
+    {
+        title: "pneumonia prescription.pdf",
+        doctor: "dr. osueze martin",
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
+    },
+    {
+        title: "pneumonia prescription.pdf",
+        doctor: "dr. osueze martin",
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
+    },
+    {
+        title: "pneumonia prescription.pdf",
+        doctor: "dr. osueze martin",
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
+    },
+    {
+        title: "pneumonia prescription.pdf",
+        doctor: "dr. osueze martin",
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
+    },
+    {
+        title: "pneumonia prescription.pdf",
+        doctor: "dr. osueze martin",
+        speciality: "general surgeon",
+        downloadSize: "2MB",
+        med: "amlodipine",
+        times: "once a day",
+        dateTime: "Fri, 11th Aug, 2023",
+        sign: "DFE"
+        
     },
 ]
 

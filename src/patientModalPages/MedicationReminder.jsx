@@ -4,13 +4,14 @@ import * as Yup from "yup";
 import { IoMdClose } from "react-icons/io";
 import { MdOutlineCalendarMonth} from "react-icons/md";
 
-const AppointmentBooking = ({handleCancel, handleClose}) => {
+const MedicationReminder = ({handleCancel, handleClose}) => {
     const [post, setPost] = useState([]);
     const formik = useFormik({
         initialValues: {
             date: "",
             time: "",
-            appointmentType: ""
+            email: "",
+            phoneNumber: ""
         },
 
 
@@ -29,24 +30,69 @@ const AppointmentBooking = ({handleCancel, handleClose}) => {
             .required("Required"),
             time: Yup.string()
             .required("Required"),
-            appointmentType: Yup.string()
-            .required("Required"),
+            phoneNumber: Yup.number()
+            .required("Required")
+            .max(11, "Must not exceed 11 digits")
+            .min(11, "Must be a minimum of 11 digits"),
+            email: Yup.string()
+            .required("Required")
         })
     })
   return (
     <div className="lg:w-[50%] sm:w-full bg-white rounded-lg">
         <div className="w-full shadow-xl p-5">
             <div className="flex flex-row items-center justify-between">
-                <div className="flex items-center space-x-5">
+                <div className="flex items-center gap-3">
                     <MdOutlineCalendarMonth size={30}/>
-                    <h1 className="font-bold capitalize text-3xl ">Book a slot</h1>
+                    <h1 className="font-bold capitalize text-3xl ">set reminder</h1>
                 </div>
-                <IoMdClose size={25} onClick={handleClose} className="cursor-pointer font-bold"/>
+                <IoMdClose size={25} onClick={handleClose} className="cursor-pointer  font-bold"/>
             </div>
         </div>
         <form onSubmit={formik.handleSubmit} className="p-5">
+            <div className="flex lg:flex-row sm:flex-col w-full items-center gap-4 mb-8">
+                <div className="email lg:w-[50%] sm:w-full">
+                    <div className="w-full items-center justify-between flex flex-row">
+                        <label className="capitalize font-bold text-lg">email</label>
+                        {
+                            formik.touched.email && formik.errors.email ? <p className="text-red-500 text-sm font-bold">{formik.errors.email}</p>: null
+                        }
+                    </div>
+                    <div className="mt-3">
+                        <input 
+                            type="email"
+                            placeholder="email@gmail.com"
+                            className="outline-none border-2 border-neutral-50 focus:border-primary-100 px-3 py-2 w-full rounded-md"
+                            id = "email"
+                            value = {formik.values.email}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                        />
+                    </div>
+                </div>
+                
+                <div className="phoneNumber lg:w-[50%] sm:w-full">
+                    <div className="flex flex-row items-center justify-between w-full">
+                        <label className="first-letter:capitalize font-bold text-lg">phone number</label>
+                        {
+                            formik.touched.phoneNumber && formik.errors.phoneNumber ? <p className="text-red-500 text-sm font-bold">{formik.errors.phoneNumber}</p>: null
+                        }
+                    </div>
+                    <div className="mt-3">
+                        <input 
+                            type="phoneNumber"
+                            placeholder="0000 000 0000"
+                            className="outline-none border-2 border-neutral-50 focus:border-primary-100 px-3 py-2 w-full rounded-md"
+                            id = "phoneNumber"
+                            value = {formik.values.phoneNumber}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                        />
+                    </div>
+                </div>
+            </div>
             <div className="flex lg:flex-row sm:flex-col w-full items-center gap-4 my-4">
-                <div className="appointmentDate lg:w-[50%] sm:w-full">
+                <div className="reminderDate lg:w-[50%] sm:w-full">
                     <div className="w-full items-center justify-between flex flex-row">
                         <label className="capitalize font-bold text-lg">date</label>
                         {
@@ -66,7 +112,7 @@ const AppointmentBooking = ({handleCancel, handleClose}) => {
                     
                 </div>
                 
-                <div className="appointmentTime lg:w-[50%] sm:w-full">
+                <div className="reminderTime lg:w-[50%] sm:w-full">
                     <div className="flex flex-row items-center justify-between w-full">
                         <label className="capitalize font-bold text-lg">time</label>
                         {
@@ -85,26 +131,6 @@ const AppointmentBooking = ({handleCancel, handleClose}) => {
                     </div>
                 </div>
             
-            </div>
-            <div className="appointmentType mb-4">
-                <div className="flex flex-row items-center justify-between w-full">
-                    <label className="capitalize font-bold text-lg">Appointment type</label>
-                    {
-                        formik.touched.appointmentType && formik.errors.appointmentType ? <p className="text-red-500 text-sm font-bold">{formik.errors.appointmentType}</p>: null
-                    }
-                </div>
-                <div className="mt-3">
-                    <select 
-                        placeholder="Please select appointment type"
-                        className="outline-none border-2 border-neutral-50 focus:border-primary-100 px-3 py-2 w-full rounded-md"
-                        id = "appointmentType"
-                        value = {formik.values.appointmentType}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                    >
-                        <option></option>
-                    </select>
-                </div>
             </div>
             
             <div className="flex lg:flex-row sm:flex-col items-center gap-2 w-full">
@@ -126,4 +152,4 @@ const AppointmentBooking = ({handleCancel, handleClose}) => {
   )
 }
 
-export default AppointmentBooking
+export default MedicationReminder

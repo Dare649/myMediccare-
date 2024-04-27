@@ -67,11 +67,11 @@ const TopBar = ({ onChange, placeholder}) => {
               </div>
                 <div className="navigation my-8 mx-5">
                   {navLink.map((item, id) => (
-                    <div key={id} className={`py-2 border-b-2 border-primary-100 ${item.gap ? "mt-48" : ""}`}>
+                    <div key={id} className={`py-3`}>
                       <NavLink
                         onClick={handleVisible}
                         to={item.path}
-                        className="flex flex-row space-x-2 active:text-primary-100 text-neutral-50 capitalize text-lg font-medium hover:text-primary-100"
+                        className="flex flex-row space-x-2 active:text-primary-100 text-primary-100 capitalize text-lg font-medium hover:text-primary-100"
                       >
                         <p>{item.icon}</p>
                         <p>{item.title}</p>
