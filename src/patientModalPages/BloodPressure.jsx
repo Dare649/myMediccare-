@@ -84,14 +84,14 @@ const BloodPressure = ({handleClose, handleCancel}) => {
             </div>
             <div className="activityPosture mb-4">
                 <div className="flex flex-row items-center justify-between w-full">
-                    <label className="capitalize font-bold text-lg">Appointment type</label>
+                    <label className="capitalize font-bold text-lg">Activity/Posture</label>
                     {
                         formik.touched.activityPosture && formik.errors.activityPosture ? <p className="text-red-500 text-sm font-bold">{formik.errors.activityPosture}</p>: null
                     }
                 </div>
                 <div className="mt-3">
                     <select 
-                        placeholder="Please select appointment type"
+                        placeholder="Please Activity/Posture"
                         className="outline-none border-2 border-neutral-50 focus:border-primary-100 px-3 py-2 w-full rounded-md"
                         id = "activityPosture"
                         value = {formik.values.activityPosture}
