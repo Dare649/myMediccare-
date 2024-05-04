@@ -14,9 +14,6 @@ const Signin = () => {
   const [post, setPost] = useState([]);
   
 
-  //Title: Sign up form validation using formik
-  //Author: Damilare Ajayi
-
   const formik = useFormik({
     initialValues: {
       firstName: "",

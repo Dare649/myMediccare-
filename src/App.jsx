@@ -13,6 +13,7 @@ import PatientAppointments from "./pages/patient/PatientAppointments";
 import PatientPrescription from "./pages/patient/patientPrescription";
 import PatientNotification from './pages/patient/PatientNotification';
 import PatientSettings from './pages/patient/PatentSettings';
+import PatientMonitoring from "./pages/patient/PatientMonitoring";
 
 
 
@@ -32,6 +33,7 @@ const App = () => {
           <Route path='/patient-prescription' element={<PatientPrescription/>}/>
           <Route path='/patient-settings' element={<PatientSettings/>}/>
           <Route path='/patient-notifications' element={<PatientNotification/>}/>
+          <Route path='/patient-monitoring' element={<PatientMonitoring/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

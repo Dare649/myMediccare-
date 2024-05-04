@@ -447,3 +447,9 @@ export const graphDetails = [
         backgroundColor: "#94A3BB"
     }
 ]
+
+export const vitalsOverview = [
+    {
+        
+    }
+]
