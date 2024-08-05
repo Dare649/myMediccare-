@@ -51,7 +51,7 @@ export const navLink = [
     {
         title: "sign out",
         icon: <IoLogOutOutline size={30}/>,
-        path: "/sign-out"
+        gap1: true
     },
 ]
 
@@ -448,8 +448,27 @@ export const graphDetails = [
     }
 ]
 
-export const vitalsOverview = [
+export const profile = [
     {
-        
+        firstName: "john",
+        lastName: "doe",
+        email: "johndoe@gmail.com",
+        country: "nigeria",
+        countryWithCode: 'nigeria (GMT + 1:00)',
+        address: "2 london street VI, lagos",
+        countryCode: "+234",
+        gender: "male",
+        dob: "10-12-1996",
+        weight: "140kg",
+        height: "6.1",
+        specialNeeds: "none",
+        allergies: "alergic to bitter cola",
+        chronicDisease: "none",
+        nextFullName: "tom johns",
+        relationship: "cousin",
+        nextEmail: "tomjohns@gmail.com",
+        nextAddress: "2 banana empire street, lagos",
+        state: "lagos",
+        img: app
     }
 ]

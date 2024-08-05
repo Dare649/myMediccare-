@@ -8,7 +8,7 @@ import Modal from "../../components/Modal";
 import MedicationReminder from "../../patientModalPages/MedicationReminder";
 import Prescriptions from "../../patientModalPages/Prescriptions";
 
-const patientPrescription = () => {
+const PatientPrescription = () => {
   const data = prescriptions.slice(0, 7);
   const [visible, setVisible] = useState(false);
   const [showPrescription, setShowPrescription] = useState(false);
@@ -119,4 +119,4 @@ const patientPrescription = () => {
   )
 }
 
-export default patientPrescription
+export default PatientPrescription

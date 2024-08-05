@@ -1,16 +1,42 @@
 import logo from "../assets/images/logo.png";
 import { navLink } from "./dummy";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { CiMenuBurger } from "react-icons/ci";
 import { useState } from "react";
-
+import { useAuthContext } from "../context/AuthContext";
+import Swal from "sweetalert2";
+import withReactContent from 'sweetalert2-react-content';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Sidebar = ({ children }) => {
   const [visible, setVisible] = useState(false);
+  const MySwal = withReactContent(Swal);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const { signout } = useAuthContext();
 
-  // Toggle menu on small screen
   const handleVisible = () => {
     setVisible((prev) => !prev);
+  };
+
+  const handleSignout = () => {
+    MySwal.fire({
+      title: 'Are you sure you want to sign out?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, sign out!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setLoading(true);
+        signout().then(() => {
+          setLoading(false);
+          navigate("/");
+        });
+      }
+    });
   };
 
   return (
@@ -28,7 +54,8 @@ const Sidebar = ({ children }) => {
                 <div key={id} className={`py-4 ${item.gap ? "mt-20" : ""}`}>
                   <NavLink
                     to={item.path}
-                    className="flex flex-row space-x-2 focus:text-primary-100 text-neutral-50 capitalize text-lg font-medium hover:text-primary-100"
+                    className={`flex flex-row space-x-2 focus:text-primary-100 text-neutral-50 capitalize text-lg font-medium hover:text-primary-100 ${item.gap1 ? "text-red-500" : ""}`}
+                    onClick={item.gap1 ? handleSignout : null}
                   >
                     <p>{item.icon}</p>
                     <p>{item.title}</p>
@@ -39,11 +66,14 @@ const Sidebar = ({ children }) => {
           </div>
         </div>
       </div>
-      
+
       {/* Content Area */}
       <div className="bg-neutral-50/50 lg:w-[80%] sm:w-full h-full overflow-auto">
         <div className="children sm:my-16 lg:my-32 w-full">{children}</div>
       </div>
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 };

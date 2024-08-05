@@ -7,9 +7,12 @@ import Modal from "../components/Modal";
 import { NavLink, Link } from "react-router-dom";
 import { navLink } from "./dummy";
 import logo from "../assets/images/logo.png";
+import { useAuthContext } from "../context/AuthContext";
 
 const TopBar = ({ onChange, placeholder}) => {
   const [visible, setVisible] = useState(false);
+  const { user } = useAuthContext();
+  
 
   // Toggle menu on small screen
   const handleVisible = () => {
@@ -20,7 +23,7 @@ const TopBar = ({ onChange, placeholder}) => {
       <div className='desktopView hidden lg:flex w-[80%] fixed top-0 bg-white'>
         <div className='px-4 py-8 flex flex-row items-center justify-between w-full'>
           <div className="welcome ">
-            <h2 className="text-3xl text-primary-100 font-bold">Welcome back, Praise</h2>
+            <h2 className="text-3xl text-primary-100 font-bold capitalize">hi, {user?.name}</h2>
             <p className="first-letter:capitalize font-bold text-neutral-50">how are you doing today?</p>
           </div>
           {/* <div className="search w-60">

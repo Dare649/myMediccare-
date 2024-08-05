@@ -11,11 +11,13 @@ import Modal from "../../components/Modal";
 import AppointmentBooking from "../../patientModalPages/AppointmentBooking";
 
 
+
 const PatientDashboard = () => {
   const [showBalance, setShowBalance] = useState(false);
   const dashboardAppointment = appointments.slice(0,3);
   const dashboardPrescription = prescriptions.slice(0,1);
   const [visible, setVisible] = useState(false);
+  
 
   //Toggle balance visiblity
   const handleBalance = () =>{
