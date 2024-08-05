@@ -10,7 +10,7 @@ import Terms from "./terms_conditions/Terms";
 import PatientProtectedRoute from './components/PatientProtectedRoute';
 import PatientDashboard from "./pages/patient/PatientDashboard";
 import PatientAppointments from "./pages/patient/PatientAppointments";
-import PatientPrescription from "./pages/patient/PatientPrescription";
+import PatientPrescriptions from "./pages/patient/PatientPrescriptions";
 import PatientNotification from './pages/patient/PatientNotification';
 import PatientSettings from './pages/patient/PatientSettings';
 import PatientMonitoring from "./pages/patient/PatientMonitoring";
