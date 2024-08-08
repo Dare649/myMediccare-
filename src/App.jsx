@@ -33,7 +33,7 @@ const App = () => {
             <Route element={<PatientProtectedRoute />}>
               <Route path="/patient-dashboard" element={<PatientDashboard />} />
               <Route path="/patient-appointments" element={<PatientAppointments />} />
-              <Route path="/patient-prescription" element={<PatientPrescription />} />
+              <Route path="/patient-prescription" element={<PatientPrescriptions />} />
               <Route path="/patient-settings" element={<PatientSettings />} />
               <Route path="/patient-notifications" element={<PatientNotification />} />
               <Route path="/patient-monitoring" element={<PatientMonitoring />} />
