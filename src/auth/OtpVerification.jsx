@@ -86,7 +86,7 @@ const OtpVerification = () => {
     return (
         <section className="signup w-full h-screen bg-white">
             <div className="lg:mx-8 sm:px-3 overflow-hidden flex flex-row justify-between ">
-                <div className="registration lg:w-[40%] lg:mx-16 sm:mx-0 sm:w-full flex-col align-middle justify-center h-full">
+                <div className="registration lg:w-[40%] lg:mx-16 sm:mx-3 sm:w-full flex-col align-middle justify-center h-full">
                     <div className="logo mt-12">
                         <img src={logo} alt="MyMedicare" className="w-[15%]" />
                     </div>
