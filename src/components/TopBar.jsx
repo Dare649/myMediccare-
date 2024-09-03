@@ -5,7 +5,7 @@ import { IoMenu } from "react-icons/io5";
 import picapp from "../assets/images/picapp.png";
 import Modal from "../components/Modal";
 import { NavLink, Link } from "react-router-dom";
-import { navLink } from "./dummy";
+import { navLink, docnav } from "./dummy";
 import logo from "../assets/images/logo.png";
 import { useAuthContext } from "../context/AuthContext";
 
@@ -20,7 +20,7 @@ const TopBar = ({ onChange, placeholder}) => {
   };
   return (
     <div>
-      <div className='desktopView hidden lg:flex w-[80%] fixed top-0 bg-white'>
+      <div className='desktopView hidden lg:flex w-[80%] fixed top-0 z-50 bg-white'>
         <div className='px-4 py-8 flex flex-row items-center justify-between w-full'>
           <div className="welcome ">
             <h2 className="text-3xl text-primary-100 font-bold capitalize">hi, {user?.name}</h2>
@@ -49,7 +49,7 @@ const TopBar = ({ onChange, placeholder}) => {
         </div>
       </div>
 
-      <div className="mobileView fixed top-0 flex lg:hidden w-full bg-white p-3">
+      <div className="mobileView fixed top-0 flex lg:hidden w-full z-50 bg-white p-3">
         <div className="flex flex-row items-center justify-between w-full">
           <IoMenu onClick={handleVisible} size={30} className="text-primary-100"/>
           <div className="logo flex items-center text-md">
@@ -65,22 +65,39 @@ const TopBar = ({ onChange, placeholder}) => {
             <Modal visible={visible}>
               <div className="fixed top-0 left-0 menuItem bg-white w-[70%] h-screen">
               <div className="welcome mx-5 mt-5">
-                <h2 className="text-xl text-primary-100 font-bold">Welcome back, Praise</h2>
+                <h2 className="text-xl text-primary-100 font-bold">Welcome back, {user?.name}</h2>
                 <p className="first-letter:capitalize font-bold text-neutral-50">how are you doing today?</p>
               </div>
                 <div className="navigation my-8 mx-5">
-                  {navLink.map((item, id) => (
-                    <div key={id} className={`py-3`}>
-                      <NavLink
-                        onClick={handleVisible}
-                        to={item.path}
-                        className="flex flex-row space-x-2 active:text-primary-100 text-primary-100 capitalize text-lg font-medium hover:text-primary-100"
-                      >
-                        <p>{item.icon}</p>
-                        <p>{item.title}</p>
-                      </NavLink>
-                    </div>
-                  ))}
+                  {
+                    user?.role === "patient" ? (
+                      navLink.map((item, id) => (
+                        <div key={id} className={`py-3`}>
+                          <NavLink
+                            onClick={handleVisible}
+                            to={item.path}
+                            className="flex flex-row space-x-2 active:text-primary-100 text-primary-100 capitalize text-lg font-medium hover:text-primary-100"
+                          >
+                            <p>{item.icon}</p>
+                            <p>{item.title}</p>
+                          </NavLink>
+                        </div>
+                      ))
+                    ):(
+                      docnav.map((item, id) => (
+                        <div key={id} className={`py-3`}>
+                          <NavLink
+                            onClick={handleVisible}
+                            to={item.path}
+                            className="flex flex-row space-x-2 active:text-primary-100 text-primary-100 capitalize text-lg font-medium hover:text-primary-100"
+                          >
+                            <p>{item.icon}</p>
+                            <p>{item.title}</p>
+                          </NavLink>
+                        </div>
+                      ))
+                    )
+                  }
                 </div>
               </div>
             </Modal>

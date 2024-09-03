@@ -3,7 +3,7 @@ import logo from "../assets/images/logo.png";
 import google from "../assets/icons/google.jpg";
 import doctor from "../assets/images/doctor-1.png";
 import Slider from "../components/slider";
-import axiosClient from "../axios";
+import {axiosClient} from "../axios";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import Backdrop from "@mui/material/Backdrop";

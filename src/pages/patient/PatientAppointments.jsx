@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { appointments } from "../../components/dummy";
+import { Link } from "react-router-dom";
 import Modal from "../../components/Modal";
 import AppointmentBooking from "../../patientModalPages/AppointmentBooking";
 
@@ -33,23 +34,16 @@ const PatientAppointments = () => {
         }
     };
 
-    // handle modal
-    const handleVisible = () => {
-      setVisible((prev) => !prev);
-    };
+
 
   return (
     <section className="appointment w-full h-full lg:p-5 sm:p-0">
       <main className="lg:p-10 sm:p-2 bg-white rounded-lg w-full h-full">
         <div className="flex flex-row items-center justify-between lg:mt-0 sm:mt-10 w-full">
           <h2 className="first-letter:capitalize sm:text-xl lg:text-2xl font-semibold">your appointments</h2>
-          <button onClick={handleVisible} className="text-white bg-primary-100 rounded-lg lg:w-52 sm:w-40 lg:h-14 sm:h-10 sm:text-sm lg:text-lg first-letter:capitalize font-bold">book appointment</button>
+          <Link to={"/book-appointment"} className="text-white bg-primary-100 rounded-lg first-letter:capitalize font-bold text-center p-3">book appointment</Link>
         </div>
-        {visible && (
-          <Modal visible={visible} onClose={handleVisible}>
-            <AppointmentBooking handleCancel={handleVisible} handleClose={handleVisible} />
-          </Modal>
-        )}
+        
         <div className="search lg:w-60 sm:w-full mb-10 lg:mt-0 sm:mt-8">
           <input
               type="text"

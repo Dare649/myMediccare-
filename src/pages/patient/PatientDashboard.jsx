@@ -5,10 +5,11 @@ import coin from "../../assets/images/dash-1.png";
 import doc from "../../assets/images/dash-2.png";
 import { IoIosArrowForward } from "react-icons/io";
 import { Link } from "react-router-dom";
-import { appointments, prescriptions, graphDetails } from "../../components/dummy";
+import { appointments, prescriptions, graphDetails, services } from "../../components/dummy";
 import GraphSlider from "../../components/graphSlider";
 import Modal from "../../components/Modal";
 import AppointmentBooking from "../../patientModalPages/AppointmentBooking";
+import { FaRegCalendarAlt } from "react-icons/fa";
 
 
 
@@ -31,135 +32,73 @@ const PatientDashboard = () => {
 };
 
 
+const dashAppointments = appointments.slice(0, 3)
+
+
   return (
-    <section className='patientDashboard w-full h-screen lg:p-5 sm:p-0'>
-      <main className='lg:p-10 sm:p-2 bg-white rounded-lg w-full h-fit'>
-        <div className='flex flex-col gap-y-8 w-full'>
-          <div className='flex lg:flex-row sm:flex-col items-center gap-5 w-full'>
-            <div className="wallet bg-primary-100 rounded-lg lg:w-[50%] sm:w-full">
-              <div className='lg:m-6 sm:m-3'>
-                <div className='flex flex-row items-center justify-between mb-5'>
-                  <h2 className="text-white capitalize text-xl font-medium">medicare wallet</h2>
-                  <h4 className="text-white capitalize">nigerian naira</h4>
-                </div>
-                <h2 className="first-letter:capitalize text-white">total balance</h2>
-                <div className='flex flex-row items-center justify-between'>
-                  <div className='flex flex-col'>
-                    <div className="flex flex-row items-center space-x-4 mb-5">
-                      <h1 className="text-2xl font-semibold text-white">{!showBalance ? `${"#0.00"}`: "****"}</h1>
-                      <span
-                        onClick={handleBalance}
-                        className="cursor-pointer font-bold text-white"
-                      >
-                        {
-                          showBalance && showBalance ?
-                          (<PiEyeClosedLight size={20}/>):(<PiEyeLight size={20}/>)
-                        }
-                      </span>
-                    </div>
-                    <button className="flex items-center space-x-2 py-3 px-8 bg-white rounded-lg text-primary-100 font-medium text-sm"><span className=""><FiUpload/></span><span className="first-letter:capitalize">add money</span></button>
-                    
-                  </div>
-                  <div className="sm:hidden lg:flex">
-                    <img src={coin} alt="" className="w-full"/>
-                  </div>
-                </div>
+    <section className='patientDashboard w-full h-screen lg:p-5 sm:px-2 sm:py-10'>
+      <div className='bg-white rounded-lg w-full '>
+        <div className="w-full flex lg:flex-row sm:flex-col gap-5 lg:p-5 sm:p-3">
+          <div className="lg:w-[50%] sm:w-full border-2 border-primary-100 rounded-lg">
+            <div className="w-full lg:p-3 sm:p-0 flex flex-row items-center lg:gap-3 sm:gap-0">
+              <div className="lg:p-3 sm:p-1">
+                <h2 className="first-letter:capitalize lg:text-xl sm:text-sm font-semibold">do you need to see a doctor?</h2>
+                <p className="first-letter:capitalize lg:text-lg sm:text-[11px]">an appointment is just a cliq away!</p>
+                <button className="lg:w-60 sm:w-36 sm:h-10 lg:h-14 lg:mt-5 sm:mt-2 text-center bg-primary-100 text-white first-letter:capitalize font-medium rounded-lg lg:text-lg sm:text-xs">book an appointment</button>
               </div>
-            </div>
-            <div className="appointment bg-primary-100 rounded-lg lg:w-[50%] sm:w-full">
-              <div className="flex flex-row items-center justify-between">
-                <div className="lg:m-6 sm:m-3">
-                  <h2 className="text-white font-medium first-letter:capitalize text-xl">an appointment is just a click away</h2>
-                  <p className="text-white text-xs text-wrap mb-12">start your journey to affordable healthcare today</p>
-                  <button onClick={handleVisible} className="flex capitalize items-center space-x-2 py-3 px-8 bg-white rounded-lg text-primary-100 font-medium text-sm">book an appointment</button>
-                </div>
-                <div className="sm:hidden lg:flex">
-                  <img src={doc} alt="MyMedicare" className=""/>
-                </div>
+              <div className="">
+                <img src={doc} alt="MyMedicare" className=""/>
               </div>
-              {visible && (
-                <Modal visible={visible} onClose={handleVisible}>
-                  <AppointmentBooking handleCancel={handleVisible} handleClose={handleVisible} />
-                </Modal>
-              )}
             </div>
           </div>
-          
-          <div className="w-full flex lg:flex-row sm:flex-col gap-5">
-            <div className="graph lg:w-[60%] sm:w-full border-2 border-neutral-50 rounded-lg">
-              <GraphSlider graphDetails={graphDetails}/>
-            </div>
-
-            <div className="flex flex-col gap-y-5 lg:w-[40%] sm:w-full">
-              <div className="appointments border-2 border-neutral-50 rounded-lg w-full">
-                <div className="lg:m-4 sm:m-1">
-                  <div className="flex flex-row items-center justify-between">
-                    <h2 className="text-lg font-medium capitalize">appointments</h2>
-                    <Link to={"/patient-appointments"} className="capitalize text-primary-100 font-bold text-sm flex flex-row items-center space-x-2 text-md">
-                      <p>see more</p>
-                      <p><IoIosArrowForward/></p>
-                    </Link>
+          <div className="lg:w-[50%] sm:w-full">
+          <div className="my-10">
+            <h2 className="font-semibold first-letter:capitalize mb-5 lg:text-xl sm:sm">our services</h2>
+            <div className="w-full flex flex-row gap-3 sm:overflow-x-auto lg:overflow-x-hidden">
+              {services.map((item, id) => (
+                <div key={id} className="flex flex-col items-center">
+                  <div className="lg:w-24 sm:w-16 lg:h-24 sm:h-16 flex items-center justify-center rounded-full bg-neutral-1">
+                    {item.icon}
                   </div>
-                  <div>
-                    {
-                      dashboardAppointment.map((item, id) =>(
-                        <Link key={id} to={""} className="">
-                          <div className="rounded-lg bg-primary-100/50 my-2">
-                            <div className="flex flex-row items-center justify-between py-2 px-1">
-                              <div className="flex flex-row space-x-3 items-center ">
-                                <div className="rounded-lg bg-primary-100">
-                                  <img src={item.img} alt="MyMedicare" className="p-[1.5px]"/>
-                                </div>
-                                <div className="flex flex-col">
-                                  <h2 className="font-bold capitalize text-lg">{item.doctor}</h2>
-                                  <p className="font-medium first-letter:capitalize">{item.speciality}</p>
-                                </div>
-                              </div>
-                              <p className="font-bold text-primary-100">{item.time}</p>
-                            </div>
-                          </div>
-                        </Link>
-                      ))
-                    }
-                  </div>
+                  <h2 className="text-center lg:px-5 sm:px-2 first-letter:capitalize font-medium lg:text-lg sm:text-xs">{item.text}</h2>
                 </div>
-              </div>
-
-              <div className="prescription w-full border-2 border-neutral-50 rounded-lg">
-                <div className="lg:m-4 sm:m-1">
-           
-                    <div className="flex flex-row items-center justify-between">
-                      <h2 className="text-lg font-medium capitalize">recent prescription</h2>
-                      <Link to={"/patient-prescription"} className="text-primary-100 capitalize text-sm flex flex-row items-center space-x-2 text-md font-bold">
-                        <p>see more</p>
-                        <p><IoIosArrowForward/></p>
-                      </Link>
-                    </div>
-               
-                  <div className="bg-neutral-50/50 rounded-lg">
-                    <div>
-                      {
-                        dashboardPrescription.map((item, id) =>(
-                          <div key={id} className=" ">
-                            <div className="py-2 px-1">
-                              <h2 className="text-primary-100 font-bold text-lg capitalize">{item.title}</h2>
-                              <div className="flex flex-row gap-y-2 items-center space-x-2">
-                                <h2 className="text-lg capitalize fornt-bold">{item.doctor}</h2>
-                                <h2 className="text-sm capitalize text-neutral-50 fornt-bold">{item.speciality}</h2>
-                              </div>
-                            </div>
-                          </div>
-                        ))
-                      }
-                    </div>
-                </div>
-                </div>
-                
-              </div>
+              ))}
             </div>
           </div>
         </div>
-      </main>
+        </div>
+      </div>
+      <div className='bg-white rounded-lg w-full lg:my-8 sm:my-5 lg:px-5 sm:px-3 sm:py-2 lg:py-3'>
+        <div className="border-2 rounded-lg border-neutral-1">
+          <div className="lg:p-5 sm:p-3 flex flex-row items-center justify-between">
+            <p className="sm:text-sm lg:text-xl font-semibold first-letter:capitalize">stay on track with your health</p>
+            <button className="bg-primary-100 lg:w-40 h-12 sm:w-24 rounded-lg text-center first-letter:capitalize text-white lg:text-xl font-semibold sm:text-sm">book tests</button>
+          </div>
+        </div>
+      </div>
+      <div className='bg-white rounded-lg w-full lg:my-8 sm:my-5 lg:px-5 sm:px-3 sm:py-2 lg:py-3'>
+        <div className="flex flex-row items-center justify-between w-full lg:p-5 sm:p-3 ">
+          <h2 className="capitalize lg:text-xl sm:text-md font-semibold">upcoming sessions</h2>
+          <Link className="capitalize text-primary-100 font-semibold lg:text-xl sm:text-md">see more</Link>
+        </div>
+        <div className="lg:text-xl sm:text-md flex flex-row items-center justify-between sm:overflow-x-auto lg:overflow-x-hidden">
+          {
+            dashAppointments.map((item, id) =>(
+              <div key={id} className="bg-neutral-1 rounded-lg sm:p-2 lg:p-5 flex flex-row items-center w-[30%]">
+                <img src={item.img} alt="mymedicare" className="lg:w-28 lg:h-28 sm:w-20 sm:h-20 rounded-full"/>
+                <div>
+                  <h2 className="lg:text-xl sm:text-md font-semibold capitalize">{item.doctor}</h2>
+                  <p className="text-neutral-50 capitalize font-medium">{item.speciality}</p>
+                  <p className="text-primary-100 font-medium text-lg flex items-center gap-1 capitalize">
+                    <span><FaRegCalendarAlt/></span>
+                    <span>{item.today}</span>
+                  </p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
     </section>
   )
 }

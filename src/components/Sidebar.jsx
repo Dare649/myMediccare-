@@ -1,5 +1,5 @@
 import logo from "../assets/images/logo.png";
-import { navLink } from "./dummy";
+import { navLink, docnav } from "./dummy";
 import { NavLink, useNavigate } from "react-router-dom";
 import { CiMenuBurger } from "react-icons/ci";
 import { useState } from "react";
@@ -14,7 +14,7 @@ const Sidebar = ({ children }) => {
   const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const { signout } = useAuthContext();
+  const { signout, user } = useAuthContext();
 
   const handleVisible = () => {
     setVisible((prev) => !prev);
@@ -50,26 +50,43 @@ const Sidebar = ({ children }) => {
               <h2 className="text-xl font-bold text-primary-100">MyMedicare</h2>
             </div>
             <div className="navigation mt-10">
-              {navLink.map((item, id) => (
-                <div key={id} className={`py-4 ${item.gap ? "mt-20" : ""}`}>
-                  <NavLink
-                    to={item.path}
-                    className={`flex flex-row space-x-2 focus:text-primary-100 text-neutral-50 capitalize text-lg font-medium hover:text-primary-100 ${item.gap1 ? "text-red-500" : ""}`}
-                    onClick={item.gap1 ? handleSignout : null}
-                  >
-                    <p>{item.icon}</p>
-                    <p>{item.title}</p>
-                  </NavLink>
-                </div>
-              ))}
+              {
+                user?.role === "patient" ? (
+                  navLink.map((item, id) => (
+                    <div key={id} className={`py-4 ${item.gap ? "mt-20" : ""}`}>
+                      <NavLink
+                        to={item.path}
+                        className={`flex flex-row space-x-2 focus:text-primary-100 text-neutral-50 capitalize text-lg font-medium hover:text-primary-100 ${item.gap1 ? "text-red-500" : ""}`}
+                        onClick={item.gap1 ? handleSignout : null}
+                      >
+                        <p>{item.icon}</p>
+                        <p>{item.title}</p>
+                      </NavLink>
+                    </div>
+                  ))
+                ):(
+                  docnav.map((item, id) => (
+                    <div key={id} className={`py-4 ${item.gap ? "mt-20" : ""}`}>
+                      <NavLink
+                        to={item.path}
+                        className={`flex flex-row space-x-2 focus:text-primary-100 text-neutral-50 capitalize text-lg font-medium hover:text-primary-100 ${item.gap1 ? "text-red-500" : ""}`}
+                        onClick={item.gap1 ? handleSignout : null}
+                      >
+                        <p>{item.icon}</p>
+                        <p>{item.title}</p>
+                      </NavLink>
+                    </div>
+                  ))
+                )
+              }
             </div>
           </div>
         </div>
       </div>
 
       {/* Content Area */}
-      <div className="bg-neutral-50/50 lg:w-[80%] sm:w-full h-full overflow-auto">
-        <div className="children sm:my-16 lg:my-32 w-full">{children}</div>
+      <div className="bg-neutral-1 lg:w-[80%] sm:w-full h-full overflow-auto">
+        <div className="children lg:mt-20 sm:mt-10 w-full">{children}</div>
       </div>
       <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
         <CircularProgress color="inherit" />

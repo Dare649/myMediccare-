@@ -1,3 +1,4 @@
+// axios.js
 import axios from 'axios';
 import Swal from "sweetalert2";
 import withReactContent from 'sweetalert2-react-content';
@@ -9,6 +10,8 @@ export const axiosClient = axios.create({
   headers: {
     Accept: "application/json",
     'Content-Type': 'multipart/form-data',
+    AccessControlAllowOrigin: "*",
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
   },
 });
 
@@ -22,7 +25,7 @@ axiosClient.interceptors.request.use(
     return request;
   },
   (error) => {
-    return Promise.reject(error);
+    Promise.reject(error)
   }
 );
 
@@ -39,12 +42,10 @@ axiosClient.interceptors.response.use(
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         setTimeout(() => {
-          window.location.href = '/signin';
+          window.location.href = '/sign-in';
         }, 2000);
       });
     }
     return Promise.reject(error);
   }
 );
-
-export default axiosClient;

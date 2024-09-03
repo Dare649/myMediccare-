@@ -20,13 +20,17 @@ export default {
         "primary-100": "#0058E6",
         "neutral-100": "#1E293B",
         "neutral-50": "#94A3BB",
-        "neutral-200": "#F1F5F9"
+        "neutral-10": "#F8FAFC",
+        "neutral-200": "#F1F5F9",
+        "neutral-1": "#EBF3FF"
       },
       backgroundColor: {
         "primary-100": "#0058E6",
         "neutral-100": "#1E293B",
         "neutral-50": "#94A3BB",
-        "neutral-200": "#F1F5F9"
+        "neutral-10": "#F8FAFC",
+        "neutral-200": "#F1F5F9",
+        "neutral-1": "#EBF3FF"
       }
     },
   },

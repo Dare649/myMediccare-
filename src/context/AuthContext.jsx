@@ -1,3 +1,4 @@
+// AuthContext.js
 import { createContext, useContext, useState, useEffect } from "react";
 import { axiosClient } from "../axios";
 import Swal from "sweetalert2";
@@ -14,15 +15,19 @@ export const AuthProvider = ({ children }) => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
+  useEffect(() => {
+    setIsAuthenticated(!!token);
+  }, [token]);
+
   const signin = async (email, password) => {
     try {
       const response = await axiosClient.post("/api/login", { email, password });
+      const token = response.data.data.token;
+      setToken(token);
+      localStorage.setItem("token", token);
       const user_data = response.data.data.user;
       setUser(user_data);
       localStorage.setItem("user", JSON.stringify(user_data));
-      const { token } = response.data.data; // Access the token here
-      setToken(token);
-      localStorage.setItem("token", token);
       setIsAuthenticated(true);
       return response;
     } catch (error) {
@@ -35,37 +40,20 @@ export const AuthProvider = ({ children }) => {
       throw error;
     }
   };
-  
 
-  useEffect(() => {
-    setIsAuthenticated(!!token);
-  }, [token]);
-
-  const signout = async () => {
-    try {
-      setToken(null);
-      setUser(null);
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      setIsAuthenticated(false);
-    } catch (error) {
-      console.error("Error signing out", error);
-      MySwal.fire({
-        icon: 'error',
-        title: 'Sign Out Error',
-        text: 'An error occurred during sign out.',
-      });
-      throw error;
-    }
+  const signout = () => {
+    setToken(null);
+    setUser(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setIsAuthenticated(false);
   };
 
   return (
-    <AuthContext.Provider value={{ token, setToken, user, setUser, signin, signout, isAuthenticated }}>
+    <AuthContext.Provider value={{ token, signin, signout, user, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuthContext = () => {
-  return useContext(AuthContext);
-};
+export const useAuthContext = () => useContext(AuthContext);

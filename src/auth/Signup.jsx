@@ -24,7 +24,7 @@ const Signup = () => {
         name: "",
         email: "",
         country: null,
-        role: "patient",
+        role: "",
         country_code: "",
         phone: "",
         password: ""
@@ -81,6 +81,10 @@ const Signup = () => {
 
         if (!formData.phone) {
             newErrors.phone = 'Required';
+        }
+
+        if (!formData.role) {
+            newErrors.role = 'Required';
         }
 
         if (!formData.password) {
@@ -174,6 +178,24 @@ const Signup = () => {
                                         className="outline-none border-2 border-neutral-50 p-2 w-full text-lg font-medium rounded-lg focus:border-primary-100"
                                     />
                                     {errors.phone && <p className="text-red-500 text-sm font-bold">{errors.phone}</p>}
+                                </div>
+                                <div className="w-full mb-4">
+                                    <h2 className="font-semibold lg:text-lg sm:text-md mb-2 capitalize">role</h2>
+                                    <select
+                                        className="outline-none border-2 border-neutral-50 focus:border-primary-100 px-3 py-2 w-full rounded-md capitalize"
+                                        name="role"
+                                        id="role"
+                                        value={formData.role}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="" disabled>
+                                        --select role--
+                                        </option>
+                                        <option value="patient">patient</option>
+                                        <option value="doctor">doctor</option>
+                                        
+                                    </select>
+                                    {errors.role && <p className="text-red-500 text-sm font-bold">{errors.role}</p>}
                                 </div>
                                 <div className="country flex flex-col mb-2">
                                     <label className="capitalize text-neutral-100 text-xl font-semibold mb-2">country</label>

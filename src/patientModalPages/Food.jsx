@@ -1,120 +1,196 @@
 import { useState } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 import { IoMdClose } from "react-icons/io";
 import { LuActivitySquare } from "react-icons/lu";
+import { axiosClient } from "../../axios";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
-const Food = ({handleCancel, handleClose}) => {
-    const [post, setPost] = useState([]);
-    const formik = useFormik({
-        initialValues: {
-            food: "",
-            amount: "",
-            calories: ""
-        },
+const Food = ({ handleCancel, handleClose }) => {
+    const [error, setError] = useState({});
+    const [loading, setLoading] = useState(false);
+    const MySwal = withReactContent(Swal);
+    const [formData, setFormData] = useState({
+        date: "",
+        food: "",
+        amount: "",
+        calories: "",
+        unit: "kcal"
+    });
 
-        validationSchema: Yup.object({
-            food: Yup.string()
-            .required("Required"),
-            amount: Yup.string()
-            .required("Required"),
-            calories: Yup.string()
-            .required("Required"),
-        })
-    })
-  return (
-    <div className="lg:w-[50%] sm:w-full bg-white rounded-lg">
-        <div className="w-full shadow-xl p-5">
-            <div className="flex flex-row items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <LuActivitySquare size={30}/>
-                    <div>
-                        <h1 className="font-bold capitalize text-3xl ">food log values</h1>
-                        <p className="mt-2 first-letter:capitalize font-semibold text-neutral-50">help us monitor your eating.</p>
+    function formatDate(date) {
+        if (!date) return '';
+
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+
+        return `${day}-${month}-${year}`;
+    }
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+        setError((prevError) => ({
+            ...prevError,
+            [name]: "",
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError({});
+
+        if (!formData.date) {
+            setError((prev) => ({ ...prev, date: "Date is required" }));
+            return;
+        }
+        if (!formData.food) {
+            setError((prev) => ({ ...prev, food: "Food is required" }));
+            return;
+        }
+        if (!formData.calories) {
+            setError((prev) => ({ ...prev, calories: "Calories are required" }));
+            return;
+        }
+        if (!formData.amount) {
+            setError((prev) => ({ ...prev, amount: "Amount is required" }));
+            return;
+        }
+
+        try {
+            setLoading(true);
+
+            const formattedDate = formatDate(new Date(formData.date));
+
+            const payload = {
+                ...formData,
+                date: formattedDate,
+            };
+
+            const response = await axiosClient.post("/api/patient/rm/create_flr", payload);
+            setLoading(false);
+            MySwal.fire({
+                icon: "success",
+                text: response.data.message,
+                title: "Success",
+            }).then(() => {
+                window.location.reload();
+            });
+        } catch (error) {
+            setLoading(false);
+            MySwal.fire({
+                icon: "error",
+                text: error?.response?.data?.message || "An error occurred",
+                title: "Error",
+            }).then(() => {
+                window.location.reload();
+            });
+        }
+    };
+
+    return (
+        <div className="lg:w-[50%] sm:w-full bg-white rounded-lg">
+            <div className="w-full shadow-xl p-5">
+                <div className="flex flex-row items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <LuActivitySquare size={30} />
+                        <div>
+                            <h1 className="font-bold capitalize text-3xl">food log values</h1>
+                            <p className="mt-2 first-letter:capitalize font-semibold text-neutral-50">help us monitor your eating.</p>
+                        </div>
                     </div>
-                </div>
-                <IoMdClose size={25} onClick={handleClose} className="cursor-pointer  font-bold"/>
-            </div>
-        </div>
-        <form onSubmit={formik.handleSubmit} className="p-5">
-            <div className="food mb-4">
-                <div className="flex flex-row items-center justify-between w-full">
-                    <label className="capitalize font-bold text-lg">blood sugar reading</label>
-                    {
-                        formik.touched.food && formik.errors.food ? <p className="text-red-500 text-sm font-bold">{formik.errors.food}</p>: null
-                    }
-                </div>
-                <div className="mt-3">
-                    <input 
-                        type="text"
-                        className="outline-none border-2 border-neutral-50 focus:border-primary-100 px-3 py-2 w-full rounded-md"
-                        id = "food"
-                        value = {formik.values.food}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                    />
+                    <IoMdClose size={25} onClick={handleClose} className="cursor-pointer font-bold" />
                 </div>
             </div>
-
-            <div className="flex lg:flex-row sm:flex-col w-full items-center gap-4 mb-8">
-                <div className="amount lg:w-[50%] sm:w-full">
+            <form onSubmit={handleSubmit} className="p-5">
+                <div className="date w-full">
                     <div className="w-full items-center justify-between flex flex-row">
-                        <label className="capitalize font-bold text-lg">amount</label>
-                        {
-                            formik.touched.amount && formik.errors.amount ? <p className="text-red-500 text-sm font-bold">{formik.errors.amount}</p>: null
-                        }
+                        <label className="capitalize font-bold text-lg">date</label>
                     </div>
                     <div className="mt-3">
-                        <input 
-                            type="text"
+                        <input
+                            type="date"
+                            name="date"
                             className="outline-none border-2 border-neutral-50 focus:border-primary-100 px-3 py-2 w-full rounded-md"
-                            id = "amount"
-                            placeholder="E.g 400g or 2 slices"
-                            value = {formik.values.amount}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
+                            value={formData.date}
+                            onChange={handleChange}
                         />
+                        {error.date && <p className="text-red-500 text-sm">{error.date}</p>}
                     </div>
                 </div>
-                
-                <div className="calories lg:w-[50%] sm:w-full">
+                <div className="food mb-4">
                     <div className="flex flex-row items-center justify-between w-full">
-                        <label className="capitalize font-bold text-lg">calories</label>
-                        {
-                            formik.touched.calories && formik.errors.calories ? <p className="text-red-500 text-sm font-bold">{formik.errors.calories}</p>: null
-                        }
+                        <label className="capitalize font-bold text-lg">food</label>
                     </div>
                     <div className="mt-3">
-                        <input 
+                        <input
                             type="text"
                             className="outline-none border-2 border-neutral-50 focus:border-primary-100 px-3 py-2 w-full rounded-md"
-                            id = "calories"
-                            placeholder="E.g 400"
-                            value = {formik.values.calories}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
+                            name="food"
+                            value={formData.food}
+                            onChange={handleChange}
                         />
+                        {error.food && <p className="text-red-500 text-sm">{error.food}</p>}
                     </div>
                 </div>
-            </div>
-            
-            <div className="flex lg:flex-row sm:flex-col items-center gap-2 w-full">
-                <div 
-                    onClick={handleCancel}
-                    className="cancelAppointment w-full text-center my-2">
-                <button className="font-bold capitalize text-lg outline-none border-2 border-primary-100 active:bg-primary-100 bg-transparent hover:bg-primary-100 rounded-lg text-primary-100 hover:text-white w-full   active:bg-transparent active:text-primary-100 active:border-primary-100 h-16">
-                    cancel
-                </button>
-                </div>
-                <div className="bookAppointment w-full text-center my-2">
-                <button className="font-bold capitalize text-lg outline-none hover:border-2 active:border-2 bg-primary-100 rounded-lg text-white w-full hover:bg-transparent hover:text-primary-100 hover:border-primary-100 active:bg-transparent active:text-primary-100 active:border-primary-100 h-16">
-                    save & continue
-                </button>
-                </div>
-            </div>
-        </form>
-    </div>
-  )
-}
 
-export default Food
+                <div className="flex lg:flex-row sm:flex-col w-full items-center gap-4 mb-8">
+                    <div className="amount lg:w-[50%] sm:w-full">
+                        <div className="w-full items-center justify-between flex flex-row">
+                            <label className="capitalize font-bold text-lg">amount</label>
+                        </div>
+                        <div className="mt-3">
+                            <input
+                                type="text"
+                                className="outline-none border-2 border-neutral-50 focus:border-primary-100 px-3 py-2 w-full rounded-md"
+                                name="amount"
+                                placeholder="E.g 400kcals or 2 slices"
+                                value={formData.amount}
+                                onChange={handleChange}
+                            />
+                            {error.amount && <p className="text-red-500 text-sm">{error.amount}</p>}
+                        </div>
+                    </div>
+
+                    <div className="calories lg:w-[50%] sm:w-full">
+                        <div className="flex flex-row items-center justify-between w-full">
+                            <label className="capitalize font-bold text-lg">calories</label>
+                        </div>
+                        <div className="mt-3">
+                            <input
+                                type="text"
+                                className="outline-none border-2 border-neutral-50 focus:border-primary-100 px-3 py-2 w-full rounded-md"
+                                name="calories"
+                                placeholder="E.g 400"
+                                value={formData.calories}
+                                onChange={handleChange}
+                            />
+                            {error.calories && <p className="text-red-500 text-sm">{error.calories}</p>}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="w-full text-center my-2">
+                    <button
+                        disabled={loading}
+                        className="font-bold capitalize text-lg outline-none hover:border-2 active:border-2 bg-primary-100 rounded-lg text-white w-full hover:bg-transparent hover:text-primary-100 hover:border-primary-100 active:bg-transparent active:text-primary-100 active:border-primary-100 h-16">
+                        {loading ? "loading..." : "save"}
+                    </button>
+                </div>
+            </form>
+            <Backdrop
+                sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={loading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+        </div>
+    );
+};
+
+export default Food;
