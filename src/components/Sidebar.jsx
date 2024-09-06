@@ -86,7 +86,7 @@ const Sidebar = ({ children }) => {
 
       {/* Content Area */}
       <div className="bg-neutral-1 lg:w-[80%] sm:w-full h-full overflow-auto">
-        <div className="children lg:mt-20 sm:mt-10 w-full">{children}</div>
+        <div className="children lg:mt-40 sm:mt-10 w-full">{children}</div>
       </div>
       <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
         <CircularProgress color="inherit" />

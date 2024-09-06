@@ -64,17 +64,16 @@ const AppointmentBooking = ({ handleClose }) => {
       setLoading(false);
       MySwal.fire({
         title: "Success",
-        text: response?.data?.message,
+        text: "Appointment booked successfully!" || response?.data?.message,
         icon: "success",
       });
     } catch (error) {
       setLoading(false);
       MySwal.fire({
         title: "Error",
-        text: error?.response?.data?.message,
+        text: "Failed to book appointment, try again later." || error?.response?.data?.message,
         icon: "error",
       });
-      console.error("Error submitting form:", error);
     } finally {
       setLoading(false);
     }

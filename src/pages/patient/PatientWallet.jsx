@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import { PiCoins } from "react-icons/pi";
-import { TbCurrencyNaira } from "react-icons/tb";
+import { FaPoundSign } from "react-icons/fa";
 import { PiEyeLight } from "react-icons/pi";
 import { HiOutlineEyeSlash } from "react-icons/hi2";
 import { axiosClient } from "../../axios";
@@ -18,7 +18,6 @@ import FundModal from "../../patientModalPages/FundModal";
 const PatientWallet = () => {
   const [showBalance, setShowBalance] = useState(false);
   const { user } = useAuthContext();
-  console.log(user);
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [fund, setFund] = useState(false);
@@ -90,7 +89,7 @@ const PatientWallet = () => {
         <div className="my-5">
           <div className="w-full flex flex-row items-center justify-between lg:px-5 sm:px-3">
             <div className="flex flex-row items-center">
-              <TbCurrencyNaira size={20} />
+              <FaPoundSign size={20} />
               <h2 className="lg:text-2xl sm:text-xl font-bold">
                 {showBalance ? formatAmountWithCommas(user?.balance) : "xxxx"}
               </h2>
@@ -135,7 +134,7 @@ const PatientWallet = () => {
                     </div>
                   </div>
                   <h2 className="flex flex-row items-center font-bold text-md">
-                    <TbCurrencyNaira size={20} />
+                    <FaPoundSign size={20} />
                     <span>{formatAmountWithCommas(item.amount)}</span>
                   </h2>
                 </div>
@@ -161,7 +160,7 @@ const PatientWallet = () => {
                     <td className="py-2 px-6">{item.type}</td>
                     <td className="py-2 px-6">{item.status}</td>
                     <td className="py-2 px-6 flex flex-row items-center gap-x-2">
-                      <TbCurrencyNaira size={20} />
+                      <FaPoundSign size={20} />
                       <span>{formatAmountWithCommas(item.amount)}</span>
                     </td>
                   </tr>

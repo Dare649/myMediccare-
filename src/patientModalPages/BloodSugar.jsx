@@ -80,7 +80,7 @@ const BloodSugar = ({ handleClose, handleCancel }) => {
             setLoading(false);
             MySwal.fire({
                 icon: "success",
-                text: response.data.message,
+                text: "Blood sugar recorded successfully",
                 title: "Success",
             }).then(() => {
                 window.location.reload();
@@ -89,7 +89,7 @@ const BloodSugar = ({ handleClose, handleCancel }) => {
             setLoading(false);
             MySwal.fire({
                 icon: "error",
-                text: error?.response?.data?.message || "An error occurred",
+                text: "An error occurred, try again later.",
                 title: "Error",
             }).then(() => {
                 window.location.reload();

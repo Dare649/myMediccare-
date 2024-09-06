@@ -50,7 +50,7 @@ const Signin = () => {
       MySwal.fire({
         title: "Success",
         icon: 'success',
-        text: response?.data?.message
+        text: "Signed in successfully!"
       }).then(() => {
         navigate("/patient-dashboard");
       });
@@ -59,9 +59,8 @@ const Signin = () => {
       MySwal.fire({
         title: "Error",
         icon: "error",
-        text: error?.response?.data?.message
+        text: "Signed in failed, try again later."
       });
-      console.error(error?.response?.data?.message);
     }
   };
 

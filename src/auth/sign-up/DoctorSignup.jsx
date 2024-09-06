@@ -26,7 +26,7 @@ const DoctorSignup = ({ formData, updateFormData, nextStep }) => {
                 MySwal.fire({
                     title: 'Error',
                     icon: 'error',
-                    text: error?.response?.data?.message || 'An error occurred while fetching specialties.',
+                    text:  'An error occurred while fetching specialties.',
                 });
             } finally {
                 setLoading(false);

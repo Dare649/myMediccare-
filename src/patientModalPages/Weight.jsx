@@ -70,7 +70,7 @@ const Weight = ({ handleCancel, handleClose }) => {
             setLoading(false);
             MySwal.fire({
                 icon: "success",
-                text: response.data.message,
+                text: "Weight details recorded successfully!",
                 title: "Success",
             }).then(() => {
                 window.location.reload();
@@ -79,7 +79,7 @@ const Weight = ({ handleCancel, handleClose }) => {
             setLoading(false);
             MySwal.fire({
                 icon: "error",
-                text: error?.response?.data?.message || "An error occurred",
+                text: "An error occurred, try again later.",
                 title: "Error",
             }).then(() => {
                 window.location.reload();
@@ -142,10 +142,18 @@ const Weight = ({ handleCancel, handleClose }) => {
                         <input
                             type="text"
                             className="outline-none border-2 border-neutral-50 focus:border-primary-100 px-3 py-2 w-full rounded-md"
+                            
+                        />
+                        <select
+                            className="outline-none border-2 border-neutral-50 focus:border-primary-100 px-3 py-2 w-full rounded-md"
                             name="unit"
                             value={formData.unit}
                             onChange={handleChange}
-                        />
+                        >
+                            <option disabled>--select unit--</option>
+                            <option value="kg">kg</option>
+                            <option value="lbs">lbs</option>
+                        </select>
                         {error.unit && <p className="text-red-500 text-sm">{error.unit}</p>}
                     </div>
                 </div>

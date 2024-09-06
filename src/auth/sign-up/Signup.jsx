@@ -64,7 +64,7 @@ const Signup = () => {
             navigate('/otp-verification', { state: { email } });
             MySwal.fire({
                 title: "Success",
-                text: response?.data?.message,
+                text: "Account created successfully!",
                 icon: "success"
             })
         } catch (error) {
@@ -72,7 +72,7 @@ const Signup = () => {
             MySwal.fire({
                 title: 'Error',
                 icon: 'error',
-                text: error?.response?.data?.message || 'Sign up failed!'
+                text: 'Sign up failed, try again later'
             });
         }
     };

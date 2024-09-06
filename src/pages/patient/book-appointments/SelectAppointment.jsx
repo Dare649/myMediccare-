@@ -1,4 +1,5 @@
 import { useState } from "react";
+import MySwal from "sweetalert2"; // Assuming you have already set up MySwal
 
 const SelectAppointment = ({ formData, updateFormData, nextStep }) => {
   const [localData, setLocalData] = useState({
@@ -12,12 +13,21 @@ const SelectAppointment = ({ formData, updateFormData, nextStep }) => {
   };
 
   const handleNext = () => {
+    if (!localData.type || !localData.symptoms) {
+      MySwal.fire({
+        icon: 'warning',
+        title: 'Incomplete Information',
+        text: 'Please select an appointment type and enter your symptoms before proceeding.',
+      });
+      return; // Prevents moving to the next step
+    }
+    // If all fields are filled, proceed to the next step
     updateFormData(localData);
     nextStep();
   };
 
   return (
-    <section className="lg:w-[50%] sm:w-full flex flex-col items-center justify-center mx-auto border-2 border-neutral-50 rounded-lg lg:p-5 sm:p-2 mb-8">
+    <section className="lg:w-[50%] sm:w-full  flex flex-col items-center justify-center mx-auto border-2 border-neutral-50 rounded-lg lg:p-5 sm:p-2 mb-8">
       <h2 className="capitalize lg:text-xl sm:lg px-5 font-bold">Select Appointment</h2>
       <div className="w-full px-5">
         <div className="w-full">

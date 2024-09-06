@@ -81,10 +81,10 @@ const dashAppointments = appointments.slice(0, 3)
           <h2 className="capitalize lg:text-xl sm:text-md font-semibold">upcoming sessions</h2>
           <Link className="capitalize text-primary-100 font-semibold lg:text-xl sm:text-md">see more</Link>
         </div>
-        <div className="lg:text-xl sm:text-md flex flex-row items-center justify-between sm:overflow-x-auto lg:overflow-x-hidden">
+        <div className="lg:text-xl sm:text-md flex lg:flex-row sm:flex-col gap-5 items-center justify-between w-full">
           {
             dashAppointments.map((item, id) =>(
-              <div key={id} className="bg-neutral-1 rounded-lg sm:p-2 lg:p-5 flex flex-row items-center w-[30%]">
+              <div key={id} className="bg-neutral-1 rounded-lg sm:p-2 lg:p-5 flex flex-row items-center lg:w-[30%] sm:w-full">
                 <img src={item.img} alt="mymedicare" className="lg:w-28 lg:h-28 sm:w-20 sm:h-20 rounded-full"/>
                 <div>
                   <h2 className="lg:text-xl sm:text-md font-semibold capitalize">{item.doctor}</h2>

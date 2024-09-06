@@ -77,7 +77,7 @@ const StripeForm = () => {
                     Swal.fire({
                         icon: "success",
                         title: "Success",
-                        text: response?.data?.message,
+                        text: "Deposit successful!" || response?.data?.message,
                     }).then(() => {
                         navigate("/patient-wallet");
                     });
@@ -93,13 +93,11 @@ const StripeForm = () => {
 
             } else {
                 // Handle unsuccessful payment
-                console.log("Payment failed or was not completed:", paymentIntent);
                 setError("Payment failed. Please try again.");
             }
 
             setLoading(false);
         } catch (err) {
-            console.error('Error:', err);
             setError(err.message || "An error occurred. Please try again.");
             setLoading(false);
         }
@@ -114,7 +112,7 @@ const StripeForm = () => {
                         <FaArrowLeftLong className='text-2xl cursor-pointer hover:text-primary-100' />
                     </Link>
                 </div>
-                <div className="lg:w-[70%] sm:w-full mx-auto">
+                <div className="lg:w-[50%] sm:w-full mx-auto">
                     <div className="mt-4  p-2 rounded w-full">
                         <div className="flex flex-row items-center gap-1 lg:text-lg sm:text-md font-bold capitalize">
                             <FaRegCreditCard/>

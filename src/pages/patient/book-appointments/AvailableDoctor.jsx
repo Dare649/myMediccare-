@@ -71,7 +71,7 @@ const AvailableDoctor = ({ formData, updateFormData, nextStep }) => {
               </div>
             ))
           ) : (
-            <p>No doctors available at the moment</p>
+            <p className="text-center font-medium text-primary-100">No doctors available at the moment</p>
           )}
         </div>
       </div>

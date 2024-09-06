@@ -51,11 +51,11 @@ const App = () => {
                   <>
                     <Route element={<PatientProtectedRoute />}>
                       <Route path="/patient-dashboard" element={<PatientDashboard />} />
-                      <Route path="/patient-appointments" element={<PatientAppointments />} />
-                      <Route path="/patient-prescriptions" element={<PatientPrescriptions />} />
+                      <Route path="/patient-schedules" element={<PatientAppointments />} />
+                      <Route path="/patient-medications" element={<PatientPrescriptions />} />
                       <Route path="/patient-settings" element={<PatientSettings />} />
                       <Route path="/patient-notifications" element={<PatientNotification />} />
-                      <Route path="/patient-monitoring" element={<PatientMonitoring />} />
+                      <Route path="/patient-records" element={<PatientMonitoring />} />
                       <Route path="/patient-wallet" element={<PatientWallet />} />
                       <Route path="/stripe-payment" element={<StripePayment />} />
                       <Route path="/book-appointment" element={<BookAppointment />} />
@@ -67,7 +67,7 @@ const App = () => {
                   <>
                     <Route element={<DoctorRoute/>}>
                       <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
-                      <Route path="/doctor-settings" element={<Settings />} />
+                      <Route path="/doctor-profile" element={<Settings />} />
                       <Route path="*" element={<Navigate to="/doctor-dashboard" replace />} />
                     </Route>
                   </>

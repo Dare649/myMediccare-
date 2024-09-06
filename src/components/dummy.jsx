@@ -8,6 +8,7 @@ import app from "../assets/images/picapp.png";
 import { FaUserDoctor, FaHouseChimneyMedical, FaSuitcaseMedical  } from "react-icons/fa6";
 import { CiUser, CiMedicalCross, CiStar   } from "react-icons/ci";
 import { TbTestPipe } from "react-icons/tb";
+import { CgProfile } from "react-icons/cg";
 
 export const navLink = [
     {
@@ -16,20 +17,26 @@ export const navLink = [
         path: "/patient-dashboard"
     },
     {
-        title: "appointments",
+        title: "schedules",
         icon: <MdOutlineCalendarMonth size={30}/>,
-        path: "/patient-appointments"
+        path: "/patient-schedules"
+    },
+    {
+        title: "records",
+        icon: <PiProjectorScreenChartThin size={30}/>,
+        path: "/patient-records"
+    },
+    {
+        title: "medications",
+        icon: <GiMedicines size={30}/>,
+        path: "/patient-medications"
     },
     {
         title: "wallet",
         icon: <CiWallet size={30}/>,
         path: "/patient-wallet"
     },
-    {
-        title: "monitoring",
-        icon: <PiProjectorScreenChartThin size={30}/>,
-        path: "/patient-monitoring"
-    },
+    
     
     {
         title: "settings",
@@ -103,10 +110,16 @@ export const docnav = [
         path: "/doctor-appointments"
     },
     {
-        title: "settings",
-        icon: <CiSettings size={30}/>,
-        path: "/doctor-settings",
+        title: "profile",
+        icon: <CgProfile size={30}/>,
+        path: "/doctor-profile",
         gap: true
+    },
+
+    {
+        title: "sign out",
+        icon: <IoLogOutOutline size={30}/>,
+        gap1: true
     },
 ]
 
@@ -595,4 +608,11 @@ export const transactions = [
     },
 ]
 
+
+
+export const genotype = [
+    "AA", "AS", "SS", "AC", "SC"
+]
+
+export const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 

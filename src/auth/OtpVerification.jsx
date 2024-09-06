@@ -47,7 +47,7 @@ const OtpVerification = () => {
             MySwal.fire({
                 title: "Success",
                 icon: "success",
-                text: response?.data?.message || "Verification successful!",
+                text: "Verification successful!",
             }).then(() => {
                 navigate("/sign-in");
             });
@@ -56,9 +56,8 @@ const OtpVerification = () => {
             MySwal.fire({
                 title: "Error",
                 icon: "error",
-                text: error?.response?.data?.message || "An error occurred during verification.",
+                text: "An error occurred during verification, try again later.",
             });
-            console.error(error?.response?.data?.message);
         }
     };
 

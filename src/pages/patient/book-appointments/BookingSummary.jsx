@@ -6,6 +6,7 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { axiosClient } from "../../../axios";
 import avater from "../../../assets/images/avarter.jpg";
+import { FaPoundSign } from "react-icons/fa";
 
 const BookingSummary = ({ formData, handleSubmit, prevStep }) => {
   const [doctor, setDoctor] = useState({});
@@ -80,7 +81,7 @@ const BookingSummary = ({ formData, handleSubmit, prevStep }) => {
       <hr className="w-full bg-neutral-50 h-1 my-5" />
       <div className="w-full px-3">
         <h2 className="font-bold text-primary-100 capitalize text-xl">appointment</h2>
-        <div className="w-full grid grid-cols-3 py-3">
+        <div className="w-full grid lg:grid-cols-3 sm:grid-cols-2 py-3">
           <div className="py-2">
             <h2 className="font-bold capitalize text-md text-primary-100">date</h2> 
             <h2 className="font-bold text-neutral-100 capitalize text-xl">{formatDate(date)}</h2> 
@@ -107,10 +108,10 @@ const BookingSummary = ({ formData, handleSubmit, prevStep }) => {
       <hr className="w-full bg-neutral-50 h-1 my-5" />
       <div className="w-full px-3">
         <h2 className="font-bold text-primary-100 capitalize text-xl">payment details</h2>
-        <div className="w-full grid grid-cols-3 py-3">
+        <div className="w-full grid lg:grid-cols-3 sm:grid-cols-2  py-3">
           <div className="py-2">
             <h2 className="font-bold capitalize text-md text-primary-100">amount</h2> 
-            <h2 className="font-bold text-neutral-100 capitalize text-xl">{amount}</h2> 
+            <h2 className="font-bold text-neutral-100 capitalize text-xl flex items-center gap-2"><FaPoundSign/>{amount}</h2> 
           </div>
           <div className="py-2">
             <h2 className="font-bold capitalize text-md text-primary-100">payment status</h2> 
@@ -118,7 +119,7 @@ const BookingSummary = ({ formData, handleSubmit, prevStep }) => {
           </div>
           <div className="py-2">
             <h2 className="font-bold capitalize text-md text-primary-100">payment method</h2> 
-            <h2 className="font-bold text-neutral-100 capitalize text-xl">{payment_method}</h2> 
+            <h2 className="font-bold text-neutral-100 capitalize text-xl">{payment_method === "stripe" || "stripe_status" ? "card" : payment_method}</h2> 
           </div>
         </div>
       </div>

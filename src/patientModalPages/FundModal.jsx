@@ -64,21 +64,21 @@ const FundModal = ({ handleClose }) => {
           publishableKey: response.data.publishableKey,
         });
 
+        navigate("/stripe-payment");
         // Show success alert
-        MySwal.fire({
-          icon: "success",
-          title: "Success",
-          text: "Payment intent successful!",
-        }).then(() => {
-          navigate("/stripe-payment");
-        });
+        // MySwal.fire({
+        //   icon: "success",
+        //   title: "Success",
+        //   text: "Payment intent successful!",
+        // }).then(() => {
+        // });
       }
     } catch (error) {
       console.error("Error Response:", error?.response); // Debugging step: Log the entire error response
       MySwal.fire({
         title: "Error",
         icon: "error",
-        text: error?.response?.data?.message || error.message || "An error occurred. Please try again.",
+        text: "An error occurred. Please try again.",
       });
     } finally {
       setLoading(false);
