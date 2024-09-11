@@ -22,7 +22,7 @@ const PatientPrescriptions = () => {
     setShowPrescription((prev) => !prev);
   };
   return (
-    <section className="prescription w-full h-full lg:p-5 sm:p-0">
+    <section className="prescription sm:mt-10 lg:mt-40 w-full h-full lg:p-5 sm:p-0">
       <main className="flex lg:flex-row sm:flex-col gap-8 w-full h-screen">
         <div className="lg:w-[60%] rounded-lg sm:w-full bg-white lg:h-full sm:h-fit lg:px-5 lg:py-8 sm:px-2 sm:py-8">
           <div className="flex flex-row items-center justify-between">

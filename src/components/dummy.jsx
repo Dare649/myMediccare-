@@ -10,6 +10,7 @@ import { CiUser, CiMedicalCross, CiStar   } from "react-icons/ci";
 import { TbTestPipe } from "react-icons/tb";
 import { CgProfile } from "react-icons/cg";
 
+
 export const navLink = [
     {
         title: "dashboard",
@@ -123,60 +124,7 @@ export const docnav = [
     },
 ]
 
-export const aerialCode = [
-    {
-        code: "+234"
-    },
-    {
-        code: "+244"
-    },
-    {
-        code: "+240"
-    },
-    {
-        code: "+233"
-    },
-    {
-        code: "+230"
-    },
-    {
-        code: "+242"
-    },
-    {
-        code: "+225"
-    },
-    {
-        code: "+224"
-    },
-]
 
-export const country =[
-    {
-        country: "nigeria",
-        time: "(GMT + 1:00)",
-        flag: ""
-    },
-    {
-        country: "ghana",
-        time: "(GMT + 2:00)",
-        flag: ""
-    },
-    {
-        country: "kenya",
-        time: "(GMT + 3:00)",
-        flag: ""
-    },
-    {
-        country: "egypt",
-        time: "(GMT + 5:00)",
-        flag: ""
-    },
-    {
-        country: "togo",
-        time: "(GMT + 4:00)",
-        flag: ""
-    }
-]
 
 export const appointments = [
     {

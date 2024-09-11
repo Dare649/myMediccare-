@@ -9,35 +9,34 @@ import { useNavigate } from "react-router-dom";
 const Payment = ({ formData, updateFormData, nextStep, prevStep }) => {
   const [consultationTypes, setConsultationTypes] = useState([]);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const [localData, setLocalData] = useState({
+    consultation_type: formData.consultation_type || "", // added consultation_type
     amount: formData.amount || "",
     payment_status: formData.payment_status || "full", // Defaulting to "full"
     payment_method: formData.payment_method || "", // Payment method is set to wallet
-    consultation_type: formData.consultation_type || "",
   });
   const MySwal = withReactContent(Swal);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setLocalData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setLocalData((prev) => {
+      const updatedData = { ...prev, [name]: value };
 
-    if (name === "consultation_type" || name === "payment_status") {
-      const selectedType = consultationTypes.find(
-        (type) => type.name === (name === "consultation_type" ? value : localData.consultation_type)
-      );
-      const selectedAmount = value === "full" ? selectedType.full_amount : selectedType.partial_amount;
+      // Check if consultation_type or payment_status changes and update the amount
+      if (name === "consultation_type" || name === "payment_status") {
+        const selectedType = consultationTypes.find(
+          (type) => type.name === (name === "consultation_type" ? value : prev.consultation_type)
+        );
+        if (selectedType) {
+          updatedData.amount = value === "full" || prev.payment_status === "full"
+            ? selectedType.full_amount
+            : selectedType.partial_amount;
+        }
+      }
 
-      setLocalData((prev) => ({
-        ...prev,
-        amount: selectedAmount,
-        [name]: value,
-      }));
-    }
+      return updatedData;
+    });
   };
 
   useEffect(() => {
@@ -70,53 +69,28 @@ const Payment = ({ formData, updateFormData, nextStep, prevStep }) => {
   }, []);
 
   const handleNext = async () => {
+ 
     // Update form data with the latest values
     updateFormData({
       ...formData,
       amount: localData.amount,
       payment_status: localData.payment_status,
       payment_method: localData.payment_method,
-      consultation_type: localData.consultation_type,
     });
+
+
     nextStep(); 
-  
-    // // Check if the payment method is 'card'
-    // if (localData.payment_method === "card") {
-    //   try {
-    //     setLoading(true);
-    //     // Make an async call to the API to create the payment intent
-    //     const response = await axiosClient.post("/api/patient/make_intent", {
-    //       amount: localData.amount,
-    //     });
-    //     setLoading(false);
-  
-    //     // Navigate to the Stripe payment page upon successful intent creation
-    //     if (response.data.success) {
-    //       navigate("/stripe-payment");
-    //     } else {
-    //       // Handle API failure (optional: show an error message)
-    //       console.error("Error creating payment intent:", response.data.message);
-    //     }
-    //   } catch (error) {
-    //     // Handle errors during the API call
-    //     console.error("Error during payment intent creation:", error);
-    //   }
-    // } else {
-    //   // Proceed to the next step if the payment method is not 'card'
-    //   nextStep();
-    // }
   };
-  
 
   return (
     <section className="lg:w-[50%] sm:w-full flex flex-col items-center justify-center mx-auto border-2 border-neutral-50 rounded-lg lg:p-3 sm:p-1 mb-8">
       <h2 className="capitalize lg:text-xl sm:lg px-5 font-bold">Payment</h2>
       <div className="w-full px-5">
-        <div className="w-full my-3">
+        {/* <div className="w-full my-3">
           <h2 className="font-semibold lg:text-lg sm:text-md mb-2 capitalize">Consultation Type</h2>
           <select
-            className="outline-none border-2 border-neutral-50 focus:border-primary-100 px-3 py-2 w-full rounded-md capitalize"
             name="consultation_type"
+            className="outline-none border-2 border-neutral-50 focus:border-primary-100 px-3 py-2 w-full rounded-md capitalize"
             value={localData.consultation_type}
             onChange={handleChange}
           >
@@ -126,9 +100,9 @@ const Payment = ({ formData, updateFormData, nextStep, prevStep }) => {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
         <div className="w-full my-3">
-          <h2 className="font-semibold lg:text-lg sm:text-md mb-2 capitalize">payment method</h2>
+          <h2 className="font-semibold lg:text-lg sm:text-md mb-2 capitalize">Payment Method</h2>
           <select 
             name="payment_method"
             className="outline-none border-2 border-neutral-50 focus:border-primary-100 px-3 py-2 w-full rounded-md capitalize"
@@ -137,7 +111,7 @@ const Payment = ({ formData, updateFormData, nextStep, prevStep }) => {
           >
             <option value="">--select payment method--</option>
             <option value="wallet">wallet</option>
-            <option value="stripe_status">card</option>
+            <option value="stripe">card</option>
           </select>
         </div>
         <div className="w-full my-3">
@@ -148,8 +122,8 @@ const Payment = ({ formData, updateFormData, nextStep, prevStep }) => {
             value={localData.payment_status}
             onChange={handleChange}
           >
-            <option value="full">Full</option> {/* Changed to "full" */}
-            <option value="partial">Partial</option> {/* Changed to "partial" */}
+            <option value="full">Full</option>
+            <option value="partial">Partial</option>
           </select>
         </div>
         <div className="w-full my-3">
@@ -164,13 +138,12 @@ const Payment = ({ formData, updateFormData, nextStep, prevStep }) => {
           />
         </div>
         <div className="w-full mb-8">
-          
           <button
             onClick={handleNext}
             disabled={loading}
             className="capitalize font-bold text-center bg-primary-100 w-full py-4 text-white rounded-lg"
           >
-            {loading ? <CircularProgress color="inherit" />: "next"}
+            {loading ? <CircularProgress color="inherit" /> : "next"}
           </button>
         </div>
       </div>

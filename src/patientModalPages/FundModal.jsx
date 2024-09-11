@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { PiCoins } from "react-icons/pi";
 import { IoMdClose } from "react-icons/io";
-import { TbCurrencyNaira } from "react-icons/tb";
+import { FaPoundSign } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -14,6 +14,7 @@ import { useIntentContext } from "../context/IntentContext";
 const FundModal = ({ handleClose }) => {
   const MySwal = withReactContent(Swal);
   const { setIntentData } = useIntentContext();
+  const [data, setData] = useState([]);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ amount: "" });
   const [loading, setLoading] = useState(false);
@@ -33,11 +34,37 @@ const FundModal = ({ handleClose }) => {
     if (typeof amount === "string") {
       amount = parseFloat(amount.replace(/,/g, ""));
       if (isNaN(amount)) {
-        return "";
+        return ""; // Return empty string if parsing fails
       }
+    } else if (amount === undefined || amount === null) {
+      return ""; // Return empty string if amount is undefined or null
     }
+    
     return amount.toLocaleString();
   };
+  
+
+  useEffect(() => {
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+            const response = await axiosClient.get("/api/patient");
+            setData(response?.data?.data);
+        } catch (error) {
+          MySwal.fire({
+            icon: "error",
+            title: "Error",
+            text: error?.response?.data?.message || "An error occurred",
+          });
+        } finally {
+          setLoading(false);
+        }
+    };
+
+   
+
+    fetchData();
+}, []);
 
   const handlePaymentIntent = async () => {
     if (!formData.amount) {
@@ -65,16 +92,9 @@ const FundModal = ({ handleClose }) => {
         });
 
         navigate("/stripe-payment");
-        // Show success alert
-        // MySwal.fire({
-        //   icon: "success",
-        //   title: "Success",
-        //   text: "Payment intent successful!",
-        // }).then(() => {
-        // });
+
       }
     } catch (error) {
-      console.error("Error Response:", error?.response); // Debugging step: Log the entire error response
       MySwal.fire({
         title: "Error",
         icon: "error",
@@ -102,14 +122,14 @@ const FundModal = ({ handleClose }) => {
       <div className="font-medium capitalize lg:text-lg sm:text-md w-full text-center flex flex-row items-center justify-center my-2">
         <h2>Wallet Balance:</h2> 
         <h2 className="flex flex-row items-center">
-          <TbCurrencyNaira size={20}/>
-          <p>{formatAmountWithCommas("10000")}</p>
+          <FaPoundSign size={20}/>
+          <p>{formatAmountWithCommas(data?.balance)}</p>
         </h2>
       </div>
       <div className="lg:px-5 sm:px-2 flex flex-col w-full mb-5">
         <div className="border-2 border-neutral-50 rounded-lg flex flex-row gap-x-2 w-full my-3 p-2">
           <div className="bg-neutral-50 rounded-lg lg:p-3 sm:p-1">
-            <TbCurrencyNaira size={30}/>
+            <FaPoundSign size={30}/>
           </div>
           <input
             type="number"

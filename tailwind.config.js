@@ -10,10 +10,9 @@ export default {
       body: ["SF Pro Display", "sans-serif"],
     },
     screens: {
-      'sm': '280px',
-      'md': '325px',
-      'lg': '1080px',
-      // 'xl': '1080px'
+      'sm': '288px',
+      'md': '768px',
+      'lg': '1024px',
     },
     extend: {
       colors: {

@@ -9,15 +9,14 @@ import { Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import { transactions } from "../../components/dummy";
 import { FaUserDoctor, FaHouseChimneyMedical, FaSuitcaseMedical, FaPaperPlane } from "react-icons/fa6";
-import "./Wallet.css";
+import "./Paginate.css";
 import Modal from "../../components/Modal";
-import { useAuthContext } from "../../context/AuthContext";
 import FundModal from "../../patientModalPages/FundModal";
 
 
 const PatientWallet = () => {
   const [showBalance, setShowBalance] = useState(false);
-  const { user } = useAuthContext();
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [fund, setFund] = useState(false);
@@ -42,28 +41,45 @@ const PatientWallet = () => {
   useEffect(() => {
     const fetchData = async () => {
         try {
+            setLoading(true);
             const response = await axiosClient.get("/api/patient");
-            setData(response.data);
+            setData(response?.data?.data);
         } catch (error) {
-            console.error("Error fetching data:", error);
+          setLoading(false);
+          MySwal.fire({
+            icon: "error",
+            title: "Error",
+            text: error?.response?.data?.message || "An error occurred",
+          });
         }
     };
+
+   
 
     fetchData();
 }, []); // Empty dependency array ensures this runs once on mount
 
-  const formatAmountWithCommas = (amount) => {
-    if (typeof amount === "string") {
-      amount = parseFloat(amount.replace(/,/g, ""));
-      if (isNaN(amount)) {
-        return "";
-      }
-    }
-    return amount.toLocaleString();
-  };
+const formatAmountWithCommas = (amount) => {
+  if (amount === undefined || amount === null || amount === "") {
+    return ""; // Return an empty string if the amount is invalid
+  }
+
+  // Convert string to float if necessary
+  if (typeof amount === "string") {
+    amount = parseFloat(amount.replace(/,/g, ""));
+  }
+
+  // Check if the amount is a valid number
+  if (isNaN(amount)) {
+    return ""; // Return an empty string if the amount is NaN
+  }
+
+  // Use toLocaleString() to format the amount with commas
+  return amount.toLocaleString();
+};
 
   return (
-    <section className="w-full h-screen lg:p-5 sm:px-2 sm:py-10">
+    <section className="w-full h-screen lg:p-5 sm:px-2 sm:py-10 sm:mt-10 lg:mt-40">
       <div className="bg-white flex flex-row items-center justify-between rounded-lg w-full lg:my-8 sm:my-5 lg:px-5 sm:px-3 sm:py-2 lg:py-3">
         <h2 className="capitalize font-semibold lg:text-2xl sm:text-xl">Wallet</h2>
         <button onClick={handleFund} className="w-40 h-14 bg-primary-100 text-white rounded-lg">
@@ -91,7 +107,7 @@ const PatientWallet = () => {
             <div className="flex flex-row items-center">
               <FaPoundSign size={20} />
               <h2 className="lg:text-2xl sm:text-xl font-bold">
-                {showBalance ? formatAmountWithCommas(user?.balance) : "xxxx"}
+                {showBalance ? formatAmountWithCommas(data?.balance) : "xxxx"}
               </h2>
               <span onClick={handleBalance} className="cursor-pointer font-bold sm:ml-2">
                 {showBalance ? <HiOutlineEyeSlash size={20} /> : <PiEyeLight size={20} />}

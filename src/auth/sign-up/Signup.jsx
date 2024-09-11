@@ -7,7 +7,7 @@ import withReactContent from 'sweetalert2-react-content';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { axiosClient } from '../../axios';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Selectuser from "../sign-up/Selectuser";
 import DoctorSignup from "../sign-up/DoctorSignup";
 import PatientSignup from "../sign-up/PatientSignup";
@@ -83,23 +83,15 @@ const Signup = () => {
             <div className="lg:mx-8 sm:px-3 sm:py-5 lg:py-0 flex flex-row justify-between h-full">
                 <div className="h-full lg:w-[40%] sm:w-full flex flex-col items-center justify-center m-auto sm:py-0 lg:py-5">
                     <div className="flex flex-row items-center justify-between w-full">
-                        <div className="logo">
+                        <Link to={"/"} className="logo">
                             <img src={logo} alt="MyMedicare" className="" />
-                        </div>
-                        <div className="flex flex-row items-center gap-x-10">
-                            <button
-                                onClick={prevStep}
-                                className="bg-primary-100 p-3 text-white font-bold rounded-lg"
-                            >
-                                <FaLongArrowAltLeft />
-                            </button>
-                            <button
-                                onClick={nextStep}
-                                className="bg-primary-100 p-3 text-white font-bold rounded-lg"
-                            >
-                                <FaLongArrowAltRight />
-                            </button>
-                        </div>
+                        </Link>
+                        <button
+                            onClick={prevStep}
+                            className="text-primary-100 font-bold capitalize text-lg"
+                        >
+                           back
+                        </button>
                     </div>
 
                     {currentStep === 1 && (

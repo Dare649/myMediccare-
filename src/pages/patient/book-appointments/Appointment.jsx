@@ -66,7 +66,6 @@ const Appointment = ({ formData, updateFormData, nextStep }) => {
         const response = await axiosClient.get(`/api/patient/doctor/${formData.doctorId}/time_slots`, {
           params: { date: formattedDate },
         });
-        console.log(response.data);
         setTimeSlots(response.data.slots || []);
       } catch (error) {
         MySwal.fire({
@@ -154,12 +153,12 @@ const Appointment = ({ formData, updateFormData, nextStep }) => {
                   ))}
                 </div>
               ) : (
-                <p>No time slots available for the selected date.</p>
+                <p className="font-bold text-neutral-50 first-letter:capitalize text-center">No time slots available for the selected date.</p>
               )}
             </div>
 
             {selectedDate && selectedTimeSlot && (
-              <div className="text-center mt-5 w-full">
+              <div className="text-center mt-5 lg:w-[50%] sm:w-full flex items-center justify-center mx-auto">
                 <button
                   onClick={handleNext}
                   className="bg-primary-100 text-white font-bold p-3 rounded-lg w-full"

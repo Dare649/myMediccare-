@@ -36,7 +36,7 @@ const dashAppointments = appointments.slice(0, 3)
 
 
   return (
-    <section className='patientDashboard w-full h-screen lg:p-5 sm:px-2 sm:py-10'>
+    <section className='patientDashboard w-full h-screen lg:p-5 sm:mt-10 lg:mt-40 sm:px-2 sm:py-10'>
       <div className='bg-white rounded-lg w-full '>
         <div className="w-full flex lg:flex-row sm:flex-col gap-5 lg:p-5 sm:p-3">
           <div className="lg:w-[50%] sm:w-full border-2 border-primary-100 rounded-lg">

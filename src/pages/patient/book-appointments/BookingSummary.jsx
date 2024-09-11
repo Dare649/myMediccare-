@@ -119,7 +119,7 @@ const BookingSummary = ({ formData, handleSubmit, prevStep }) => {
           </div>
           <div className="py-2">
             <h2 className="font-bold capitalize text-md text-primary-100">payment method</h2> 
-            <h2 className="font-bold text-neutral-100 capitalize text-xl">{payment_method === "stripe" || "stripe_status" ? "card" : payment_method}</h2> 
+            <h2 className="font-bold text-neutral-100 capitalize text-xl">{payment_method === "stripe" ? "card" : payment_method}</h2> 
           </div>
         </div>
       </div>

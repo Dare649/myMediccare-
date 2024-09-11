@@ -41,7 +41,7 @@ const PatientMonitoring = () => {
     setWeight((prev) =>!prev);
   }
   return (
-    <section className='monitoring w-full h-full lg:p-5 sm:p-2'>
+    <section className='monitoring sm:mt-10 lg:mt-40 w-full h-full lg:p-5 sm:p-2'>
       <div className='w-full bg-white rounded-lg mb-8'>
         <div className='py-3 px-5 flex flex-row items-center justify-between'>
             <h2 className="first-letter:capitalize font-semibold lg:text-2xl sm:text-lg">vitals overview</h2>

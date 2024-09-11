@@ -1,24 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaLongArrowAltLeft } from "react-icons/fa";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+import { axiosClient } from "../../../axios";
 import SelectAppointment from "../book-appointments/SelectAppointment";
 import Appointment from "../book-appointments/Appointment";
 import AvailableDoctor from "../book-appointments/AvailableDoctor";
 import BookingSummary from "../book-appointments/BookingSummary";
 import Payment from "../book-appointments/Payments";
-import { useNavigate } from "react-router-dom";
-import { FaLongArrowAltLeft, FaLongArrowAltRight } from "react-icons/fa";
-import { axiosClient } from "../../../axios"; // Adjust path as needed
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
 
-// Utility function to format the date in dd-mm-yyyy format
-const formatDate = (date) => {
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = date.getFullYear();
-  return `${day}-${month}-${year}`;
-};
+
 
 const BookAppointment = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -34,6 +28,7 @@ const BookAppointment = () => {
     symptoms: "",
     amount: "",
     payment_status: "",
+    doctorId: "", // Add doctorId if missing
   });
 
   const updateFormData = (data) => {
@@ -48,92 +43,37 @@ const BookAppointment = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
-
-  const handlePaymentIntent = async () => {
-    try {
-      setLoading(true);
-  
-      // Check if the payment method is card
-      if (formData.payment_method === "stripe_status") {
-        // Make the POST request to create a payment intent
-        const response = await axiosClient.post("/api/patient/make_intent", { amount: formData.amount });
-  
-        // Check for errors in the response
-        if (response.data.error) {
-          throw new Error(response.data.message);
-        } else {
-          // Save the intent data from the response
-          setIntentData({
-            amount: formData.amount,
-            paymentIntent: response.data.paymentIntent,
-            ephemeralKey: response.data.ephemeralKey,
-            customer: response.data.customer,
-            publishableKey: response.data.publishableKey,
-          });
-  
-          // Show success alert and navigate to Stripe payment page
-          await MySwal.fire({
-            icon: "success",
-            title: "Success",
-            text: "Payment intent successful!",
-          });
-  
-          navigate("/stripe-payment");
-        }
-      }
-    } catch (error) {
-      // Handle any error during the payment intent creation
-      console.error("Error during payment intent:", error?.response || error);
-      MySwal.fire({
-        title: "Error",
-        icon: "error",
-        text:  "An error occurred. Please try again later.",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-  
+ 
   const handleSubmit = async () => {
     try {
       setLoading(true);
   
-      // Format the form data, including the date
-      const formattedData = {
-        ...formData,
-        date: formatDate(new Date(formData.date)), // Ensure date is formatted correctly
-      };
-  
-      // First, handle the payment intent if needed
-      await handlePaymentIntent();
-  
-      // After handling the payment intent, proceed to book the appointment
-      const response = await axiosClient.post(
-        `/api/patient/doctor/${formData.doctorId}/book_appt`,
-        formattedData
-      );
-  
-      // Show success alert and reload the page
-      MySwal.fire({
-        icon: "success",
-        title: "Success",
-        text: "Appointment booked successfully",
-      }).then(() => {
-        window.location.reload("/patient-appointments");
-      });
+      if (formData.payment_method === "stripe") {
+       navigate("/card-payment", {state: {formData}});
+      } else {
+        // Non-stripe payment flow
+        const response = await axiosClient.post(`/api/patient/doctor/${formData.doctorId}/book_appt`, formData);
+        setLoading(false);
+        MySwal.fire({
+          title: "Success",
+          icon: "success",
+          text: "Appointment booked successfully!",
+        });
+      }
     } catch (error) {
-      // Handle any error during the appointment booking process
-      console.error("Error during appointment booking:", error?.response || error);
+      setLoading(false);
       MySwal.fire({
-        icon: "error",
         title: "Error",
-        text: error?.response?.data?.message || "An error occurred",
+        icon: "error",
+        text: "An error occurred. Please try again.",
       });
     } finally {
       setLoading(false);
     }
   };
   
+
+
 
   return (
     <section className="w-full h-full lg:p-5 sm:p-0">
@@ -143,14 +83,8 @@ const BookAppointment = () => {
             onClick={prevStep}
             className="text-primary-100 font-bold rounded-lg"
           >
-            <FaLongArrowAltLeft size={30}/>
+            <FaLongArrowAltLeft size={30} />
           </button>
-          {/* <button
-            onClick={nextStep}
-            className="bg-primary-100 p-3 text-white font-bold rounded-lg"
-          >
-            <FaLongArrowAltRight />
-          </button> */}
         </div>
 
         {currentStep === 1 && (

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const Tab = ({ content1, content2, content3, title1, title2, title3 }) => {
+const Tab = ({ content1, content2, content3, content4, title1, title2, title3, title4 }) => {
     const [activeTab, setActiveTab] = useState("tab1");
 
     const handleTab1 = () => {
@@ -13,6 +13,10 @@ const Tab = ({ content1, content2, content3, title1, title2, title3 }) => {
 
     const handleTab3 = () => {
         setActiveTab("tab3");
+    };
+
+    const handleTab4 = () => {
+        setActiveTab("tab4");
     };
 
     return (
@@ -36,16 +40,25 @@ const Tab = ({ content1, content2, content3, title1, title2, title3 }) => {
                 >
                     {title3}
                 </h1>
+                <h1
+                    onClick={handleTab4}
+                    className={`${activeTab === "tab4" ? "border-b-4 border-primary-100 duration-300 px-5 cursor-pointer capitalize text-primary-100 font-bold text-xl" : ""} cursor-pointer capitalize font-bold text-lg hover:text-primary-100 text-neutral-400 hover:px-3 hover:duration-300`}
+                >
+                    {title4}
+                </h1>
             </div>
             <div className="outlet mt-10 w-full">
-            {activeTab === "tab1" ? (
-                <div className="duration-500">{content1}</div>
-            ) : activeTab === "tab2" ? (
-                <div>{content2}</div>
-            ) : (
-                <div>{content3}</div>
-            )}
+                {activeTab === "tab1" ? (
+                    <div className="duration-500">{content1}</div>
+                ) : activeTab === "tab2" ? (
+                    <div>{content2}</div>
+                ) : activeTab === "tab3" ? (
+                    <div>{content3}</div>
+                ) : (
+                    <div>{content4}</div>
+                )}
             </div>
+
         </div>
     );
 };

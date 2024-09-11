@@ -3,7 +3,9 @@ import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuthContext } from "./context/AuthContext";
 import { IntentProvider } from "./context/IntentContext";
+import { CardProvider } from './context/CardContext';
 import { DoctorProvider } from './context/DoctorContext';
+
 
 // Pages and Components
 import Home from "./pages/Home";
@@ -17,13 +19,14 @@ import PatientDashboard from "./pages/patient/PatientDashboard";
 import PatientAppointments from "./pages/patient/PatientAppointments";
 import PatientNotification from './pages/patient/PatientNotification';
 import PatientSettings from './pages/patient/PatientSettings';
-import PatientMonitoring from "./pages/patient/PatientMonitoring";
 import PatientWallet from "./pages/patient/PatientWallet";
-import StripePayment from "./pages/patient/StripePayment";
+import StripePayment from "./pages/patient/strip-payment/StripePayment";
+import CardPayment from "./pages/patient/strip-payment/CardPayment";
 import BookAppointment from './pages/patient/book-appointments/BookAppointment';
 import DoctorDashboard from "./pages/doctors/dashboard/DoctorDashboard";
 import DoctorRoute from "./components/DoctorRoute";
 import Settings from "./pages/doctors/settings/Settings";
+import Records from './pages/patient/records/Records';
 
 const App = () => {
   // Destructure token and user from AuthContext
@@ -33,6 +36,7 @@ const App = () => {
     <BrowserRouter>
       <DoctorProvider>
         <IntentProvider>
+        <CardProvider>
           <Routes>
             {/* Routes for unauthenticated users */}
             {!token ? (
@@ -55,10 +59,11 @@ const App = () => {
                       <Route path="/patient-medications" element={<PatientPrescriptions />} />
                       <Route path="/patient-settings" element={<PatientSettings />} />
                       <Route path="/patient-notifications" element={<PatientNotification />} />
-                      <Route path="/patient-records" element={<PatientMonitoring />} />
                       <Route path="/patient-wallet" element={<PatientWallet />} />
                       <Route path="/stripe-payment" element={<StripePayment />} />
+                      <Route path="/card-payment" element={<CardPayment />} />
                       <Route path="/book-appointment" element={<BookAppointment />} />
+                      <Route path="/patient-records" element={<Records />} />
                       <Route path="*" element={<Navigate to="/patient-dashboard" replace />} />
                     </Route>
                   </>
@@ -75,6 +80,7 @@ const App = () => {
               </>
             )}
           </Routes>
+        </CardProvider>
         </IntentProvider>
       </DoctorProvider>
     </BrowserRouter>
