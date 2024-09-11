@@ -1,14 +1,19 @@
 import { Link } from "react-router-dom"
-
+import Footer from "../components/footer"
+import Header from "../components/header"
+import Services from "../components/services"
+import Hero from "../components/hero"
+import Pricing from "../components/pricing"
+import Testimonials from "../components/testimonial"
 const Home = () => {
   return (
     <div>
-      <h2>welcome to our home page</h2>
-      <Link to={"/sign-up"}>sign up</Link>
-      <Link to={"/sign-in"}>sign in</Link>
-      <Link to={"/create-password"}>create password</Link>
-      <Link to={"/otp-verification"}>otp-verification</Link>
-      <Link to={"/patient-dashboard"}>dashboard</Link>
+      <Header />
+      <Hero/>
+      <Services />
+      <Pricing/>
+      <Testimonials/> 
+      <Footer />
     </div>
   )
 }
