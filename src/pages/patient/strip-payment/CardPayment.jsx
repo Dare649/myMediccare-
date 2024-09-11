@@ -154,11 +154,11 @@ const StripeForm = () => {
                 <h2 className="lg:text-2xl sm:text-lg font-bold text-center">
                     Complete Your Payment
                 </h2>
-                {error && (
+                {/* {error && (
                     <div className="text-red-600 text-center font-semibold mb-2">
                         {error}
                     </div>
-                )}
+                )} */}
                 <form className="max-w-lg m-auto p-4" onSubmit={handleSubmit}>
                     <div className="flex flex-col">
                         <div className="relative flex items-center justify-start border-2 border-gray-300 rounded-md mb-4 p-3">
