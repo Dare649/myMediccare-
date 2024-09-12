@@ -16,9 +16,9 @@ const Records = () => {
         setOpenVitals((prev)=>!prev);
     }
   return (
-    <section className='monitoring sm:mt-10 lg:mt-40 w-full h-full lg:p-5 sm:p-2'>
+    <section className='monitoring sm:mt-20 lg:mt-40 w-full h-full lg:p-5 sm:p-2'>
         <div className='w-full bg-white rounded-lg mb-8'>
-            <div className='py-3 px-5 flex flex-row items-center justify-between'>
+            <div className='w-full py-3 px-5 flex flex-row items-center justify-between'>
                 <h2 className="capitalize font-semibold lg:text-2xl sm:text-lg">vitals overview</h2>
                 <button 
                     onClick={handleVitals}
@@ -35,7 +35,7 @@ const Records = () => {
                     }
                 </div>
             </div> */}
-            <div className="w-full h-[50%] bg-white rounded-lg ">
+            <div className="w-full  bg-white rounded-lg ">
                 <VitalsGraph/>
             </div>
         </div>

@@ -14,7 +14,7 @@ import OtpVerification from "./auth/OtpVerification";
 import Signup from "./auth/sign-up/Signup";
 import Terms from "./terms_conditions/Terms";
 import PatientProtectedRoute from './components/PatientProtectedRoute';
-import PatientPrescriptions from "./pages/patient/PatientPrescriptions";
+import PatientPrescriptions from "./pages/patient/medications/PatientPrescriptions";
 import PatientDashboard from "./pages/patient/PatientDashboard";
 import PatientAppointments from "./pages/patient/PatientAppointments";
 import PatientNotification from './pages/patient/PatientNotification';
@@ -59,7 +59,7 @@ const App = () => {
                       <Route path="/patient-medications" element={<PatientPrescriptions />} />
                       <Route path="/patient-settings" element={<PatientSettings />} />
                       <Route path="/patient-notifications" element={<PatientNotification />} />
-                      <Route path="/patient-wallet" element={<PatientWallet />} />
+                      <Route path="/patient-transactions" element={<PatientWallet />} />
                       <Route path="/stripe-payment" element={<StripePayment />} />
                       <Route path="/card-payment" element={<CardPayment />} />
                       <Route path="/book-appointment" element={<BookAppointment />} />

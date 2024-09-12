@@ -62,7 +62,7 @@ const TopBar = ({ onChange, placeholder}) => {
         </div>
         <div className="menu">
           {visible && (
-            <Modal visible={visible}>
+            <Modal visible={visible} onClick={handleVisible}>
               <div className="fixed top-0 left-0 menuItem bg-white w-[70%] h-screen">
               <div className="welcome mx-5 mt-5">
                 <h2 className="text-xl text-primary-100 font-bold">Welcome back, {user?.name}</h2>

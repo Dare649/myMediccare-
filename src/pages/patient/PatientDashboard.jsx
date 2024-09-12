@@ -40,13 +40,13 @@ const dashAppointments = appointments.slice(0, 3)
       <div className='bg-white rounded-lg w-full '>
         <div className="w-full flex lg:flex-row sm:flex-col gap-5 lg:p-5 sm:p-3">
           <div className="lg:w-[50%] sm:w-full border-2 border-primary-100 rounded-lg">
-            <div className="w-full lg:p-3 sm:p-0 flex flex-row items-center lg:gap-3 sm:gap-0">
-              <div className="lg:p-3 sm:p-1">
-                <h2 className="first-letter:capitalize lg:text-xl sm:text-sm font-semibold">do you need to see a doctor?</h2>
-                <p className="first-letter:capitalize lg:text-lg sm:text-[11px]">an appointment is just a cliq away!</p>
-                <button className="lg:w-60 sm:w-36 sm:h-10 lg:h-14 lg:mt-5 sm:mt-2 text-center bg-primary-100 text-white first-letter:capitalize font-medium rounded-lg lg:text-lg sm:text-xs">book an appointment</button>
-              </div>
+            <div className="w-full lg:p-5 sm:p-5 flex flex-row items-center justify-between">
               <div className="">
+                <h2 className="first-letter:capitalize lg:text-xl sm:text-lg font-semibold">do you need to see a doctor?</h2>
+                <p className="first-letter:capitalize lg:text-lg sm:text-sm">an appointment is just a cliq away!</p>
+                <button className="lg:w-60 sm:w-full sm:h-10 lg:h-14 lg:mt-5 sm:mt-2 text-center bg-primary-100 text-white first-letter:capitalize font-medium rounded-lg lg:text-lg sm:text-xs">book an appointment</button>
+              </div>
+              <div className="lg:flex sm:hidden">
                 <img src={doc} alt="MyMedicare" className=""/>
               </div>
             </div>

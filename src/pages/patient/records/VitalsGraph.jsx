@@ -156,33 +156,35 @@ const VitalsGraph = () => {
 
     return (
         <div className="w-full">
-            <div className="w-full h-fit">
-                <div className="flex items-center p-4 gap-x-2 w-full">
+            <div className=" sm:w-full lg:w-[50%">
+                <div className="flex lg:flex-row sm:flex-col items-center p-4 gap-2 w-full">
                     {/* Dropdown for selecting duration */}
                     <select 
                         value={duration} 
                         onChange={(e) => setDuration(e.target.value)} 
-                        className="p-2 border rounded"
+                        className="p-2 border rounded w-full"
                     >
                         <option value="">--Select Duration--</option>
                         <option value="weekly">Weekly</option>
                         <option value="monthly">Monthly</option>
                         <option value="yearly">Yearly</option>
                     </select>
-                    <DatePicker
-                        selected={startDate}
-                        onChange={(date) => setStartDate(date)}
-                        className="p-2 border rounded"
-                        dateFormat="dd-MM-yyyy"
-                        placeholderText="Select start date"
-                    />
-                    <DatePicker
-                        selected={endDate}
-                        onChange={(date) => setEndDate(date)}
-                        className="p-2 border rounded"
-                        dateFormat="dd-MM-yyyy"
-                        placeholderText="Select end date"
-                    />
+                    <div className='w-full flex items-center gap-x-2'>
+                        <DatePicker
+                            selected={startDate}
+                            onChange={(date) => setStartDate(date)}
+                            className="p-2 border rounded"
+                            dateFormat="dd-MM-yyyy"
+                            placeholderText="Select start date"
+                        />
+                        <DatePicker
+                            selected={endDate}
+                            onChange={(date) => setEndDate(date)}
+                            className="p-2 border rounded"
+                            dateFormat="dd-MM-yyyy"
+                            placeholderText="Select end date"
+                        />
+                    </div>
                 </div>
 
                 <div className="lg:p-4 sm:p-2 w-full">
@@ -208,6 +210,7 @@ const VitalsGraph = () => {
                                     }
                                 }
                             }}
+                            className='w-full'
                         />
                     ) : (
                         <div className='text-primary-100 font-bold capitalize text-center'>No data available</div>

@@ -73,7 +73,7 @@ const StripeForm = () => {
                         title: "Success",
                         text: "Deposit successful!" || response?.data?.message,
                     }).then(() => {
-                        navigate("/patient-wallet");
+                        navigate("/patient-transactions");
                     });
                 } else {
                     Swal.fire({

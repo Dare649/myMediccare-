@@ -33,9 +33,9 @@ export const navLink = [
         path: "/patient-medications"
     },
     {
-        title: "wallet",
+        title: "transactions",
         icon: <CiWallet size={30}/>,
-        path: "/patient-wallet"
+        path: "/patient-transactions"
     },
     
     
