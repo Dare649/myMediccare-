@@ -5,12 +5,14 @@ import Services from "../components/services"
 import Hero from "../components/hero"
 import Pricing from "../components/pricing"
 import Testimonials from "../components/testimonial"
+import AboutUs from "../components/about"
 const Home = () => {
   return (
     <div>
       <Header />
       <Hero/>
       <Services />
+      <AboutUs/>
       <Pricing/>
       <Testimonials/> 
       <Footer />
