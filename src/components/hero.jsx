@@ -25,22 +25,23 @@ const Hero = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Feature Section */}
             <div className="bg-blue-600 text-white py-6 rounded-3xl">
                 <div className="container mx-auto px-4">
-                    <div className="flex flex-col md:flex-row justify-center gap-6">
-                        <div className="flex items-center text-center">
-                            <FaHouseDamage size={30} className="mr-2" />
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                        <div className="flex flex-col items-center">
+                            <FaHouseDamage size={30} className="mb-2" />
                             <p className="text-lg font-semibold mb-0">Remote Monitoring</p>
                         </div>
-                        <div className="flex items-center text-center">
-                            <FaHeart size={30} className="mr-2" />
+                        <div className="flex flex-col items-center">
+                            <FaHeart size={30} className="mb-2" />
                             <p className="text-lg font-semibold mb-0">Online Consultations</p>
                         </div>
-                        <div className="flex items-center text-center">
-                            <FaHeart size={30} className="mr-2" />
+                        <div className="flex flex-col items-center">
+                            <FaHeart size={30} className="mb-2" />
                             <p className="text-lg font-semibold mb-0">Affordable Healthcare</p>
                         </div>
-
                     </div>
                 </div>
             </div>
