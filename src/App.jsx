@@ -27,60 +27,62 @@ import DoctorDashboard from "./pages/doctors/dashboard/DoctorDashboard";
 import DoctorRoute from "./components/DoctorRoute";
 import Settings from "./pages/doctors/settings/Settings";
 import Records from './pages/patient/records/Records';
+import Alerts from "./pages/patient/reminder/Alerts"
 
 const App = () => {
   // Destructure token and user from AuthContext
   const { token, user } = useAuthContext();
-  
+
   return (
     <BrowserRouter>
       <DoctorProvider>
         <IntentProvider>
-        <CardProvider>
-          <Routes>
-            {/* Routes for unauthenticated users */}
-            {!token ? (
-              <>
-                <Route path="/" element={<Home />} />
-                <Route path="/sign-in" element={<Signin />} />
-                <Route path="/sign-up" element={<Signup />} />
-                <Route path="/otp-verification" element={<OtpVerification />} />
-                <Route path="/terms-&-conditions" element={<Terms />} />
-                <Route path="*" element={<Navigate to="/sign-in" replace />} />
-              </>
-            ) : (
-              // Routes for authenticated users
-              <>
-                {user?.role === "patient" ? (
-                  <>
-                    <Route element={<PatientProtectedRoute />}>
-                      <Route path="/patient-dashboard" element={<PatientDashboard />} />
-                      <Route path="/patient-schedules" element={<PatientAppointments />} />
-                      <Route path="/patient-medications" element={<PatientPrescriptions />} />
-                      <Route path="/patient-settings" element={<PatientSettings />} />
-                      <Route path="/patient-notifications" element={<PatientNotification />} />
-                      <Route path="/patient-transactions" element={<PatientWallet />} />
-                      <Route path="/stripe-payment" element={<StripePayment />} />
-                      <Route path="/card-payment" element={<CardPayment />} />
-                      <Route path="/book-appointment" element={<BookAppointment />} />
-                      <Route path="/patient-records" element={<Records />} />
-                      <Route path="*" element={<Navigate to="/patient-dashboard" replace />} />
-                    </Route>
-                  </>
-                ) : (
-                  // Routes for doctors or other roles
-                  <>
-                    <Route element={<DoctorRoute/>}>
-                      <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
-                      <Route path="/doctor-profile" element={<Settings />} />
-                      <Route path="*" element={<Navigate to="/doctor-dashboard" replace />} />
-                    </Route>
-                  </>
-                )}
-              </>
-            )}
-          </Routes>
-        </CardProvider>
+          <CardProvider>
+            <Routes>
+              {/* Routes for unauthenticated users */}
+              {!token ? (
+                <>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/sign-in" element={<Signin />} />
+                  <Route path="/sign-up" element={<Signup />} />
+                  <Route path="/otp-verification" element={<OtpVerification />} />
+                  <Route path="/terms-&-conditions" element={<Terms />} />
+                  <Route path="*" element={<Navigate to="/sign-in" replace />} />
+                </>
+              ) : (
+                // Routes for authenticated users
+                <>
+                  {user?.role === "patient" ? (
+                    <>
+                      <Route element={<PatientProtectedRoute />}>
+                        <Route path="/patient-dashboard" element={<PatientDashboard />} />
+                        <Route path="/patient-schedules" element={<PatientAppointments />} />
+                        <Route path="/patient-medications" element={<PatientPrescriptions />} />
+                        <Route path="/patient-settings" element={<PatientSettings />} />
+                        <Route path="/patient-notifications" element={<PatientNotification />} />
+                        <Route path="/patient-transactions" element={<PatientWallet />} />
+                        <Route path="/stripe-payment" element={<StripePayment />} />
+                        <Route path="/card-payment" element={<CardPayment />} />
+                        <Route path="/book-appointment" element={<BookAppointment />} />
+                        <Route path="/patient-records" element={<Records />} />
+                        <Route path="/patient-alerts" element={<Alerts />} />
+                        <Route path="*" element={<Navigate to="/patient-dashboard" replace />} />
+                      </Route>
+                    </>
+                  ) : (
+                    // Routes for doctors or other roles
+                    <>
+                      <Route element={<DoctorRoute />}>
+                        <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
+                        <Route path="/doctor-profile" element={<Settings />} />
+                        <Route path="*" element={<Navigate to="/doctor-dashboard" replace />} />
+                      </Route>
+                    </>
+                  )}
+                </>
+              )}
+            </Routes>
+          </CardProvider>
         </IntentProvider>
       </DoctorProvider>
     </BrowserRouter>

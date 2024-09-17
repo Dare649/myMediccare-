@@ -36,7 +36,7 @@ const TopBar = ({ onChange, placeholder}) => {
           </div> */}
           <div className="">
             <div className="flex flex-row items-center space-x-2">
-              <Link to={"/patient-notifications"}>
+              <Link to={"/patient-alerts"}>
               <IoMdNotificationsOutline size={30} className="font-bold text-neutral-50"/>
               </Link>
               <Link to={"/patient-settings"}>
