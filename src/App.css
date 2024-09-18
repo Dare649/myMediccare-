@@ -19,6 +19,21 @@
   .custom-scrollbar-container:hover::-webkit-scrollbar-thumb {
     background-color: #94A3BB/50; /* Change the scrollbar thumb color on hover */
   }
+
+
+  #remote-user-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
   
 
   .progress-container {

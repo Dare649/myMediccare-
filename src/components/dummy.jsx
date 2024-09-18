@@ -49,7 +49,8 @@ export const navLink = [
     {
         title: "sign out",
         icon: <IoLogOutOutline size={30}/>,
-        gap1: true
+        gap1: true,
+        
     },
 ]
 
@@ -110,6 +111,7 @@ export const docnav = [
         icon: <MdOutlineCalendarMonth size={30}/>,
         path: "/doctor-appointments"
     },
+    
     {
         title: "profile",
         icon: <CgProfile size={30}/>,

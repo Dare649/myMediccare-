@@ -13,28 +13,10 @@ import CircularProgress from "@mui/material/CircularProgress";
 const Appointment = ({ formData, updateFormData, nextStep }) => {
   const MySwal = withReactContent(Swal);
   const [doctor, setDoctor] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(formData.selectedDate || null);
+  const [selectedDate, setSelectedDate] = useState(new Date()); // Set to current date initially
   const [loading, setLoading] = useState(false);
   const [timeSlots, setTimeSlots] = useState([]);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(formData.selectedTimeSlot || null);
-
-  const handleNext = () => {
-    if (selectedTimeSlot) {
-      updateFormData({
-        date: selectedDate,
-        time_slot: `${selectedTimeSlot.start_time} - ${selectedTimeSlot.end_time}`,
-        start_time: selectedTimeSlot.start_time,
-      });
-      nextStep();
-    }
-  };
-
-  const formatDate = (date) => {
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`; 
-  };
 
   useEffect(() => {
     const fetchDoctor = async () => {
@@ -81,6 +63,13 @@ const Appointment = ({ formData, updateFormData, nextStep }) => {
     fetchTimeSlots();
   }, [selectedDate, formData.doctorId]);
 
+  const formatDate = (date) => {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
   const handleDateChange = (date) => {
     const today = new Date();
     if (date < today.setHours(0, 0, 0, 0)) {
@@ -92,15 +81,26 @@ const Appointment = ({ formData, updateFormData, nextStep }) => {
       return;
     }
     setSelectedDate(date);
-    setSelectedTimeSlot(null);
+    setSelectedTimeSlot(null); // Clear selected time slot when date changes
   };
 
   const handleTimeSlotSelect = (slot) => {
     setSelectedTimeSlot(slot); // Store the entire slot object
   };
 
+  const handleNext = () => {
+    if (selectedTimeSlot) {
+      updateFormData({
+        date: selectedDate,
+        time_slot: `${selectedTimeSlot.start_time} - ${selectedTimeSlot.end_time}`,
+        start_time: selectedTimeSlot.start_time,
+      });
+      nextStep();
+    }
+  };
+
   return (
-    <section className="w-full h-full lg:p-5 sm:p-0 lg:mt-36 sm:mt-32">
+    <section className="w-full h-full lg:p-5 sm:p-0 lg:mt-40 sm:mt-20">
       <div className="relative p-2 bg-primary-100 rounded-lg w-full h-full">
         {doctor ? (
           <div className="w-full h-full bg-white p-5 mt-20">

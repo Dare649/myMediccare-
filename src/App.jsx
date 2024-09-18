@@ -27,6 +27,8 @@ import DoctorDashboard from "./pages/doctors/dashboard/DoctorDashboard";
 import DoctorRoute from "./components/DoctorRoute";
 import Settings from "./pages/doctors/settings/Settings";
 import Records from './pages/patient/records/Records';
+import VideoCall from './components/VideoCall';
+import Appointments from './pages/doctors/consultation/Appointments';
 
 const App = () => {
   // Destructure token and user from AuthContext
@@ -64,6 +66,7 @@ const App = () => {
                       <Route path="/card-payment" element={<CardPayment />} />
                       <Route path="/book-appointment" element={<BookAppointment />} />
                       <Route path="/patient-records" element={<Records />} />
+                      <Route path="/consultation-video-call" element={<VideoCall />} />
                       <Route path="*" element={<Navigate to="/patient-dashboard" replace />} />
                     </Route>
                   </>
@@ -73,6 +76,8 @@ const App = () => {
                     <Route element={<DoctorRoute/>}>
                       <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
                       <Route path="/doctor-profile" element={<Settings />} />
+                      <Route path="/doctor-appointments" element={<Appointments />} />
+                      <Route path="/consultation-video-call" element={<VideoCall />} />
                       <Route path="*" element={<Navigate to="/doctor-dashboard" replace />} />
                     </Route>
                   </>

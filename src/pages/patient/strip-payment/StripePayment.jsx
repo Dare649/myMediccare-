@@ -98,8 +98,8 @@ const StripeForm = () => {
     };
 
     return (
-        <section className='w-full lg:p-10 sm:p-2 lg:mt-40 sm:10'>
-            <div className="lg:p-10 sm:p-2 bg-white rounded-lg w-full h-full">
+        <section className='w-full lg:p-10 sm:p-2 '>
+            <div className="lg:p-10 sm:p-2 lg:mt-40 sm:20 bg-white rounded-lg w-full h-full">
                 <h2 className="lg:text-2xl sm:text-lg font-bold text-center">
                     Complete Your Payment
                 </h2>

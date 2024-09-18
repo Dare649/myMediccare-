@@ -21,136 +21,150 @@ const formatDate = (date) => {
 
 const StripeForm = () => {
     const stripe = useStripe();
-    const elements = useElements();
-    const navigate = useNavigate();
-    const MySwal = withReactContent(Swal);
-    const [cardData, setCardData] = useState(null);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [isProcessing, setIsProcessing] = useState(false); // Added isProcessing state
-    const location = useLocation();
-    const { formData } = location.state || {};
+const elements = useElements();
+const navigate = useNavigate();
+const MySwal = withReactContent(Swal);
+const [cardData, setCardData] = useState(null);
+const [error, setError] = useState(null);
+const [loading, setLoading] = useState(false);
+const [isProcessing, setIsProcessing] = useState(false);
+const location = useLocation();
+const { formData } = location.state || {};
 
-    const handlePaymentIntent = async () => {
-        if (!formData?.amount) {
-            setError("Amount is required");
-            return;
-        }
-    
-        try {
-            setLoading(true);
-            const response = await axiosClient.post("/api/patient/make_intent", formData);
-    
-    
-            if (response.data.error) {
-                throw new Error(response.data.message);
-            }
-    
-            // Ensure client secret is being saved
-            setCardData({
-                amount: formData.amount,
-                paymentIntent: response.data.paymentIntent,
-                ephemeralKey: response.data.ephemeralKey,
-                customer: response.data.customer,
-                publishableKey: response.data.publishableKey,
-            });
-    
-            return response.data;
-        } catch (error) {
-            console.error("Payment Intent Error:", error);
-            MySwal.fire({
-                title: "Error",
-                icon: "error",
-                text: error.message || "An error occurred. Please try again.",
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
-    
+const handlePaymentIntent = async () => {
+    if (!formData?.amount) {
+        setError("Amount is required");
+        return null;
+    }
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-    
-        if (isProcessing) return;
-        setIsProcessing(true);
-    
-        const response = await handlePaymentIntent();
-        if (!stripe || !elements) {
+    try {
+        setLoading(true);
+        const response = await axiosClient.post("/api/patient/make_intent", formData);
+
+        if (response.data.error) {
+            throw new Error(response.data.message);
+        }
+
+        const cardDetails = {
+            amount: formData.amount,
+            paymentIntent: response.data.paymentIntent,
+            ephemeralKey: response.data.ephemeralKey,
+            customer: response.data.customer,
+            publishableKey: response.data.publishableKey,
+        };
+
+        setCardData(cardDetails);
+        return cardDetails;
+    } catch (error) {
+        MySwal.fire({
+            title: "Error",
+            icon: "error",
+            text: error.message || "An error occurred. Please try again.",
+        });
+        return null;
+    } finally {
+        setLoading(false);
+    }
+};
+
+const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (isProcessing) return;
+    setIsProcessing(true);
+    setLoading(true); // Start loading
+
+    let cardDetails = cardData;
+
+    // If cardData is not set, fetch a new payment intent
+    if (!cardDetails) {
+        cardDetails = await handlePaymentIntent();
+        if (!cardDetails) {
             setIsProcessing(false);
+            setLoading(false);
             return;
         }
-    
-        try {
-            if (!cardData?.paymentIntent) {
-                throw new Error("Client secret is missing. Please check your backend response.");
-            }
-    
-    
-            const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(cardData.paymentIntent, {
-                payment_method: {
-                    card: elements.getElement(CardNumberElement),
-                },
-            });
-    
-            if (stripeError) {
-                setError(stripeError.message);
-                console.error("Stripe Error:", stripeError);
-                return;
-            }
-    
-            if (paymentIntent && paymentIntent.status === "succeeded") {
-                console.log("Payment Successful:", paymentIntent);
-    
-                const updatedFormData = {
-                    ...formData,
-                    stripe_id: cardData.customer || '',
-                    stripe_status: paymentIntent.status,
-                };
-    
-                const formattedData = {
-                    ...updatedFormData,
-                    date: formatDate(new Date(formData.date)),
-                };
-    
-                const response = await axiosClient.post(`/api/patient/doctor/${formData.doctorId}/book_appt`, formattedData);
-    
-                if (response.data.status === 1) {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Success",
-                        text: "Appointment booked successfully!",
-                    }).then(() => {
-                        navigate("/patient-schedules");
-                    });
-                } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error",
-                        text: response?.data?.message,
-                    }).then(() => {
-                        navigate("/patient-schedules");
-                    });
-                }
+    }
+
+    if (!stripe || !elements || !cardDetails?.paymentIntent) {
+        setIsProcessing(false);
+        setLoading(false);
+        return;
+    }
+
+    try {
+        const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(cardDetails.paymentIntent, {
+            payment_method: {
+                card: elements.getElement(CardNumberElement),
+            },
+        });
+
+        if (stripeError) {
+            setError(stripeError.message);
+            console.error("Stripe Error:", stripeError);
+            setLoading(false); // Stop loading on error
+            return;
+        }
+
+        if (paymentIntent && paymentIntent.status === "succeeded") {
+            console.log("Payment Successful:", paymentIntent);
+
+            const updatedFormData = {
+                ...formData,
+                stripe_id: cardDetails.customer || '',
+                stripe_status: paymentIntent.status,
+            };
+
+            const formattedData = {
+                ...updatedFormData,
+                date: formatDate(new Date(formData.date)),
+            };
+
+            const bookingResponse = await axiosClient.post(
+                `/api/patient/doctor/${formData.doctorId}/book_appt`,
+                formattedData
+            );
+
+            if (bookingResponse.data.status === 1) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Success",
+                    text: "Appointment booked successfully!",
+                }).then(() => {
+                    navigate("/patient-schedules");
+                });
             } else {
                 Swal.fire({
                     icon: "error",
                     title: "Error",
-                    text: "Payment failed.",
+                    text: bookingResponse?.data?.message,
+                }).then(() => {
+                    navigate("/patient-schedules");
                 });
             }
-        } catch (error) {
-            console.error("Submission Error:", error);
-            setError("An error occurred. Please try again.");
-        } finally {
-            setIsProcessing(false);
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Payment failed.",
+            }).then(() => {
+                navigate("/patient-schedules");
+            });
         }
-    };
+    } catch (error) {
+        console.error("Submission Error:", error);
+        setError("An error occurred. Please try again.");
+    } finally {
+        setIsProcessing(false);
+        setLoading(false); // Stop loading
+    }
+};
+
     
 
     return (
-        <section className="lg:mt-40 sm:mt-10 w-full h-full lg:p-5 sm:p-0">
-            <div className="lg:p-10 sm:p-2 bg-white rounded-lg w-full h-full">
+        <section className=" w-full h-full lg:p-5 sm:p-0">
+            <div className="lg:p-10 sm:p-2 lg:mt-40 sm:mt-20 bg-white rounded-lg w-full h-full">
                 <h2 className="lg:text-2xl sm:text-lg font-bold text-center">
                     Complete Your Payment
                 </h2>

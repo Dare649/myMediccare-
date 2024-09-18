@@ -54,7 +54,7 @@ const dashAppointments = appointments.slice(0, 3)
           <div className="lg:w-[50%] sm:w-full">
           <div className="my-10">
             <h2 className="font-semibold first-letter:capitalize mb-5 lg:text-xl sm:sm">our services</h2>
-            <div className="w-full flex flex-row gap-3 sm:overflow-x-auto lg:overflow-x-hidden">
+            <div className="w-full flex flex-row gap-3 overflow-x-auto ">
               {services.map((item, id) => (
                 <div key={id} className="flex flex-col items-center">
                   <div className="lg:w-24 sm:w-16 lg:h-24 sm:h-16 flex items-center justify-center rounded-full bg-neutral-1">

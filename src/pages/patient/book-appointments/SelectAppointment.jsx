@@ -27,7 +27,7 @@ const SelectAppointment = ({ formData, updateFormData, nextStep }) => {
   };
 
   return (
-    <section className="lg:w-[50%] sm:w-full  flex flex-col items-center justify-center mx-auto border-2 border-neutral-50 rounded-lg lg:p-5 sm:p-2 mb-8">
+    <section className="lg:w-[50%] sm:w-full flex flex-col items-center justify-center mx-auto border-2 border-neutral-50 rounded-lg lg:p-5 sm:p-2 mb-8 ">
       <h2 className="capitalize lg:text-xl sm:lg px-5 font-bold">Select Appointment</h2>
       <div className="w-full px-5">
         <div className="w-full">

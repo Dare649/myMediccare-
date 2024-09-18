@@ -31,6 +31,13 @@ const BookAppointment = () => {
     doctorId: "", // Add doctorId if missing
   });
 
+  const formatDate = (date) => {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+};
+
   const updateFormData = (data) => {
     setFormData((prev) => ({ ...prev, ...data }));
   };
@@ -52,13 +59,20 @@ const BookAppointment = () => {
        navigate("/card-payment", {state: {formData}});
       } else {
         // Non-stripe payment flow
-        const response = await axiosClient.post(`/api/patient/doctor/${formData.doctorId}/book_appt`, formData);
+        const updatedFormData = {
+          ...formData,
+          date: formatDate(new Date(formData.date)),
+        }
+
+        const response = await axiosClient.post(`/api/patient/doctor/${updatedFormData.doctorId}/book_appt`, updatedFormData);
         setLoading(false);
         MySwal.fire({
           title: "Success",
           icon: "success",
           text: "Appointment booked successfully!",
-        });
+        }).then(() => {
+          navigate("/patient-schedules");
+      });
       }
     } catch (error) {
       setLoading(false);
@@ -76,8 +90,8 @@ const BookAppointment = () => {
 
 
   return (
-    <section className="w-full h-full lg:p-5 sm:p-0">
-      <div className="lg:p-10 sm:p-2 bg-white rounded-lg w-full h-full">
+    <section className="w-full h-full  lg:p-5 sm:p-2">
+      <div className="lg:p-10 sm:p-2 lg:mt-20 sm:mt-10 bg-white rounded-lg w-full h-full">
         <div className="flex flex-row items-center gap-x-10 mb-10">
           <button
             onClick={prevStep}

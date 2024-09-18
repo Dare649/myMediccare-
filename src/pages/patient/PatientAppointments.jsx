@@ -1,12 +1,19 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { axiosClient } from "../../axios";
 import ReactPaginate from "react-paginate";
 import "./Paginate.css";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 
 const PatientAppointments = () => {
   const [appointments, setAppointments] = useState([]);
+  const MySwal = withReactContent(Swal);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState("today");
@@ -56,16 +63,52 @@ const PatientAppointments = () => {
     }
   };
 
+
+  const handleJoin = async (booking_id) => {
+    try {
+      setLoading(true);
+    
+      // Step 1: Fetch Agora token and other details
+      const response = await axiosClient.post(`/api/agora_token/${booking_id}/patient`);
+      setLoading(false);
+      MySwal.fire({
+        title: "Success",
+        icon: "success",
+        text: "Joined successfully.",
+      }).then(() => {
+        navigate(`/consultation-video-call`, {
+          state: {
+            bookingId: booking_id,
+            token: response?.data?.token,
+            channelName: response?.data?.channelName,
+            user_type: response?.data?.user_type,
+            user_uuid: response?.data?.user_uuid,
+            role: response?.data?.role,
+          }
+        });
+      });
+    } catch (error) {
+      setLoading(false);
+      MySwal.fire({
+        title: "Error",
+        icon: "error",
+        text: error.message || "An error occurred. Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <section className="appointment w-full sm:mt-10 lg:mt-40 h-full lg:p-5 sm:p-0">
-      <main className="lg:p-10 sm:p-2 bg-white rounded-lg w-full h-full">
+    <section className="appointment w-full  h-full lg:p-10 sm:p-2">
+      <main className="lg:p-10 sm:p-5 bg-white rounded-lg w-full h-full sm:mt-24 lg:mt-40">
         <div className="flex flex-row items-center justify-between lg:mt-0 sm:mt-10 w-full">
-          <h2 className="first-letter:capitalize sm:text-xl lg:text-2xl font-semibold">
+          <h2 className="first-letter:capitalize sm:text-lg lg:text-2xl font-semibold">
             Your Appointments
           </h2>
           <Link
             to={"/book-appointment"}
-            className="text-white bg-primary-100 rounded-lg first-letter:capitalize font-bold text-center p-3"
+            className="text-white bg-primary-100 rounded-lg first-letter:capitalize font-bold text-center lg:p-3 sm:p-2 lg:text-base sm:text-sm"
           >
             Book Appointment
           </Link>
@@ -75,7 +118,7 @@ const PatientAppointments = () => {
         <div className="tabs flex space-x-4 my-4">
           <button
             onClick={() => setFilter("today")}
-            className={`tab lg:text-lg sm:text-lg capitalize ${
+            className={`tab lg:text-lg sm:text-sm capitalize ${
               filter === "today" ? "text-primary-100 text-xl font-bold " : "font-bold text-lg neutral-50"
             }`}
           >
@@ -83,7 +126,7 @@ const PatientAppointments = () => {
           </button>
           <button
             onClick={() => setFilter("pending")}
-            className={`tab lg:text-lg sm:text-lg capitalize ${
+            className={`tab lg:text-lg sm:text-sm capitalize ${
               filter === "pending" ? "text-primary-100 text-xl font-bold " : "font-bold text-lg neutral-50"
             }`}
           >
@@ -91,7 +134,7 @@ const PatientAppointments = () => {
           </button>
           <button
             onClick={() => setFilter("upcoming")}
-            className={`tab lg:text-lg sm:text-lg capitalize ${
+            className={`tab lg:text-lg sm:text-sm capitalize ${
               filter === "upcoming" ? "text-primary-100 text-xl font-bold " : "font-bold text-lg neutral-50"
             }`}
           >
@@ -99,7 +142,7 @@ const PatientAppointments = () => {
           </button>
           <button
             onClick={() => setFilter("completed")}
-            className={`tab lg:text-lg sm:text-lg capitalize ${
+            className={`tab lg:text-lg sm:text-sm capitalize ${
               filter === "completed" ? "text-primary-100 text-xl font-bold " : "font-bold text-lg neutral-50"
             }`}
           >
@@ -167,6 +210,14 @@ const PatientAppointments = () => {
                           >
                             {item.appointment_status}
                           </td>
+                          {
+                            filter === "today" && 
+                              <td className="py-5 px-5"> 
+                                <button 
+                                  onClick={() => handleJoin(item.booking_id)}
+                                  className="bg-primary-100 p-3 rounded-lg text-white font-bold capitalize">join</button>
+                              </td>
+                          }
                         </tr>
                       ))}
                   </tbody>
@@ -207,18 +258,37 @@ const PatientAppointments = () => {
                 .map((item, id) => (
                   <div
                     key={id}
-                    className="w-full border-b-2 border-neutral-50 p-4 rounded-lg bg-white shadow hover:bg-primary-100/10 cursor-pointer"
+                    className="w-full border-b-2 border-neutral-50 p-4 rounded-lg bg-white shadow hover:bg-primary-100/10 cursor-pointer flex flex-col gap-y-3" 
                   >
-                    <div className="flex flex-row justify-between items-center">
-                      <div className="flex flex-row items-center space-x-3">
-                        <img
-                          src={`https://api.example.com/doctor-images/${item.doctor_id}`}
-                          alt={item.doctor_name}
-                          className="h-12 w-12 rounded-full"
-                        />
+                      <div className="flex flex-row justify-between items-center gap-x-2">
+                        <div className="flex items-center justify-center border-2 border-neutral-100 rounded-full h-20 w-20">
+                          <img
+                            src={`https://api.example.com/doctor-images/${item.doctor_id}`}
+                            alt={item.doctor_name}
+                            className="h-12 w-12 rounded-full"
+                          />
+                        </div>
                         <div className="text-md font-bold capitalize">
                           {item.doctor_name}
                         </div>
+                        
+                        {
+                            filter === "today" && 
+                              <div className="py-5 px-5"> 
+                                <button 
+                                  onClick={() => handleJoin(item.booking_id)}
+                                  className="bg-primary-100 p-3 rounded-lg text-white font-bold capitalize">join</button>
+                              </div>
+                          }
+                      </div>
+                      <div className="flex flex-row justify-between items-center gap-x-3">
+                      
+                        
+                        <div className="flex flex-row gap-x-2 items-center">
+                        
+                        <div className="text-sm">{item.appointment_date}</div>
+                        <div className="text-sm">{item.appointment_time}</div>
+                        
                       </div>
                       <div
                         className={`text-sm font-medium capitalize ${
@@ -229,14 +299,13 @@ const PatientAppointments = () => {
                       >
                         {item.appointment_status}
                       </div>
+                      
+                      <div className="text-xs font-bold text-neutral-50 capitalize">
+                          {item.appointment_type}
+                        </div>  
                     </div>
-                    <div className="flex flex-row justify-between items-center py-2">
-                      <div className="text-md capitalize">
-                        {item.appointment_type}
-                      </div>
-                      <div className="text-md">{item.appointment_date}</div>
-                      <div className="text-md">{item.appointment_time}</div>
-                    </div>
+                     
+                    
                   </div>
                 ))}
               <div className="paginate flex items-end justify-end py-5">
@@ -264,6 +333,12 @@ const PatientAppointments = () => {
           </>
         )}
       </main>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </section>
   );
 };
