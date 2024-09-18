@@ -21,7 +21,7 @@ const Header = () => {
                     <a href="#home" className="text-gray-800 hover:text-gray-600">HOME</a>
                     <a href="#about" className="text-gray-800 hover:text-gray-600">ABOUT</a>
                     <a href="#services" className="text-gray-800 hover:text-gray-600">SERVICES</a>
-                    <a href="#contact" className="text-gray-800 hover:text-gray-600">CONTACT</a>
+                    <a href="#pricing" className="text-gray-800 hover:text-gray-600">PRICING</a>
                 </div>
                 <div className="hidden md:flex items-center space-x-3">
                     <a href="/sign-in" className="text-gray-800 hover:text-gray-600 px-4 py-2">LOGIN</a>

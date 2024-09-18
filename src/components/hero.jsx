@@ -1,12 +1,12 @@
 import React from 'react';
-import { FaHouseDamage, FaHeart } from 'react-icons/fa';
-import heroImage from '../assets/images/hero_background.png'; 
+import { FaHouseDamage, FaHeart, FaStethoscope } from 'react-icons/fa'; // Imported a new icon for variety
+import heroImage from '../assets/images/hero_background.png';
 
 const Hero = () => {
     return (
         <>
             {/* Hero Section */}
-            <div className="bg-white text-gray-800 py-12">
+            <div className="bg-white text-gray-800">
                 <div className="container mx-auto px-4 flex flex-col md:flex-row items-center">
                     <div className="md:w-6/12 mb-8 md:mb-0 md:ml-16">
                         <h1 className="text-4xl font-bold mb-4">Providing Reliable & Affordable Healthcare</h1>
@@ -24,23 +24,24 @@ const Hero = () => {
                         <img src={heroImage} alt="Hero" className="w-full h-auto" />
                     </div>
                 </div>
-            </div>
-            <div className="bg-blue-600 text-white py-6 rounded-3xl">
-                <div className="container mx-auto px-4">
-                    <div className="flex flex-col md:flex-row justify-center gap-6">
-                        <div className="flex items-center text-center">
-                            <FaHouseDamage size={30} className="mr-2" />
-                            <p className="text-lg font-semibold mb-0">Remote Monitoring</p>
-                        </div>
-                        <div className="flex items-center text-center">
-                            <FaHeart size={30} className="mr-2" />
-                            <p className="text-lg font-semibold mb-0">Online Consultations</p>
-                        </div>
-                        <div className="flex items-center text-center">
-                            <FaHeart size={30} className="mr-2" />
-                            <p className="text-lg font-semibold mb-0">Affordable Healthcare</p>
-                        </div>
 
+                {/* Feature Section */}
+                <div className="bg-blue-600 text-white py-6 rounded-3xl" style={{ bottom: '48px', position: 'relative' }}>
+                    <div className="container mx-auto px-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                            <div className="flex flex-col items-center">
+                                <FaHouseDamage size={30} className="mb-2" />
+                                <p className="text-lg font-semibold mb-0">Remote Monitoring</p>
+                            </div>
+                            <div className="flex flex-col items-center">
+                                <FaHeart size={30} className="mb-2" />
+                                <p className="text-lg font-semibold mb-0">Online Consultations</p>
+                            </div>
+                            <div className="flex flex-col items-center">
+                                <FaStethoscope size={30} className="mb-2" />
+                                <p className="text-lg font-semibold mb-0">Affordable Healthcare</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
