@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import Prescription from "../pages/doctors/consultation/Prescription";
 
 const APP_ID = "894b043a9e60426285be31a3e8e9c4c0";  // Replace with your App ID
 
@@ -37,9 +38,12 @@ const VideoCall = () => {
   const [remoteUsers, setRemoteUsers] = useState({});
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [isVideoMuted, setIsVideoMuted] = useState(false);
+  const [prescriptions, setPrescriptions] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [error, setError] = useState({});
   const [newMessage, setNewMessage] = useState("");
   const [notes, setNotes] = useState(false);
+  const [prescription, setPrescription] = useState(false);
   const localVideoRef = useRef(null);
   const messageBoxRef = useRef(null);
   const [formData, setFormData] = useState({
@@ -60,6 +64,7 @@ const VideoCall = () => {
     ros_items: []
   });
 
+  
   useEffect(() => {
     const initClient = async () => {
       const agoraClient = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
@@ -207,6 +212,12 @@ const leaveCall = async () => {
   };
 
 
+  //toggle prescription
+  const handlePrescription = () => {
+    setPrescription((prev)=>!prev);
+  }
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();  // Prevent the form from reloading the page
   
@@ -252,13 +263,42 @@ const leaveCall = async () => {
       handleNotes();
     }
   };
-  
-  
-  
-  
-  
 
 
+  const handleSubmitPrescription = async (prescriptions) => {
+    try {
+      setLoading(true);  // Start loading
+      console.log("Submission started...");
+  
+      const payload = {
+        items: prescriptions.map(prescription => ({
+          drug_name: prescription.drug_name,
+          dosage_form: prescription.dosage_form,
+          dose: prescription.dose,
+          dose_unit: prescription.dose_unit,
+          frequency: prescription.frequency,
+          duration: prescription.duration,
+          duration_unit: prescription.duration_unit,
+          route_of_administration: prescription.route_of_administration,
+          instructions: prescription.instructions,
+          refill: prescription.refill,
+          reminder_times: prescription.reminder_times,
+        })),
+      };
+  
+      const response = await axiosClient.post(`/api/doctor/${consultationUUID}/create_prescription`, payload);
+  
+      
+    } catch (error) {
+      console.error("Error creating prescription:", error);  // Log the error for better debugging
+      
+    } finally {
+      
+      setLoading(false);  // Ensure loading is set to false after submission
+    }
+  };
+  
+  
 
   return (
     <section className='w-full lg:mt-36 sm:mt-20 lg:p-5 sm:p-3'>
@@ -333,11 +373,18 @@ const leaveCall = async () => {
       {/* Doctor's Notes Section */}
       {
         user_type === "doctor" &&
-        <button 
-          onClick={handleNotes}
-          className="bg-primary-100 text-white font-bold capitalize rounded-lg p-2">
-            add notes
-        </button>
+          <div className='flex flex-row mx-auto items-center justify-center gap-x-5'>
+            <button 
+              onClick={handleNotes}
+              className="bg-primary-100 text-white font-bold capitalize rounded-lg p-2">
+                add notes
+            </button>
+            <button 
+              onClick={handlePrescription}
+              className="bg-primary-100 text-white font-bold capitalize rounded-lg p-2">
+                add prescription
+            </button>
+          </div>
       }
       
       </div>
@@ -346,6 +393,17 @@ const leaveCall = async () => {
           <ConsultationNote handleSubmit={handleSubmit} handleClose={handleNotes} formData={formData} setFormData={setFormData} />
         </Modal>
       }
+      {/* Prescription Modal */}
+      {prescription && (
+        <Modal visible={prescription} onClick={handlePrescription}>
+          <Prescription
+            handleClose={handlePrescription}
+            prescriptions={prescriptions}
+            setPrescriptions={setPrescriptions}
+            handleSubmit={handleSubmitPrescription}
+          />
+        </Modal>
+      )}
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
