@@ -23,25 +23,17 @@ const Testimonials = () => {
                     interval={5000}
                     showArrows={true}
                     className="relative"
+                    dynamicHeight={true}
                 >
-                    {testimonials.reduce((resultArray, item, index) => {
-                        const chunkIndex = Math.floor(index / 2);
-                        if (!resultArray[chunkIndex]) {
-                            resultArray[chunkIndex] = [];
-                        }
-                        resultArray[chunkIndex].push(item);
-                        return resultArray;
-                    }, []).map((chunk, index) => (
-                        <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            {chunk.map((test, idx) => (
-                                <div key={idx} className="bg-white shadow-lg p-8 rounded-lg max-w-lg mx-auto">
-                                    <div className="flex items-start mb-4">
-                                        <FaQuoteLeft className="text-blue-500 text-3xl mr-4" />
-                                        <p className="text-gray-700 text-lg italic">"{test.quote}"</p>
-                                    </div>
-                                    <h5 className="text-right text-xl font-semibold text-gray-900">- {test.name}</h5>
+                    {testimonials.map((test, idx) => (
+                        <div key={idx} className={`flex flex-col items-center ${window.innerWidth < 768 ? "px-4" : ""}`}>
+                            <div className="bg-white shadow-lg p-8 rounded-lg max-w-lg mx-auto">
+                                <div className="flex items-start mb-4">
+                                    <FaQuoteLeft className="text-blue-500 text-3xl mr-4" />
+                                    <p className="text-gray-700 text-lg italic">"{test.quote}"</p>
                                 </div>
-                            ))}
+                                <h5 className="text-right text-xl font-semibold text-gray-900">- {test.name}</h5>
+                            </div>
                         </div>
                     ))}
                 </Carousel>

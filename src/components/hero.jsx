@@ -6,7 +6,7 @@ const Hero = () => {
     return (
         <>
             {/* Hero Section */}
-            <div className="bg-white text-gray-800">
+            <div className="bg-white text-gray-800 mt-32 md:mt-20">
                 <div className="container mx-auto px-4 flex flex-col md:flex-row items-center">
                     <div className="md:w-6/12 mb-8 md:mb-0 md:ml-16">
                         <h1 className="text-4xl font-bold mb-4">Providing Reliable & Affordable Healthcare</h1>
@@ -20,7 +20,7 @@ const Hero = () => {
                             </button>
                         </div>
                     </div>
-                    <div className="md:w-5/12 text-center">
+                    <div className="md:w-5/12 text-center hidden md:block"> {/* Hide on small screens */}
                         <img src={heroImage} alt="Hero" className="w-full h-auto" />
                     </div>
                 </div>
