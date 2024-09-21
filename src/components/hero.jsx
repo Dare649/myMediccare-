@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaHouseDamage, FaHeart, FaStethoscope } from 'react-icons/fa'; // Imported a new icon for variety
+import { FaHouseDamage, FaHeart, FaStethoscope } from 'react-icons/fa';
 import heroImage from '../assets/images/hero_background.png';
 
 const Hero = () => {
@@ -26,8 +26,8 @@ const Hero = () => {
                 </div>
 
                 {/* Feature Section */}
-                <div className="bg-blue-600 text-white py-6 rounded-3xl" style={{ bottom: '48px', position: 'relative' }}>
-                    <div className="container mx-auto px-4">
+                <div className="bg-blue-600 text-white py-6 rounded-3xl flex justify-center" style={{ marginLeft: '53px', marginRight: '53px' }}>
+                    <div className="container mx-auto max-w-5xl px-4">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
                             <div className="flex flex-col items-center">
                                 <FaHouseDamage size={30} className="mb-2" />
