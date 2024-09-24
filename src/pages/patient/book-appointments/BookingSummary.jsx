@@ -96,7 +96,9 @@ const BookingSummary = ({ formData, handleSubmit, prevStep }) => {
           </div>
           <div className="py-2">
             <h2 className="font-bold capitalize text-md text-primary-100">appointment type</h2> 
-            <h2 className="font-bold text-neutral-100 capitalize text-xl">{type}</h2> 
+            <h2 className="font-bold text-neutral-100 capitalize text-xl">{
+              type === "oc" ? "oncline consultation" : type === "hc" ? "home consultation": type === "st" ? "speak to therapist" : type === "lt" ? "lab test" : "speak to specialst"
+            }</h2> 
           </div>
           <div className="py-2">
             <h2 className="font-bold capitalize text-md text-primary-100">symptoms</h2> 

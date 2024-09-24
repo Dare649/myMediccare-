@@ -15,6 +15,8 @@ import withReactContent from "sweetalert2-react-content";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import PersonalMedication from "./PersonalMedication";
+import med1 from "../../../../public/images/med1.png";
+import med2 from "../../../../public/images/med2.png";
 
 
 const PatientPrescriptions = () => {
@@ -76,19 +78,23 @@ const PatientPrescriptions = () => {
 
 
   const handleViewPersonalPrescription = (uuid) => {
-    setViewPersonal((prev)=>!prev);
-    setSelectedItemId(uuid);
-  }
+    setViewPersonal(true);
+    setSelectedItemId(uuid); // Set the selected UUID here
+  };
+
+  // Filter personal prescriptions by the selected uuid
+  const selectedPersonalMedication = personal.find(item => item.uuid === selectedItemId);
+
 
   
   return (
-    <section className="prescription sm:mt-10 lg:mt-40 w-full h-full lg:p-5 sm:p-0">
-      <div className="flex flex-row items-center justify-between sm:p-2 lg:p-5 bg-white rounded-lg mb-10">
-        <h1 className="first-letter:capitalize font-semibold lg:text-2xl sm:text-xl">medications</h1>
+    <section className="prescription sm:mt-20 lg:mt-40 w-full h-full lg:p-10 sm:p-5">
+      <div className="flex flex-row items-center justify-between sm:p-2 lg:p-5 bg-white rounded-lg mb-5 sm:gap-x-5 lg:gap-x-0">
+        <h1 className="first-letter:capitalize font-semibold lg:text-xl sm:text-md">medications</h1>
         <button 
           onClick={handlePrescriptionRequest}
-          className="flex font-bold flex-row items-center justify-center gap-2 lg:w-56 sm:w-52 h-10 bg-primary-100 rounded-lg text-white ">
-          <h2 className="first-letter:capitalize">request prescription</h2><FiPlusCircle className=" " size={20}/>
+          className="flex font-bold flex-row items-center justify-center lg:p-3 sm:p-1 bg-primary-100 rounded-lg text-white gap-x-1">
+          <h2 className="first-letter:capitalize lg:text-base sm:text-sm">request prescription</h2><FiPlusCircle className=" " size={20}/>
         </button>
       </div>
       {
@@ -103,31 +109,28 @@ const PatientPrescriptions = () => {
           <h2 className="font-bold sm:text-lg text-xl capitalize lg:py-5 sm:py-2">prescribed medications</h2>
             {
               prescribed.length > 0 ? (
-                <div className="border-2 border-neutral-100 sm:p-1 lg:p-3 rounded-lg">
+                <div className={`border-2 border-neutral-100 sm:p-2 lg:p-3 rounded-lg ${prescribed.length < 0 ? "border-none": null}`}>
                   {
                     prescribed.map((item)=>(
-                      <div className="w-full flex flex-row items-center justify-between">
+                      <div className="w-full flex flex-row items-center justify-between gap-x-2">
                         <div
                         key={item.uuid}
-                        className="w-full flex items-center gap-x-5"
+                        className="w-full flex items-center gap-x-5 mb-3"
                       >
-                        <div className="lg:w-[20%] sm:w-[10%] rounded-lg">
+                        <div className="w-[20%] rounded-lg">
                           <div 
-                            className={
-                              item.dosage_form === "i" ? "bg-red-300" : 
-                              item.dosage_form === "s" ? "bg-blue-300" : ""
-                            }
+                            
                           >
                             {
                               item.dosage_form === "c" ? <img src={capsule} alt="" className="w-full"/> :
-                              item.dosage_form === "i" ? <BiSolidInjection /> :
-                              item.dosage_form === "s" ? <TbMedicineSyrup /> : null
+                              item.dosage_form === "i" ? <img src={med1} alt="" /> :
+                              item.dosage_form === "s" ? <img src={med2} alt="" />: null
                             }
                           </div>
                         </div>
                         <div>
-                          <h2 className="text-neutral-100 font-bold lg:text-2xl sm:text-lg capitalize">{item.drug_name}</h2>
-                          <p className="gap-x-2 text-neutral-50 font-bold sm:text-lg lg:text-xl capitalize">
+                          <h2 className="text-neutral-100 font-bold lg:text-lg sm:text-md capitalize">{item.drug_name}</h2>
+                          <p className="gap-x-2 text-neutral-50 font-bold sm:text-sm lg:text-md capitalize">
                             <span>{item.dose}</span>
                             <span>{item.dose_unit}</span>,
                             <span className="ml-2">{item.frequency}</span>
@@ -135,18 +138,19 @@ const PatientPrescriptions = () => {
                            {/* Reminder times */}
                             <div className="bg-neutral-50/50 rounded-lg lg:p-2 sm:p-1 grid grid-cols-2 mx-auto">
                               {item.reminder_time.map((timeObj, index) => (
-                                <p key={index} className="text-md font-bold">
+                                <p key={index} className="text-xs font-bold">
                                   {timeObj.reminder_time}
                                 </p>
                               ))}
                             </div>
                         </div>
                       </div>
-                      <div onClick={()=>handleViewPersonalPrescription(item.uuid) }>
+                      <div onClick={() => handleViewPersonalPrescription(item.uuid)}>
                         <MdOutlineRemoveRedEye 
                           className="text-primary-100 font-bold"
-                          size={30}
+                          size={20}
                         />
+                        { console.log(item.uuid)}
                       </div>
                     </div>
                     ))
@@ -163,31 +167,28 @@ const PatientPrescriptions = () => {
           <h2 className="font-bold sm:text-lg text-xl capitalize lg:py-5 sm:py-2">personal medications</h2>
             {
               personal.length > 0 ? (
-                <div className="border-2 border-neutral-100 sm:p-1 lg:p-3 rounded-lg">
+                <div className={`border-2 border-neutral-100 sm:p-2 lg:p-3 rounded-lg ${personal.length < 0 ? "border-none": null}`}>
                   {
                     personal.map((item)=>(
-                      <div className="w-full flex flex-row items-center justify-between">
+                      <div className="w-full flex flex-row items-center justify-between gap-x-2">
                         <div
                         key={item.uuid}
-                        className="w-full flex items-center gap-x-5"
+                        className="w-full flex items-center gap-x-5 mb-3"
                       >
-                        <div className="lg:w-[20%] sm:w-[10%] rounded-lg">
+                        <div className="w-[20%] rounded-lg">
                           <div 
-                            className={
-                              item.dosage_form === "i" ? "bg-red-300" : 
-                              item.dosage_form === "s" ? "bg-blue-300" : ""
-                            }
+                           
                           >
                             {
                               item.dosage_form === "c" ? <img src={capsule} alt="" className="w-full"/> :
-                              item.dosage_form === "i" ? <BiSolidInjection /> :
-                              item.dosage_form === "s" ? <TbMedicineSyrup /> : null
+                              item.dosage_form === "i" ? <img src={med1} alt="" /> :
+                              item.dosage_form === "s" ? <img src={med2} alt="" />  : null
                             }
                           </div>
                         </div>
                         <div>
-                          <h2 className="text-neutral-100 font-bold lg:text-2xl sm:text-lg capitalize">{item.drug_name}</h2>
-                          <p className="gap-x-2 text-neutral-50 font-bold sm:text-lg lg:text-xl capitalize">
+                          <h2 className="text-neutral-100 font-bold lg:text-lg sm:text-md capitalize">{item.drug_name}</h2>
+                          <p className="gap-x-2 text-neutral-50 font-bold sm:text-sm lg:text-md capitalize">
                             <span>{item.dose}</span>
                             <span>{item.dose_unit}</span>,
                             <span className="ml-2">{item.frequency}</span>
@@ -195,7 +196,7 @@ const PatientPrescriptions = () => {
                            {/* Reminder times */}
                             <div className="bg-neutral-50/50 rounded-lg lg:p-2 sm:p-1 grid grid-cols-2 mx-auto">
                               {item.reminder_time.map((timeObj, index) => (
-                                <p key={index} className="text-md font-bold">
+                                <p key={index} className="text-xs font-bold">
                                   {timeObj.reminder_time}
                                 </p>
                               ))}
@@ -203,9 +204,10 @@ const PatientPrescriptions = () => {
                         </div>
                       </div>
                       <div onClick={()=>handleViewPersonalPrescription(item.uuid) }>
+                        
                         <MdOutlineRemoveRedEye 
                           className="text-primary-100 font-bold"
-                          size={30}
+                          size={20}
                         />
                       </div>
                     </div>
@@ -222,9 +224,12 @@ const PatientPrescriptions = () => {
       </div>
 
       {
-        viewPersonal  &&
-          <Modal visible={viewPersonal} onClick={handleViewPersonalPrescription}>
-            <PersonalMedication handleClose={handleViewPersonalPrescription}/>
+        viewPersonal  && selectedPersonalMedication &&
+          <Modal visible={viewPersonal} onClick={() => setViewPersonal(false)}>
+            <PersonalMedication 
+              handleClose={() => setViewPersonal(false)}
+              medication={selectedPersonalMedication}
+            />
           </Modal>
       }
       <Backdrop

@@ -100,7 +100,7 @@ const PatientAppointments = () => {
   };
 
   return (
-    <section className="appointment w-full  h-full lg:p-10 sm:p-2">
+    <section className="appointment w-full h-full lg:p-10 sm:p-2">
       <main className="lg:p-10 sm:p-5 bg-white rounded-lg w-full h-full sm:mt-24 lg:mt-40">
         <div className="flex flex-row items-center justify-between lg:mt-0 sm:mt-10 w-full">
           <h2 className="first-letter:capitalize sm:text-lg lg:text-2xl font-semibold">
@@ -154,7 +154,7 @@ const PatientAppointments = () => {
           <input
             type="text"
             className="flex lg:hidden w-full border-2 text-lg font-semibold border-neutral-50 p-2 focus:border-primary-100 rounded-lg outline-none"
-            placeholder="Search by doctor or status"
+            placeholder="Search by doctor"
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
