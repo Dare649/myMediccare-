@@ -9,7 +9,6 @@ import { DoctorProvider } from './context/DoctorContext';
 
 
 // Pages and Components
-import Home from "./pages/Home";
 import Signin from "./auth/Signin";
 import OtpVerification from "./auth/OtpVerification";
 import Signup from "./auth/sign-up/Signup";
@@ -44,8 +43,7 @@ const App = () => {
             {/* Routes for unauthenticated users */}
             {!token ? (
               <>
-                <Route path="/" element={<Home />} />
-                <Route path="/sign-in" element={<Signin />} />
+                <Route path="/" element={<Signin />} />
                 <Route path="/sign-up" element={<Signup />} />
                 <Route path="/otp-verification" element={<OtpVerification />} />
                 <Route path="/terms-&-conditions" element={<Terms />} />
