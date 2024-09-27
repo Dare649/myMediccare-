@@ -5,8 +5,10 @@ import withReactContent from "sweetalert2-react-content";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { axiosClient } from "../../../axios";
-import avater from "../../../assets/images/avarter.jpg";
 import { FaPoundSign } from "react-icons/fa";
+import doc1 from "../../../../public/images/doc1.jpg"
+import doct3 from "../../../../public/images/doct3.jpg"
+import doc7 from "../../../../public/images/doc7.jpg"
 
 const BookingSummary = ({ formData, handleSubmit, prevStep }) => {
   const [doctor, setDoctor] = useState({});
@@ -64,14 +66,15 @@ const BookingSummary = ({ formData, handleSubmit, prevStep }) => {
       <h2 className="capitalize lg:text-xl sm:lg px-5 font-bold ">Booking Summary</h2>
       <hr className="w-full bg-neutral-50 h-1 my-5" />
       <div className="w-full flex flex-row items-center sm:gap-x-10">
-        <div className="w-20 h-20 rounded-full border-2 border-neutral-50 p-1">
-          {doctor.img ? (
-            <img src={doctor.img} alt={doctor.name} className="w-full" />
-          ) : (
-            <div>
-              <img src={avater} alt={doctor.name} className="w-full" />
-            </div>
-          )}
+        <div className="h-20 w-20 rounded-full">
+         
+        {
+          doctor.name === "Damilare Ajayi" ? <img src={doc1} alt="" className="w-full h-full object-cover rounded-full"/>:
+          doctor.name === "Roman Q" ? <img src={doct3} alt="" className="w-full h-full object-cover rounded-full"/>:
+          
+          <img src={doc7} alt="" className="w-full h-full object-cover rounded-full"/>
+        }
+          
         </div>
         <div className="">
           <h2 className="font-bold text-neutral-100">{doctor.name || "N/A"}</h2>
@@ -97,7 +100,7 @@ const BookingSummary = ({ formData, handleSubmit, prevStep }) => {
           <div className="py-2">
             <h2 className="font-bold capitalize text-md text-primary-100">appointment type</h2> 
             <h2 className="font-bold text-neutral-100 capitalize text-xl">{
-              type === "oc" ? "oncline consultation" : type === "hc" ? "home consultation": type === "st" ? "speak to therapist" : type === "lt" ? "lab test" : "speak to specialst"
+              type === "oc" ? "online consultation" : type === "hc" ? "home consultation": type === "st" ? "speak to therapist" : type === "lt" ? "lab test" : "speak to specialst"
             }</h2> 
           </div>
           <div className="py-2">

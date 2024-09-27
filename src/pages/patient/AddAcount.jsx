@@ -101,7 +101,7 @@ const AddAccount = ({handleClose, onClick}) => {
       <form onSubmit={handleSubmit} className="w-full sm:p-2 lg:p-5">
         <div className="grid lg:grid-cols-2 sm:grid-cols-1 gap-5">
           <div className="w-full">
-            <h2 className="capitalize font-bold mb-2 ">full name</h2>
+            <h2 className="capitalize font-bold mb-2 ">username</h2>
             <input
               type="text"
               id="name"
@@ -112,7 +112,7 @@ const AddAccount = ({handleClose, onClick}) => {
             />
             {error.name && <span className="text-red-500">{error.name}</span>}
           </div>
-          <div className="w-full">
+          {/* <div className="w-full">
             <h2 className="capitalize font-bold mb-2 ">phone</h2>
             <PhoneInput
               international
@@ -122,8 +122,8 @@ const AddAccount = ({handleClose, onClick}) => {
               className={`outline-none border-2 ${error.phone ? "border-red-500" : "border-neutral-50"} p-2 w-full text-lg font-medium rounded-lg focus:border-primary-100`}
             />
             {error.phone && <span className="text-red-500">{error.phone}</span>}
-          </div>
-          <div className="w-full">
+          </div> */}
+          {/* <div className="w-full">
             <h2 className="capitalize font-bold mb-2 ">country</h2>
             <Select
               options={countries}
@@ -133,7 +133,7 @@ const AddAccount = ({handleClose, onClick}) => {
               placeholder="Select your country"
             />
             {error.country_code && <span className="text-red-500">{error.country_code}</span>}
-          </div>
+          </div> */}
           <div className="w-full">
             <h2 className="capitalize font-bold mb-2 ">sex</h2>
             <select
@@ -151,16 +151,28 @@ const AddAccount = ({handleClose, onClick}) => {
             {error.sex && <span className="text-red-500">{error.sex}</span>}
           </div>
           <div className="w-full">
-            <h2 className="capitalize font-bold mb-2 ">date of birth</h2>
-            <input
-              type="date"
-              id="date_of_birth"
-              name="date_of_birth"
-              onChange={handleChange}
-              value={formData.date_of_birth}
-              className={`outline-none border-2 ${error.date_of_birth ? "border-red-500" : "border-neutral-50"} p-2 w-full text-lg font-medium rounded-lg focus:border-primary-100`}
-            />
-            {error.date_of_birth && <span className="text-red-500">{error.date_of_birth}</span>}
+            <h2 className="capitalize font-bold mb-2 ">age</h2>
+            <select
+            className={`outline-none border-2 ${error.age ? 'border-red-500' : 'border-neutral-50'} p-2 w-full text-lg font-medium rounded-lg focus:border-primary-100`}
+            type="text"
+            id="age" 
+            name="age"
+            value={formData.age} 
+            onChange={handleChange}
+            >
+              <option value="" disabled>
+                --Select Age Group--
+              </option>
+              <option value="Infants/Toddlers: 0 - 2 years">Infants/Toddlers: 0 - 2 years</option>
+              <option value="Children: 3 - 12 years">Children: 3 - 12 years</option>
+              <option value="Teens/Adolescents: 13 - 17 years">Teens/Adolescents: 13 - 17 years</option>
+              <option value="Young Adults: 18 - 25 years">Young Adults: 18 - 25 years</option>
+              <option value="Adults: 26 - 40 years">Adults: 26 - 40 years</option>
+              <option value="Middle-aged Adults: 41 - 60 years">Middle-aged Adults: 41 - 60 years</option>
+              <option value="Seniors/Elderly: 61+ years">Seniors/Elderly: 61+ years</option>
+            </select>
+            
+            {error.age && <span className="text-red-500">{error.age}</span>}
           </div>
           <div className="w-full">
             <h2 className="capitalize font-bold mb-2 ">relationship</h2>

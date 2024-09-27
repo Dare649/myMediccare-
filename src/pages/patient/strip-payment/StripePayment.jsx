@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from "@stripe/react-stripe-js";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useIntentContext } from "../../../context/IntentContext";
 import { axiosClient } from "../../../axios";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
-import { FaRegCreditCard, FaArrowLeftLong  } from "react-icons/fa6";
+import { FaRegCreditCard } from "react-icons/fa6";
 import { FaRegCalendarAlt } from "react-icons/fa";
 
 // Load Stripe public key
@@ -16,7 +15,6 @@ const StripeForm = () => {
     const stripe = useStripe();
     const elements = useElements();
     const { intentData } = useIntentContext(); // Getting intentData from context
-    console.log(intentData);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -24,47 +22,54 @@ const StripeForm = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        // Ensure Stripe.js and Elements are available
         if (!stripe || !elements) {
+            setError("Stripe.js has not loaded yet. Please wait.");
             return;
         }
 
         try {
             setLoading(true);
 
+            // Ensure intentData is available and valid
             if (!intentData || !intentData.paymentIntent) {
-                throw new Error("Client secret is missing. Please check your backend response.");
+                throw new Error("Payment intent is missing. Please check your backend response.");
             }
 
             const clientSecret = intentData.paymentIntent;
 
-            const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+            // Confirm the card payment using the client secret and the card element
+            const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
                 payment_method: {
                     card: elements.getElement(CardNumberElement),
                 },
             });
 
-            if (error) {
-                setError(error.message);
+            // Handle any errors during the payment confirmation
+            if (stripeError) {
+                console.error("Stripe Payment Error:", stripeError);
+                setError(stripeError.message);
                 setLoading(false);
                 return;
             }
 
             // Check if the payment succeeded
             if (paymentIntent && paymentIntent.status === 'succeeded') {
-                // The payment was successful
+                console.log("Payment Intent:", paymentIntent);
 
-                // Calculate the amount by dividing by 100 and ensure it's a number
+                // Convert the received amount into the correct currency
                 const amountReceived = paymentIntent.amount;
                 const amountInCurrency = amountReceived ? Number(amountReceived) / 100 : 0;
 
-                // Proceed with further actions, e.g., making a deposit
+                // Prepare deposit data
                 const depositData = {
-                    amount: amountInCurrency, // Amount divided by 100
+                    amount: amountInCurrency,
                     customer_id: intentData.customer,
-                    status: paymentIntent.status, // Use the status from paymentIntent
+                    status: paymentIntent.status,
                     payment_method_id: paymentIntent.payment_method,
                 };
 
+                // Send the deposit data to the backend
                 const response = await axiosClient.post("/api/patient/wallet/make_deposit", depositData);
 
                 if (response.data.status === 1) {
@@ -84,21 +89,23 @@ const StripeForm = () => {
                         navigate("/stripe-payment");
                     });
                 }
-
             } else {
                 // Handle unsuccessful payment
+                console.error("Payment failed:", paymentIntent);
                 setError("Payment failed. Please try again.");
+                setLoading(false);
             }
 
-            setLoading(false);
         } catch (err) {
+            // Capture any errors and log them
+            console.error("Payment error:", err);
             setError(err.message || "An error occurred. Please try again.");
             setLoading(false);
         }
     };
 
     return (
-        <section className='w-full lg:p-10 sm:p-2 '>
+        <section className='w-full lg:p-10 sm:p-2'>
             <div className="lg:p-10 sm:p-2 lg:mt-40 sm:20 bg-white rounded-lg w-full h-full">
                 <h2 className="lg:text-2xl sm:text-lg font-bold text-center">
                     Complete Your Payment

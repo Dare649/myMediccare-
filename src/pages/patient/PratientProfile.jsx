@@ -21,7 +21,7 @@ const PratientProfile = () => {
     phone : "",
     email : "",
     sex: "",
-    date_of_birth : "",
+    age : "",
     blood_group : "",
     genotype : "",
     occupation : "",
@@ -95,7 +95,7 @@ const PratientProfile = () => {
     setError({});
 
     const requiredFields = [
-      "name", "email", "phone", "country_code", "sex", "city", "date_of_birth", "special_needs", "chronic_conditions",
+      "name", "email", "phone", "country_code", "sex", "city", "age", "special_needs", "chronic_conditions",
       "blood_group", "genotype", "occupation", "marital_status", "allergies", // Added comma here
       "weight", "height", "on_regular_prescriptions", "zip_code", 
       "country", "state", "street_address", "ec_name", "ec_email", 
@@ -169,7 +169,7 @@ const PratientProfile = () => {
             />
             {error.email && <span className="text-red-500">{error.email}</span>}
           </div>
-          <div>
+          {/* <div>
             <h2 className="capitalize font-bold mb-2 ">phone</h2>
             <PhoneInput
               international
@@ -179,7 +179,7 @@ const PratientProfile = () => {
               className={`outline-none border-2 ${error.phone ? 'border-red-500' : 'border-neutral-50'} p-2 w-full text-lg font-medium rounded-lg focus:border-primary-100`}
             />
             {error.phone && <span className="text-red-500">{error.phone}</span>}
-          </div>
+          </div> */}
           <div className="w-full">
             <h2 className="capitalize font-bold mb-2 ">street address</h2>
             <input 
@@ -271,15 +271,27 @@ const PratientProfile = () => {
           
           <div className="w-full">
             <h2 className="capitalize font-bold mb-2 ">date of birth</h2>
-            <input 
-              type="date"
-              id="date_of_birth" 
-              name="date_of_birth"
-              onChange={handleChange}
-              value={formData.date_of_birth} 
-              className={`outline-none border-2 ${error.date_of_birth ? 'border-red-500' : 'border-neutral-50'} p-2 w-full text-lg font-medium rounded-lg focus:border-primary-100`}
-            />
-            {error.date_of_birth && <span className="text-red-500">{error.date_of_birth}</span>}
+            <select
+            className={`outline-none border-2 ${error.age ? 'border-red-500' : 'border-neutral-50'} p-2 w-full text-lg font-medium rounded-lg focus:border-primary-100`}
+            type="text"
+            id="age" 
+            name="age"
+            value={formData.age} 
+            onChange={handleChange}
+            >
+              <option value="" disabled>
+                --Select Age Group--
+              </option>
+              <option value="Infants/Toddlers: 0 - 2 years">Infants/Toddlers: 0 - 2 years</option>
+              <option value="Children: 3 - 12 years">Children: 3 - 12 years</option>
+              <option value="Teens/Adolescents: 13 - 17 years">Teens/Adolescents: 13 - 17 years</option>
+              <option value="Young Adults: 18 - 25 years">Young Adults: 18 - 25 years</option>
+              <option value="Adults: 26 - 40 years">Adults: 26 - 40 years</option>
+              <option value="Middle-aged Adults: 41 - 60 years">Middle-aged Adults: 41 - 60 years</option>
+              <option value="Seniors/Elderly: 61+ years">Seniors/Elderly: 61+ years</option>
+            </select>
+            
+            {error.age && <span className="text-red-500">{error.age}</span>}
           </div>
           <div className="w-full">
             <h2 className="capitalize font-bold mb-2 ">marital status</h2>
@@ -431,7 +443,7 @@ const PratientProfile = () => {
             </select>
             {error.on_regular_prescriptions && <span className="text-red-500">{error.on_regular_prescriptions}</span>}
           </div>
-          <div>
+          {/* <div>
             <div className="w-full flex flex-row items-center gap-x-3">
               
               <div className="w-full">
@@ -448,10 +460,10 @@ const PratientProfile = () => {
               </div>
             </div>
             <p className="first-letter:capitalize font-bold">any chronic conditions? <span className="text-sm text-red-500 capitalize">(diabetes, hypertension, sickle cell anemia etc)</span></p>
-          </div>
+          </div> */}
         
         </div>
-        <h2 className="capitalize font-bold lg:text-xl sm:text-md">emergency contact</h2>
+          <h2 className="capitalize font-bold lg:text-xl sm:text-md">emergency contact</h2>
           <div className="w-full bg-white lg:p-5 sm:p-2 rounded-lg lg:my-5 sm:my-3 grid lg:grid-cols-3 sm:grid-cols-1 gap-5">
             <div className="w-full">
               <h2 className="capitalize font-bold mb-2 ">full name</h2>
@@ -524,7 +536,7 @@ const PratientProfile = () => {
               />
               {error.ec_country && <span className="text-red-500">{error.ec_country}</span>}
             </div>
-            <div className="w-full">
+            {/* <div className="w-full">
               <h2 className="capitalize font-bold mb-2 ">zip code</h2>
               <input 
                 type="number" 
@@ -535,7 +547,7 @@ const PratientProfile = () => {
                 value={formData.ec_zip_code}
               />
               {error.ec_zip_code && <span className="text-red-500">{error.ec_zip_code}</span>}
-            </div>
+            </div> */}
           </div>
           <div className="lg:w-[50%] sm:w-full flex flex-col items-center justify-center mx-auto">
             <button

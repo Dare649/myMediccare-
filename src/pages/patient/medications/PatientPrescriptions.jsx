@@ -94,7 +94,7 @@ const PatientPrescriptions = () => {
         <button 
           onClick={handlePrescriptionRequest}
           className="flex font-bold flex-row items-center justify-center lg:p-3 sm:p-1 bg-primary-100 rounded-lg text-white gap-x-1">
-          <h2 className="first-letter:capitalize lg:text-base sm:text-sm">request prescription</h2><FiPlusCircle className=" " size={20}/>
+          <h2 className="first-letter:capitalize lg:text-base sm:text-sm">manage prescription</h2><FiPlusCircle className=" " size={20}/>
         </button>
       </div>
       {
@@ -123,8 +123,8 @@ const PatientPrescriptions = () => {
                           >
                             {
                               item.dosage_form === "c" ? <img src={capsule} alt="" className="w-full"/> :
-                              item.dosage_form === "i" ? <img src={med1} alt="" /> :
-                              item.dosage_form === "s" ? <img src={med2} alt="" />: null
+                              item.dosage_form === "i" ? <img src={med1} alt="" className="w-full"/> :
+                              item.dosage_form === "s" ? <img src={med2} alt="" className="w-full"/>: null
                             }
                           </div>
                         </div>
@@ -147,7 +147,7 @@ const PatientPrescriptions = () => {
                       </div>
                       <div onClick={() => handleViewPersonalPrescription(item.uuid)}>
                         <MdOutlineRemoveRedEye 
-                          className="text-primary-100 font-bold"
+                          className="text-primary-100 font-bold cursor-pointer"
                           size={20}
                         />
                         { console.log(item.uuid)}
@@ -181,8 +181,8 @@ const PatientPrescriptions = () => {
                           >
                             {
                               item.dosage_form === "c" ? <img src={capsule} alt="" className="w-full"/> :
-                              item.dosage_form === "i" ? <img src={med1} alt="" /> :
-                              item.dosage_form === "s" ? <img src={med2} alt="" />  : null
+                              item.dosage_form === "i" ? <img src={med1} alt="" className="w-full"/> :
+                              item.dosage_form === "s" ? <img src={med2} alt="" className="w-full"/>  : null
                             }
                           </div>
                         </div>
@@ -206,7 +206,7 @@ const PatientPrescriptions = () => {
                       <div onClick={()=>handleViewPersonalPrescription(item.uuid) }>
                         
                         <MdOutlineRemoveRedEye 
-                          className="text-primary-100 font-bold"
+                          className="text-primary-100 font-bold cursor-pointer"
                           size={20}
                         />
                       </div>

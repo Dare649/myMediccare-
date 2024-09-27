@@ -31,7 +31,7 @@ const DoctorDashboard = () => {
       </div>
       <div className="w-full rounded-lg sm:p-2 lg:p-5 my-10 bg-white">
         <h2 className="text-neutral-100 font-bold text-xl capitalize mb-10">performance metrics</h2>
-        <div className=" grid lg:grid-cols-3 grid-cols-1 gap-6">
+        <div className=" grid lg:grid-cols-2 grid-cols-1 gap-6">
           {
             docdash.map((item, id)=>(
               <div key={id} className="w-full ">

@@ -11,6 +11,7 @@ import { useAuthContext } from "../context/AuthContext";
 import Swal from "sweetalert2"; // Ensure SweetAlert is imported
 import withReactContent from "sweetalert2-react-content"; // Optional for React integration
 
+
 const TopBar = ({ onChange, placeholder }) => {
   const [visible, setVisible] = useState(false);
   const { user, signout } = useAuthContext();
@@ -36,7 +37,7 @@ const TopBar = ({ onChange, placeholder }) => {
           })
           .catch((error) => {
             setLoading(false); // Stop loading if an error occurs
-            console.error("Signout error:", error);
+            
           });
       }
     });
@@ -53,7 +54,7 @@ const TopBar = ({ onChange, placeholder }) => {
         <div className="px-4 py-8 flex flex-row items-center justify-between w-full">
           <div className="welcome">
             <h2 className="text-3xl text-primary-100 font-bold capitalize">
-              hi, {user?.name}
+              hi, {user?.role === "patient" ? user?.username : user?.name}
             </h2>
             <p className="first-letter:capitalize font-bold text-neutral-50">
               how are you doing today?
@@ -91,7 +92,7 @@ const TopBar = ({ onChange, placeholder }) => {
               <div className="fixed top-0 left-0 menuItem bg-white w-[70%] h-screen">
                 <div className="welcome mx-5 mt-5">
                   <h2 className="text-xl text-primary-100 font-bold">
-                    Welcome back, {user?.name}
+                    Welcome back, {user?.username}
                   </h2>
                   <p className="first-letter:capitalize font-bold text-neutral-50">
                     how are you doing today?

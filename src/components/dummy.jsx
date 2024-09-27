@@ -68,12 +68,12 @@ export const docdash = [
         icon: <CiMedicalCross  size={20}/>,
         count: 40
     },
-    {
-        title: "test orders",
-        text: "orders",
-        icon: <TbTestPipe size={20}/>,
-        count: 50
-    },
+    // {
+    //     title: "test orders",
+    //     text: "orders",
+    //     icon: <TbTestPipe size={20}/>,
+    //     count: 50
+    // },
     {
         title: "prescriptions",
         text: "prescriptions",
@@ -86,13 +86,13 @@ export const docdash = [
         icon: <CiStar  size={20}/>,
         count: 4.5
     },
-    {
-        title: "revenue",
-        text: "generated revenue",
-        icon: <PiCoinsLight size={20}/>,
-        count: "50.6k",
-        gap: true
-    },
+    // {
+    //     title: "revenue",
+    //     text: "generated revenue",
+    //     icon: <PiCoinsLight size={20}/>,
+    //     count: "50.6k",
+    //     gap: true
+    // },
 ]
 
 

@@ -7,6 +7,12 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import doc1 from "../../../public/images/doc1.jpg"
+import doc2 from "../../../public/images/doc2.jpg"
+import doc5 from "../../../public/images/doc5.jpg"
+import doc7 from "../../../public/images/doc7.jpg"
+import doc4 from "../../../public/images/doc4.jpg"
+import doct3 from "../../../public/images/doct3.jpg"
 
 
 const PatientAppointments = () => {
@@ -33,6 +39,7 @@ const PatientAppointments = () => {
           response = await axiosClient.get("/api/patient/get_appt/completed");
         }
         setAppointments(response.data?.data || []);
+      
       } catch (error) {
         console.error("Error fetching appointments:", error);
       }
@@ -180,16 +187,28 @@ const PatientAppointments = () => {
                       .map((item, id) => (
                         <tr
                           key={id}
-                          className="w-full border-2 border-x-0 border-t-0 border-b border-neutral-50 hover:bg-primary-100/10 cursor-pointer sm:overflow-x-scroll"
+                          className="w-full border-2 border-x-0 border-t-0 border-b border-neutral-50 cursor-pointer sm:overflow-x-scroll"
                         >
-                          <td className="flex flex-row items-center gap-x-2 py-5 text-lg font-medium capitalize">
-                            <span>
-                              <img
-                                src={`https://api.example.com/doctor-images/${item.doctor_id}`}
-                                alt={item.doctor_name}
-                                className="h-10 w-10 rounded-full"
-                              />
-                            </span>
+                          <td className="h-20 w-20 rounded-full my-5">
+                          
+                              {/* {
+                                item.appointment_type === "hc" ? <img src={doc5} alt="" className="w-full h-full object-cover rounded-full"/>:
+                                item.appointment_type === "oc" ? <img src={doct3} alt="" className="w-full h-full object-cover rounded-full"/>:
+                                item.appointment_type === "st" ? <img src={doc7} alt="" className="w-full h-full object-cover rounded-full"/>:
+                                item.appointment_type === "lt" ? <img src={doc2} alt="" className="w-full h-full object-cover rounded-full"/>:
+                                <img src={doc1} alt="" className="w-full h-full object-cover rounded-full"/>
+                              } */}
+
+{
+          item.doctor_name === "Damilare Ajayi" ? <img src={doc1} alt="" className="w-full h-full object-cover rounded-full"/>:
+          item.doctor_name === "Roman Q" ? <img src={doct3} alt="" className="w-full h-full object-cover rounded-full"/>:
+          
+          <img src={doc7} alt="" className="w-full h-full object-cover rounded-full"/>
+        }
+                      
+                    
+                          </td>
+                          <td className="text-lg font-medium capitalize py-5 px-5">
                             {item.doctor_name}
                           </td>
                           <td className="text-lg font-medium capitalize py-5 px-5">
@@ -262,11 +281,17 @@ const PatientAppointments = () => {
                   >
                       <div className="flex flex-row justify-between items-center gap-x-2">
                         <div className="flex items-center justify-center border-2 border-neutral-100 rounded-full h-20 w-20">
-                          <img
-                            src={`https://api.example.com/doctor-images/${item.doctor_id}`}
-                            alt={item.doctor_name}
-                            className="h-12 w-12 rounded-full"
-                          />
+                          <div className="h-12 w-12 rounded-full">
+                          {
+                                item.appointment_type === "hc" ? <img src={doc1} alt="" className="w-full h-full object-cover rounded-full"/>:
+                                item.appointment_type === "oc" ? <img src={doct3} alt="" className="w-full h-full object-cover rounded-full"/>:
+                                item.appointment_type === "st" ? <img src={doc7} alt="" className="w-full h-full object-cover rounded-full"/>:
+                                item.appointment_type === "lt" ? <img src={doc2} alt="" className="w-full h-full object-cover rounded-full"/>:
+                                <img src={doc5} alt="" className="w-full h-full object-cover rounded-full"/>
+                              }
+                          </div>
+                          
+                          
                         </div>
                         <div className="text-md font-bold capitalize">
                           {item.doctor_name}
