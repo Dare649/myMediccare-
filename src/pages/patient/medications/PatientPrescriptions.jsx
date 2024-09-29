@@ -17,6 +17,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import PersonalMedication from "./PersonalMedication";
 import med1 from "../../../../public/images/med1.png";
 import med2 from "../../../../public/images/med2.png";
+import { CiFileOn } from "react-icons/ci";
+import { useNavigate } from "react-router-dom";
 
 
 const PatientPrescriptions = () => {
@@ -28,6 +30,8 @@ const PatientPrescriptions = () => {
   const [personal, setPersonal] = useState([]);
   const [viewPersonal, setViewPersonal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
+  const [prescriptionList, setPrescriptionList] = useState(false);
+  const navigate = useNavigate();
 
 
 
@@ -37,7 +41,7 @@ const PatientPrescriptions = () => {
         setLoading(true);
         const response = await axiosClient.get("/api/patient/get_prescription/prescribed");
         setPrescibed(response.data.data);
-        console.log(prescribed)
+ 
       } catch (error) {
         setLoading(false);
         MySwal.fire({
@@ -66,6 +70,24 @@ const PatientPrescriptions = () => {
         setLoading(false);
       }
     }; 
+    const fetchPrescriptionList = async () => {
+      try {
+        setLoading(true);
+        const response = await axiosClient.get("/api/patient/all_prescriptions");
+        setPrescriptionList(response.data.data);
+      } catch (error) {
+        setLoading(false);
+        MySwal.fire({
+          title: "Error!",
+          text: "Failed to fetch prescription list, try again.",
+          icon: "error",
+        });
+      } finally {
+        setLoading(false);
+      }
+    }; 
+
+    fetchPrescriptionList();
     fetchPersonal();
     fetchPrescribed();
   }, [])
@@ -86,6 +108,13 @@ const PatientPrescriptions = () => {
   const selectedPersonalMedication = personal.find(item => item.uuid === selectedItemId);
 
 
+  const handleViewPrescriptionDetails = (prescription) => {
+    navigate(`/patient-prescription-list/${prescription.consultation_uuid}`, {
+      state: { prescription },
+    });
+  };
+
+
   
   return (
     <section className="prescription sm:mt-20 lg:mt-40 w-full h-full lg:p-10 sm:p-5">
@@ -94,7 +123,7 @@ const PatientPrescriptions = () => {
         <button 
           onClick={handlePrescriptionRequest}
           className="flex font-bold flex-row items-center justify-center lg:p-3 sm:p-1 bg-primary-100 rounded-lg text-white gap-x-1">
-          <h2 className="first-letter:capitalize lg:text-base sm:text-sm">manage prescription</h2><FiPlusCircle className=" " size={20}/>
+          <h2 className="first-letter:capitalize lg:text-base sm:text-sm">add prescription</h2><FiPlusCircle className=" " size={20}/>
         </button>
       </div>
       {
@@ -104,8 +133,7 @@ const PatientPrescriptions = () => {
           </Modal>
       }
 
-      <div className="w-full flex lg:flex-row sm:flex-col items-center gap-5 mb-10">
-        <div className="sm:w-full lg:w-[50%] bg-white rounded-lg sm:p-2 lg:p-5">
+        <div className="w-full bg-white rounded-lg sm:p-2 lg:p-5">
           <h2 className="font-bold sm:text-lg text-xl capitalize lg:py-5 sm:py-2">prescribed medications</h2>
             {
               prescribed.length > 0 ? (
@@ -117,7 +145,7 @@ const PatientPrescriptions = () => {
                         key={item.uuid}
                         className="w-full flex items-center gap-x-5 mb-3"
                       >
-                        <div className="w-[20%] rounded-lg">
+                        <div className="sm:w-[20%] lg:w-[5%] rounded-lg">
                           <div 
                             
                           >
@@ -148,9 +176,8 @@ const PatientPrescriptions = () => {
                       <div onClick={() => handleViewPersonalPrescription(item.uuid)}>
                         <MdOutlineRemoveRedEye 
                           className="text-primary-100 font-bold cursor-pointer"
-                          size={20}
+                          size={30}
                         />
-                        { console.log(item.uuid)}
                       </div>
                     </div>
                     ))
@@ -163,7 +190,7 @@ const PatientPrescriptions = () => {
               )
             }
         </div>
-        <div className="sm:w-full lg:w-[50%] bg-white rounded-lg sm:p-2 lg:p-5">
+        <div className="w-full bg-white rounded-lg sm:p-2 lg:p-5 my-5">
           <h2 className="font-bold sm:text-lg text-xl capitalize lg:py-5 sm:py-2">personal medications</h2>
             {
               personal.length > 0 ? (
@@ -175,7 +202,7 @@ const PatientPrescriptions = () => {
                         key={item.uuid}
                         className="w-full flex items-center gap-x-5 mb-3"
                       >
-                        <div className="w-[20%] rounded-lg">
+                        <div className="sm:w-[20%] lg:w-[5%]  rounded-lg">
                           <div 
                            
                           >
@@ -207,7 +234,7 @@ const PatientPrescriptions = () => {
                         
                         <MdOutlineRemoveRedEye 
                           className="text-primary-100 font-bold cursor-pointer"
-                          size={20}
+                          size={30}
                         />
                       </div>
                     </div>
@@ -221,7 +248,40 @@ const PatientPrescriptions = () => {
               )
             }
         </div>
-      </div>
+
+        <div className="w-full bg-white rounded-lg sm:p-2 lg:p-5 my-5">
+          <h2 className="font-bold sm:text-lg text-xl capitalize lg:py-5 sm:py-2">prescription list</h2>
+          {
+            prescriptionList.length > 0 ? (
+              prescriptionList.map((item) => (
+                <div 
+                  className="w-full flex flex-row items-center justify-between border-b-2 border-neutral-50 py-3 overflow-y-scroll"
+                  key={item.uuid}
+                >
+                  <div className="flex flex-row items-center gap-x-5">
+                    <div className="border-2 border-neutral-50 w-20 h-20 rounded-full flex flex-col items-center justify-center ">
+                      <CiFileOn className="text-primary-100 font-bold" size={30}/>
+                    </div>
+                    <div>
+                      <h2 className="first-letter:capitalize ">{item.diagnosis || "null"} prescription.pdf</h2>
+                      <h5 className="text-neutral-50 capitalize text-md">{item.doctor_name}</h5>
+                    </div>
+                  </div>
+                  
+                  <MdOutlineRemoveRedEye
+                    size={30}
+                    className="text-primary-100 font-bold cursor-pointer"
+                    onClick={() => handleViewPrescriptionDetails(item)}
+                  />
+                 
+                </div>
+              ))
+            ):(
+              <p className="text-center font-bold text-primary-100 capitalize">no prescription list available at the moment</p>
+            )
+          }
+        </div>
+
 
       {
         viewPersonal  && selectedPersonalMedication &&

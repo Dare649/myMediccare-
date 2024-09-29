@@ -13,17 +13,24 @@ import doc5 from "../../../public/images/doc5.jpg"
 import doc7 from "../../../public/images/doc7.jpg"
 import doc4 from "../../../public/images/doc4.jpg"
 import doct3 from "../../../public/images/doct3.jpg"
+import Modal from "../../components/Modal";
+import DoctorRating from "../../patientModalPages/DoctorRating";
 
 
 const PatientAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const MySwal = withReactContent(Swal);
   const [loading, setLoading] = useState(false);
+  const [rate, setRate] = useState(false);
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState("today");
   const recordsPerPage = 5;
+  const [view, setView] = useState(false);
+  const [bookingId, setBookingId] = useState(null);
+  const [selectedBookingId, setSelectedBookingId] = useState(null);
+
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -39,14 +46,31 @@ const PatientAppointments = () => {
           response = await axiosClient.get("/api/patient/get_appt/completed");
         }
         setAppointments(response.data?.data || []);
+        const appointmentsData = response.data?.data || [];
+
+        // Set booking_id from the first appointment if available
+        if (appointmentsData.length > 0) {
+          const firstAppointment = appointmentsData[0];
+          setBookingId(firstAppointment.booking_id); // Store booking_id
+        }
       
       } catch (error) {
-        console.error("Error fetching appointments:", error);
+        MySwal({
+          title: "Error",
+          text: "Error fetching appointment, try again.",
+          icon: "error"
+        })
       }
     };
 
+    
+
+
     fetchAppointments();
+ 
   }, [filter]);
+
+  
 
   const lastIndex = currentPage * recordsPerPage;
   const firstIndex = lastIndex - recordsPerPage;
@@ -104,6 +128,19 @@ const PatientAppointments = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleView = () => {
+    setView((prev) => !prev);
+  }
+
+  const handleCloseRatings = () => {
+    setRate((prev) => !prev);
+  }
+
+  const handleRatings = (booking_id) => {
+    setSelectedBookingId(booking_id);
+    setRate(true);
   };
 
   return (
@@ -189,7 +226,7 @@ const PatientAppointments = () => {
                           key={id}
                           className="w-full border-2 border-x-0 border-t-0 border-b border-neutral-50 cursor-pointer sm:overflow-x-scroll"
                         >
-                          <td className="h-20 w-20 rounded-full my-5">
+                          <td className="h-20 w-20 rounded-full my-2">
                           
                               {/* {
                                 item.appointment_type === "hc" ? <img src={doc5} alt="" className="w-full h-full object-cover rounded-full"/>:
@@ -237,10 +274,42 @@ const PatientAppointments = () => {
                                   className="bg-primary-100 p-3 rounded-lg text-white font-bold capitalize">join</button>
                               </td>
                           }
+
+                          {
+                            filter === "completed" &&
+                            <td className="flex flex-row items-center p-5 gap-x-2">
+                              {
+                                item.review_exists === false ? (
+                                  <button 
+                                    onClick={() => handleRatings(item.booking_id)}
+                                    className="p-3 bg-primary-100 cursor-pointer font-bold text-white capitalize rounded-lg"
+                                  >
+                                    rate
+                                  </button>
+                                ): null
+                              }
+                              <Link 
+                                to={`/patient-consultation-prescription-list/${item.booking_id}`}
+                                className="p-3 bg-neutral-100 font-bold text-white capitalize rounded-lg"
+                              >
+                                view
+                              </Link>
+                            </td>
+
+                          }
                         </tr>
                       ))}
                   </tbody>
                 </table>
+                {
+                  rate && 
+                    <Modal visible={rate} onClick={handleCloseRatings}>
+                      <DoctorRating 
+                        booking_id={bookingId}
+                        handleClose={handleCloseRatings}
+                      />
+                    </Modal>
+                }
                 <div className="paginate flex items-end justify-end py-5">
                   <ReactPaginate
                     breakLabel="..."
@@ -304,6 +373,23 @@ const PatientAppointments = () => {
                                   onClick={() => handleJoin(item.booking_id)}
                                   className="bg-primary-100 p-3 rounded-lg text-white font-bold capitalize">join</button>
                               </div>
+                          }
+                          {
+                            filter === "completed" &&
+                            <div className="flex flex-row items-center p-5 gap-x-2">
+                              <button 
+                                className="p-3 bg-primary-100 font-bold text-white capitalize rounded-lg"
+                              >
+                                rate
+                              </button>
+                              <Link 
+                                to={`/patient-consultation-prescription-list/${item.booking_id}`}
+                                className="p-3 bg-neutral-100 font-bold text-white capitalize rounded-lg"
+                              >
+                                view
+                              </Link>
+                            </div>
+
                           }
                       </div>
                       <div className="flex flex-row justify-between items-center gap-x-3">
