@@ -4,6 +4,11 @@ import withReactContent from 'sweetalert2-react-content';
 import CircularProgress from '@mui/material/CircularProgress';
 import Backdrop from '@mui/material/Backdrop';
 import { axiosClient } from "../../../axios";
+import doc1 from "../../../../public/images/doc1.jpg"
+import doc2 from "../../../../public/images/doc2.jpg"
+import doc5 from "../../../../public/images/doc5.jpg"
+import doct3 from "../../../../public/images/doct3.jpg"
+import doc7 from "../../../../public/images/doc7.jpg"
 
 const AvailableDoctor = ({ formData, updateFormData, nextStep }) => {
   const [data, setData] = useState([]);
@@ -22,6 +27,7 @@ const AvailableDoctor = ({ formData, updateFormData, nextStep }) => {
         const response = await axiosClient.get("/api/patient/doctor_list");
         const doctors = response?.data?.data || [];
         setData(doctors);
+
       } catch (error) {
         MySwal.fire({
           title: "Error",
@@ -46,11 +52,14 @@ const AvailableDoctor = ({ formData, updateFormData, nextStep }) => {
                 <div className="w-full flex flex-row items-center justify-between border-2 border-neutral-50 rounded-lg lg:p-5 sm:p-2 my-1">
                   <div className="w-full flex flex-row items-center gap-x-3">
                     <div className="lg:w-20 lg:h-20 sm:w-10 sm:h-10 rounded-full border-2 border-neutral-50 flex items-center justify-center">
-                      <img
-                        src={item.img || "defaultImagePath"}
-                        alt="Doctor"
-                        className="w-full h-full object-cover rounded-full"
-                      />
+                      
+                    {
+                      item.name === "Damilare Ajayi" ? <img src={doc1} alt="" className="w-full h-full object-cover rounded-full"/>:
+                      item.name === "Roman Q" ? <img src={doct3} alt="" className="w-full h-full object-cover rounded-full"/>:
+                      
+                      <img src={doc7} alt="" className="w-full h-full object-cover rounded-full"/>
+                    }
+
                     </div>
                     <div>
                       <h2 className="lg:text-lg sm:text-md font-semibold capitalize">

@@ -7,6 +7,9 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import boy1 from "../../../../public/images/boy1.jpg"
+import lady1 from "../../../../public/images/lady1.jpg"
+import { Link } from "react-router-dom";
 
 
 const Appointments = () => {
@@ -75,7 +78,7 @@ const Appointments = () => {
    const handleConfirmAppt = async (booking_id) => {
     try {
       setLoading(true);
-      const response = await axiosClient.post(`/api/doctor/${booking_id}/confirm_appt`);
+      const response = await axiosClient.post(`/api/doctor/${booking_id}/confirm`);
       setLoading(false);
       MySwal.fire({
         title: "Success",
@@ -187,7 +190,7 @@ const handleDeclineAppt = async (booking_id) => {
       if (result.isConfirmed) {
         setLoading(true);
         // Make API call to decline appointment
-        await axiosClient.post(`/api/doctor/${booking_id}/decline_appt`);
+        await axiosClient.post(`/api/doctor/${booking_id}/decline`);
         setLoading(false);
         // Show success message
         await MySwal.fire({
@@ -288,12 +291,10 @@ const handleDeclineAppt = async (booking_id) => {
                           className="w-full border-2 border-x-0 border-t-0 border-b border-neutral-50 hover:bg-primary-100/10 cursor-pointer sm:overflow-x-scroll"
                         >
                           <td className="py-5">
-                            <img
-                                src={`https://api.example.com/doctor-images/${item.doctor_id}`}
-                                alt={item.doctor_name}
-                                className="h-10 w-10 rounded-full"
-                              />
-                            
+                            {
+                              item.appointment_type === "home_consultations" ? <img src={boy1} alt="" className="h-20 w-20 rounded-full"/>:
+                              <img src={lady1} alt="" className="h-20 w-20 rounded-full"/>
+                            }
                           </td>
                           <td className="text-lg font-medium capitalize py-5 px-5">
                           {item.doctor_name}
@@ -336,13 +337,19 @@ const handleDeclineAppt = async (booking_id) => {
 
                         {
                             filter === 'today' && (
-                                <td className="text-lg font-medium capitalize py-5 px-5">
+                                <td className="flex flex-row  gap-x-2 my-10">
                                    <h2 
-                                    className="text-sm font-bold capitalize bg-primary-100 text-white p-2 rounded-lg text-center"
+                                    className="text-sm font-bold capitalize bg-primary-100 text-white p-2 rounded-lg"
                                     onClick={() => handleJoin(item.booking_id)}
-                                >
+                                  >
                                     join
-                                </h2> 
+                                  </h2>
+                                  <Link 
+                                    className="text-sm font-bold capitalize bg-neutral-100 text-white p-2 rounded-lg" 
+                                    to={`/view-patient/${item.patient_uuid}`}
+                                  >
+                                      view
+                                  </Link> 
                                 </td>
                             )
                         }

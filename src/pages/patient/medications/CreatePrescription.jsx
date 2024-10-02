@@ -126,7 +126,7 @@ const CreatePrescription = ({handleClose}) => {
     <div className="lg:w-[50%] sm:w-full bg-white rounded-lg">
       <div className='flex flex-row items-center justify-between lg:p-5 sm:p-2'>
         <h2 className="lg:text-2xl font-bold capitalize sm:text-lg">request prescription</h2>
-        
+        <IoMdClose size={20} onClick={handleClose} className="cursor-pointer font-bold text-red-500"/>
       </div>
       <hr className="w-full bg-neutral-50 my-5"/>
       <form 

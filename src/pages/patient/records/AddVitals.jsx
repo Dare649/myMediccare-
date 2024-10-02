@@ -20,7 +20,7 @@ const AddVitals = ({handleClose}) => {
                 content4={<Weight  handleClose={handleClose}/>}
             />
             <IoMdClose 
-                className="text-red-500 font-bold mt-3" size={30}
+                className="text-red-500 font-bold mt-3 cursor-pointer" size={30}
                 onClick={handleClose}
             />
         </div>

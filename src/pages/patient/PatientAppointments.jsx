@@ -7,17 +7,30 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import doc1 from "../../../public/images/doc1.jpg"
+import doc2 from "../../../public/images/doc2.jpg"
+import doc5 from "../../../public/images/doc5.jpg"
+import doc7 from "../../../public/images/doc7.jpg"
+import doc4 from "../../../public/images/doc4.jpg"
+import doct3 from "../../../public/images/doct3.jpg"
+import Modal from "../../components/Modal";
+import DoctorRating from "../../patientModalPages/DoctorRating";
 
 
 const PatientAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const MySwal = withReactContent(Swal);
   const [loading, setLoading] = useState(false);
+  const [rate, setRate] = useState(false);
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState("today");
   const recordsPerPage = 5;
+  const [view, setView] = useState(false);
+  const [bookingId, setBookingId] = useState(null);
+  const [selectedBookingId, setSelectedBookingId] = useState(null);
+
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -33,13 +46,31 @@ const PatientAppointments = () => {
           response = await axiosClient.get("/api/patient/get_appt/completed");
         }
         setAppointments(response.data?.data || []);
+        const appointmentsData = response.data?.data || [];
+
+        // Set booking_id from the first appointment if available
+        if (appointmentsData.length > 0) {
+          const firstAppointment = appointmentsData[0];
+          setBookingId(firstAppointment.booking_id); // Store booking_id
+        }
+      
       } catch (error) {
-        console.error("Error fetching appointments:", error);
+        MySwal({
+          title: "Error",
+          text: "Error fetching appointment, try again.",
+          icon: "error"
+        })
       }
     };
 
+    
+
+
     fetchAppointments();
+ 
   }, [filter]);
+
+  
 
   const lastIndex = currentPage * recordsPerPage;
   const firstIndex = lastIndex - recordsPerPage;
@@ -99,8 +130,21 @@ const PatientAppointments = () => {
     }
   };
 
+  const handleView = () => {
+    setView((prev) => !prev);
+  }
+
+  const handleCloseRatings = () => {
+    setRate((prev) => !prev);
+  }
+
+  const handleRatings = (booking_id) => {
+    setSelectedBookingId(booking_id);
+    setRate(true);
+  };
+
   return (
-    <section className="appointment w-full  h-full lg:p-10 sm:p-2">
+    <section className="appointment w-full h-full lg:p-10 sm:p-2">
       <main className="lg:p-10 sm:p-5 bg-white rounded-lg w-full h-full sm:mt-24 lg:mt-40">
         <div className="flex flex-row items-center justify-between lg:mt-0 sm:mt-10 w-full">
           <h2 className="first-letter:capitalize sm:text-lg lg:text-2xl font-semibold">
@@ -154,7 +198,7 @@ const PatientAppointments = () => {
           <input
             type="text"
             className="flex lg:hidden w-full border-2 text-lg font-semibold border-neutral-50 p-2 focus:border-primary-100 rounded-lg outline-none"
-            placeholder="Search by doctor or status"
+            placeholder="Search by doctor"
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
@@ -180,16 +224,28 @@ const PatientAppointments = () => {
                       .map((item, id) => (
                         <tr
                           key={id}
-                          className="w-full border-2 border-x-0 border-t-0 border-b border-neutral-50 hover:bg-primary-100/10 cursor-pointer sm:overflow-x-scroll"
+                          className="w-full border-2 border-x-0 border-t-0 border-b border-neutral-50 cursor-pointer sm:overflow-x-scroll"
                         >
-                          <td className="flex flex-row items-center gap-x-2 py-5 text-lg font-medium capitalize">
-                            <span>
-                              <img
-                                src={`https://api.example.com/doctor-images/${item.doctor_id}`}
-                                alt={item.doctor_name}
-                                className="h-10 w-10 rounded-full"
-                              />
-                            </span>
+                          <td className="h-20 w-20 rounded-full my-2">
+                          
+                              {/* {
+                                item.appointment_type === "hc" ? <img src={doc5} alt="" className="w-full h-full object-cover rounded-full"/>:
+                                item.appointment_type === "oc" ? <img src={doct3} alt="" className="w-full h-full object-cover rounded-full"/>:
+                                item.appointment_type === "st" ? <img src={doc7} alt="" className="w-full h-full object-cover rounded-full"/>:
+                                item.appointment_type === "lt" ? <img src={doc2} alt="" className="w-full h-full object-cover rounded-full"/>:
+                                <img src={doc1} alt="" className="w-full h-full object-cover rounded-full"/>
+                              } */}
+
+{
+          item.doctor_name === "Damilare Ajayi" ? <img src={doc1} alt="" className="w-full h-full object-cover rounded-full"/>:
+          item.doctor_name === "Roman Q" ? <img src={doct3} alt="" className="w-full h-full object-cover rounded-full"/>:
+          
+          <img src={doc7} alt="" className="w-full h-full object-cover rounded-full"/>
+        }
+                      
+                    
+                          </td>
+                          <td className="text-lg font-medium capitalize py-5 px-5">
                             {item.doctor_name}
                           </td>
                           <td className="text-lg font-medium capitalize py-5 px-5">
@@ -218,10 +274,42 @@ const PatientAppointments = () => {
                                   className="bg-primary-100 p-3 rounded-lg text-white font-bold capitalize">join</button>
                               </td>
                           }
+
+                          {
+                            filter === "completed" &&
+                            <td className="flex flex-row items-center p-5 gap-x-2">
+                              {
+                                item.review_exists === false ? (
+                                  <button 
+                                    onClick={() => handleRatings(item.booking_id)}
+                                    className="p-3 bg-primary-100 cursor-pointer font-bold text-white capitalize rounded-lg"
+                                  >
+                                    rate
+                                  </button>
+                                ): null
+                              }
+                              <Link 
+                                to={`/patient-consultation-prescription-list/${item.booking_id}`}
+                                className="p-3 bg-neutral-100 font-bold text-white capitalize rounded-lg"
+                              >
+                                view
+                              </Link>
+                            </td>
+
+                          }
                         </tr>
                       ))}
                   </tbody>
                 </table>
+                {
+                  rate && 
+                    <Modal visible={rate} onClick={handleCloseRatings}>
+                      <DoctorRating 
+                        booking_id={bookingId}
+                        handleClose={handleCloseRatings}
+                      />
+                    </Modal>
+                }
                 <div className="paginate flex items-end justify-end py-5">
                   <ReactPaginate
                     breakLabel="..."
@@ -262,11 +350,17 @@ const PatientAppointments = () => {
                   >
                       <div className="flex flex-row justify-between items-center gap-x-2">
                         <div className="flex items-center justify-center border-2 border-neutral-100 rounded-full h-20 w-20">
-                          <img
-                            src={`https://api.example.com/doctor-images/${item.doctor_id}`}
-                            alt={item.doctor_name}
-                            className="h-12 w-12 rounded-full"
-                          />
+                          <div className="h-12 w-12 rounded-full">
+                          {
+                                item.appointment_type === "hc" ? <img src={doc1} alt="" className="w-full h-full object-cover rounded-full"/>:
+                                item.appointment_type === "oc" ? <img src={doct3} alt="" className="w-full h-full object-cover rounded-full"/>:
+                                item.appointment_type === "st" ? <img src={doc7} alt="" className="w-full h-full object-cover rounded-full"/>:
+                                item.appointment_type === "lt" ? <img src={doc2} alt="" className="w-full h-full object-cover rounded-full"/>:
+                                <img src={doc5} alt="" className="w-full h-full object-cover rounded-full"/>
+                              }
+                          </div>
+                          
+                          
                         </div>
                         <div className="text-md font-bold capitalize">
                           {item.doctor_name}
@@ -279,6 +373,23 @@ const PatientAppointments = () => {
                                   onClick={() => handleJoin(item.booking_id)}
                                   className="bg-primary-100 p-3 rounded-lg text-white font-bold capitalize">join</button>
                               </div>
+                          }
+                          {
+                            filter === "completed" &&
+                            <div className="flex flex-row items-center p-5 gap-x-2">
+                              <button 
+                                className="p-3 bg-primary-100 font-bold text-white capitalize rounded-lg"
+                              >
+                                rate
+                              </button>
+                              <Link 
+                                to={`/patient-consultation-prescription-list/${item.booking_id}`}
+                                className="p-3 bg-neutral-100 font-bold text-white capitalize rounded-lg"
+                              >
+                                view
+                              </Link>
+                            </div>
+
                           }
                       </div>
                       <div className="flex flex-row justify-between items-center gap-x-3">

@@ -68,14 +68,14 @@ const dashAppointments = appointments.slice(0, 3)
         </div>
         </div>
       </div>
-      <div className='bg-white rounded-lg w-full lg:my-8 sm:my-5 lg:px-5 sm:px-3 sm:py-2 lg:py-3'>
+      {/* <div className='bg-white rounded-lg w-full lg:my-8 sm:my-5 lg:px-5 sm:px-3 sm:py-2 lg:py-3'>
         <div className="border-2 rounded-lg border-neutral-1">
           <div className="lg:p-5 sm:p-3 flex flex-row items-center justify-between">
             <p className="sm:text-sm lg:text-xl font-semibold first-letter:capitalize">stay on track with your health</p>
             <button className="bg-primary-100 lg:w-40 h-12 sm:w-24 rounded-lg text-center first-letter:capitalize text-white lg:text-xl font-semibold sm:text-sm">book tests</button>
           </div>
         </div>
-      </div>
+      </div> */}
       <div className='bg-white rounded-lg w-full lg:my-8 sm:my-5 lg:px-5 sm:px-3 sm:py-2 lg:py-3'>
         <div className="flex flex-row items-center justify-between w-full lg:p-5 sm:p-3 ">
           <h2 className="capitalize lg:text-xl sm:text-md font-semibold">upcoming sessions</h2>

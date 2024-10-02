@@ -68,7 +68,7 @@ const PatientWallet = () => {
         setLoading(true);
         const response = await axiosClient.get("/api/patient/tx/all");
         const transactions = response?.data?.data || [];
-        setFetchedTransactions(transactions);
+      
       } catch (error) {
         MySwal.fire({
           icon: "error",
@@ -106,7 +106,7 @@ const PatientWallet = () => {
         <h2 className="capitalize font-semibold lg:text-2xl sm:text-xl">Wallet</h2>
         <button
           onClick={handleFund}
-          className="w-40 h-14 bg-primary-100 text-white rounded-lg"
+          className="p-5 bg-primary-100 text-white rounded-lg"
         >
           <h2 className="flex flex-row items-center gap-x-2 justify-center">
             <span>
@@ -170,6 +170,7 @@ const PatientWallet = () => {
                     <BiTransferAlt size={30} />
                   </td>
                   <td className="py-2 px-6">{item.created_at}</td>
+                  <td className="py-2 px-6">{item.description}</td>
                   <td
                     className={`py-2 px-6 ${
                       item.type === "deposit"

@@ -70,7 +70,7 @@ const PatientSignup = ({ formData, updateFormData, nextStep }) => {
             <div className="signupForm w-full">
                 <form onSubmit={handleContinue} className="w-full">
                     <div className="name flex flex-col mb-2 w-full">
-                        <label className="capitalize text-primary-100 text-md font-semibold mb-2">name</label>
+                        <label className="capitalize text-primary-100 text-md font-semibold mb-2">username</label>
                         <input
                             id="name"
                             name="name"
@@ -97,7 +97,7 @@ const PatientSignup = ({ formData, updateFormData, nextStep }) => {
                         {errors.email && <p className="text-red-500 text-sm font-bold">{errors.email}</p>}
                     </div>
 
-                    <div className="phone flex flex-col w-full mb-2">
+                    {/* <div className="phone flex flex-col w-full mb-2">
                         <label className="capitalize text-primary-100 text-md font-semibold mb-2">phone number</label>
                         <PhoneInput
                             international
@@ -107,9 +107,9 @@ const PatientSignup = ({ formData, updateFormData, nextStep }) => {
                             className="outline-none border-2 border-neutral-50 p-2 w-full text-lg font-medium rounded-lg focus:border-primary-100"
                         />
                         {errors.phone && <p className="text-red-500 text-sm font-bold">{errors.phone}</p>}
-                    </div>
+                    </div> */}
                     
-                    <div className="country flex flex-col mb-2">
+                    {/* <div className="country flex flex-col mb-2">
                         <label className="capitalize text-primary-100 text-md font-semibold mb-2">country</label>
                         <select
                             value={formData.country?.value || ''}
@@ -124,7 +124,7 @@ const PatientSignup = ({ formData, updateFormData, nextStep }) => {
                             ))}
                         </select>
                         {errors.country && <p className="text-red-500 text-sm font-bold">{errors.country}</p>}
-                    </div>
+                    </div> */}
 
                     <div className="terms flex flex-row space-x-3 mb-2">
                         <input 

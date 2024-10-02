@@ -9,7 +9,6 @@ import { DoctorProvider } from './context/DoctorContext';
 
 
 // Pages and Components
-import Home from "./pages/Home";
 import Signin from "./auth/Signin";
 import OtpVerification from "./auth/OtpVerification";
 import Signup from "./auth/sign-up/Signup";
@@ -30,6 +29,10 @@ import Settings from "./pages/doctors/settings/Settings";
 import Records from './pages/patient/records/Records';
 import Appointments from './pages/doctors/consultation/Appointments';
 import VideoCall from './components/VideoCall';
+import PrescriptionList from './pages/patient/medications/PrescriptionList';
+import ConsultationPrescriptionList from './pages/patient/medications/ConsultationPrecriptionList';
+import ViewPatient from "./pages/doctors/patient/ViewPatient";
+
 
 const App = () => {
   // Destructure token and user from AuthContext
@@ -44,8 +47,7 @@ const App = () => {
             {/* Routes for unauthenticated users */}
             {!token ? (
               <>
-                <Route path="/" element={<Home />} />
-                <Route path="/sign-in" element={<Signin />} />
+                <Route path="/" element={<Signin />} />
                 <Route path="/sign-up" element={<Signup />} />
                 <Route path="/otp-verification" element={<OtpVerification />} />
                 <Route path="/terms-&-conditions" element={<Terms />} />
@@ -62,6 +64,8 @@ const App = () => {
                       <Route path="/patient-medications" element={<PatientPrescriptions />} />
                       <Route path="/patient-settings" element={<PatientSettings />} />
                       <Route path="/patient-notifications" element={<PatientNotification />} />
+                      <Route path="/patient-prescription-list/:id" element={<PrescriptionList />} />
+                      <Route path="/patient-consultation-prescription-list/:id" element={<ConsultationPrescriptionList />} />
                       <Route path="/patient-transactions" element={<PatientWallet />} />
                       <Route path="/stripe-payment" element={<StripePayment />} />
                       <Route path="/card-payment" element={<CardPayment />} />
@@ -78,6 +82,7 @@ const App = () => {
                       <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
                       <Route path="/doctor-profile" element={<Settings />} />
                       <Route path="/doctor-appointments" element={<Appointments />} />
+                      <Route path="/view-patient/:id" element={<ViewPatient />} />
                       <Route path="/consultation-video-call" element={<VideoCall />} />
                       <Route path="*" element={<Navigate to="/doctor-dashboard" replace />} />
                     </Route>

@@ -9,6 +9,9 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import doc1 from "../../../../public/images/doc1.jpg"
+import doct3 from "../../../../public/images/doct3.jpg"
+import doc7 from "../../../../public/images/doc7.jpg"
 
 const Appointment = ({ formData, updateFormData, nextStep }) => {
   const MySwal = withReactContent(Swal);
@@ -105,11 +108,12 @@ const Appointment = ({ formData, updateFormData, nextStep }) => {
         {doctor ? (
           <div className="w-full h-full bg-white p-5 mt-20">
             <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 lg:w-40 lg:h-40 sm:w-20 sm:h-20 rounded-full border-4 border-white bg-white flex items-center justify-center">
-              <img
-                src={doctor.img}
-                alt={doctor.name}
-                className="w-full h-full object-cover rounded-full"
-              />
+            {
+              doctor.name === "Damilare Ajayi" ? <img src={doc1} alt="" className="w-full h-full object-cover rounded-full"/>:
+              doctor.name === "Roman Q" ? <img src={doct3} alt="" className="w-full h-full object-cover rounded-full"/>:
+              
+              <img src={doc7} alt="" className="w-full h-full object-cover rounded-full"/>
+            }
             </div>
             <h2 className="text-2xl font-bold text-center mb-2">{doctor.name}</h2>
             <h2 className="text-center text-xl text-neutral-50 mb-2">{doctor.speciality}</h2>

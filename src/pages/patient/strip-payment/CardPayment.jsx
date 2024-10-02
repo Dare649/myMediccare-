@@ -20,7 +20,7 @@ const formatDate = (date) => {
 };
 
 const StripeForm = () => {
-    const stripe = useStripe();
+const stripe = useStripe();
 const elements = useElements();
 const navigate = useNavigate();
 const MySwal = withReactContent(Swal);
@@ -61,9 +61,8 @@ const handlePaymentIntent = async () => {
             icon: "error",
             text: error.message || "An error occurred. Please try again.",
         });
+        setLoading(false); // Stop loading after the notification is up
         return null;
-    } finally {
-        setLoading(false);
     }
 };
 
@@ -81,7 +80,6 @@ const handleSubmit = async (event) => {
         cardDetails = await handlePaymentIntent();
         if (!cardDetails) {
             setIsProcessing(false);
-            setLoading(false);
             return;
         }
     }
@@ -102,12 +100,17 @@ const handleSubmit = async (event) => {
         if (stripeError) {
             setError(stripeError.message);
             console.error("Stripe Error:", stripeError);
-            setLoading(false); // Stop loading on error
+            Swal.fire({
+                icon: "error",
+                title: "Payment Error",
+                text: stripeError.message,
+            });
+            setLoading(false); // Stop loading after the notification is up
             return;
         }
 
         if (paymentIntent && paymentIntent.status === "succeeded") {
-            console.log("Payment Successful:", paymentIntent);
+            
 
             const updatedFormData = {
                 ...formData,
@@ -130,35 +133,42 @@ const handleSubmit = async (event) => {
                     icon: "success",
                     title: "Success",
                     text: "Appointment booked successfully!",
-                }).then(() => {
-                    navigate("/patient-schedules");
                 });
+                setLoading(false); // Stop loading after the notification is up
+                navigate("/patient-schedules");
             } else {
                 Swal.fire({
                     icon: "error",
                     title: "Error",
                     text: bookingResponse?.data?.message,
-                }).then(() => {
-                    navigate("/patient-schedules");
                 });
+                setLoading(false); // Stop loading after the notification is up
+                navigate("/patient-schedules");
             }
         } else {
             Swal.fire({
                 icon: "error",
                 title: "Error",
                 text: "Payment failed.",
-            }).then(() => {
-                navigate("/patient-schedules");
             });
+            setLoading(false); // Stop loading after the notification is up
+            navigate("/patient-schedules");
         }
     } catch (error) {
         console.error("Submission Error:", error);
         setError("An error occurred. Please try again.");
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "An error occurred during submission.",
+        });
+        setLoading(false); // Stop loading after the notification is up
     } finally {
         setIsProcessing(false);
-        setLoading(false); // Stop loading
     }
 };
+
+
 
     
 

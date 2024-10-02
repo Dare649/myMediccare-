@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { PiCoins } from "react-icons/pi";
 import { IoMdClose } from "react-icons/io";
-import { FaPoundSign } from "react-icons/fa";
+import { LiaPoundSignSolid } from "react-icons/lia";
 import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -116,20 +116,20 @@ const FundModal = ({ handleClose }) => {
           <PiCoins size={30} className="font-bold" />
           <h2 className="font-bold first-letter:capitalize lg:text-2xl sm:text-lg">Enter Amount</h2>
         </div>
-        <IoMdClose size={30} onClick={handleClose} />
+        <IoMdClose size={30} onClick={handleClose}  className="text-red-500 cursor-pointer"/>
       </div>
       <hr className="w-full bg-neutral-50" />
       <div className="font-medium capitalize lg:text-lg sm:text-md w-full text-center flex flex-row items-center justify-center my-2">
         <h2>Wallet Balance:</h2> 
         <h2 className="flex flex-row items-center">
-          <FaPoundSign size={20}/>
+          <LiaPoundSignSolid size={20}/>
           <p>{formatAmountWithCommas(data?.balance)}</p>
         </h2>
       </div>
       <div className="lg:px-5 sm:px-2 flex flex-col w-full mb-5">
         <div className="border-2 border-neutral-50 rounded-lg flex flex-row gap-x-2 w-full my-3 p-2">
           <div className="bg-neutral-50 rounded-lg lg:p-3 sm:p-1">
-            <FaPoundSign size={30}/>
+            <LiaPoundSignSolid size={30}/>
           </div>
           <input
             type="number"
