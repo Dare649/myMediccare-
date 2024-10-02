@@ -31,6 +31,7 @@ import Appointments from './pages/doctors/consultation/Appointments';
 import VideoCall from './components/VideoCall';
 import PrescriptionList from './pages/patient/medications/PrescriptionList';
 import ConsultationPrescriptionList from './pages/patient/medications/ConsultationPrecriptionList';
+import ViewPatient from "./pages/doctors/patient/ViewPatient";
 
 
 const App = () => {
@@ -81,6 +82,7 @@ const App = () => {
                       <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
                       <Route path="/doctor-profile" element={<Settings />} />
                       <Route path="/doctor-appointments" element={<Appointments />} />
+                      <Route path="/view-patient/:id" element={<ViewPatient />} />
                       <Route path="/consultation-video-call" element={<VideoCall />} />
                       <Route path="*" element={<Navigate to="/doctor-dashboard" replace />} />
                     </Route>

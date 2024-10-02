@@ -9,6 +9,7 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import boy1 from "../../../../public/images/boy1.jpg"
 import lady1 from "../../../../public/images/lady1.jpg"
+import { Link } from "react-router-dom";
 
 
 const Appointments = () => {
@@ -336,13 +337,19 @@ const handleDeclineAppt = async (booking_id) => {
 
                         {
                             filter === 'today' && (
-                                <td className="text-lg font-medium capitalize py-5 px-5">
+                                <td className="flex flex-row  gap-x-2 my-10">
                                    <h2 
-                                    className="text-sm font-bold capitalize bg-primary-100 text-white p-2 rounded-lg text-center"
+                                    className="text-sm font-bold capitalize bg-primary-100 text-white p-2 rounded-lg"
                                     onClick={() => handleJoin(item.booking_id)}
-                                >
+                                  >
                                     join
-                                </h2> 
+                                  </h2>
+                                  <Link 
+                                    className="text-sm font-bold capitalize bg-neutral-100 text-white p-2 rounded-lg" 
+                                    to={`/view-patient/${item.patient_uuid}`}
+                                  >
+                                      view
+                                  </Link> 
                                 </td>
                             )
                         }
