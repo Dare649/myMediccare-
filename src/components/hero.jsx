@@ -12,12 +12,16 @@ const Hero = () => {
                         <h1 className="text-4xl font-bold mb-4">Providing Reliable & Affordable Healthcare</h1>
                         <p className="text-lg mb-6">At MyMedicare, we go beyond the usual tech-driven startup. We aim to transform the healthcare services market landscape...</p>
                         <div>
-                            <button className="bg-blue-500 text-white py-3 px-6 rounded-lg font-semibold mr-4 hover:bg-blue-600 transition mb-4 md:mb-0">
-                                Make an Appointment
-                            </button>
-                            <button className="bg-gray-700 text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-800 transition">
-                                See How We Work
-                            </button>
+                            <a href='/sign-in'>
+                                <button className="bg-blue-500 text-white py-3 px-6 rounded-lg font-semibold mr-4 hover:bg-blue-600 transition mb-4 md:mb-0">
+                                    Make an Appointment
+                                </button>
+                            </a>
+                            <a href='/sign-up'>
+                                <button className="bg-gray-700 text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-800 transition">
+                                    See How We Work
+                                </button>
+                            </a> 
                         </div>
                     </div>
                     <div className="md:w-5/12 text-center hidden md:block"> {/* Hide on small screens */}
@@ -26,20 +30,20 @@ const Hero = () => {
                 </div>
 
                 {/* Feature Section */}
-                <div className="bg-blue-600 text-white py-6 rounded-3xl flex justify-center" style={{ marginLeft: '53px', marginRight: '53px' }}>
+                <div className="bg-blue-600 text-white py-6 rounded-3xl mx-4 md:mx-12 flex justify-center">
                     <div className="container mx-auto max-w-5xl px-4">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                            <div className="flex flex-col items-center">
-                                <FaHouseDamage size={30} className="mb-2" />
-                                <p className="text-lg font-semibold mb-0">Remote Monitoring</p>
+                        <div className="flex flex-row justify-between items-center text-center space-y-0 w-full flex-nowrap">
+                            <div className="flex flex-col items-center justify-center w-1/3">
+                                <FaHouseDamage size={24} className="mb-2" />
+                                <p className="text-base font-semibold">Remote Monitoring</p>
                             </div>
-                            <div className="flex flex-col items-center">
-                                <FaHeart size={30} className="mb-2" />
-                                <p className="text-lg font-semibold mb-0">Online Consultations</p>
+                            <div className="flex flex-col items-center justify-center w-1/3">
+                                <FaHeart size={24} className="mb-2" />
+                                <p className="text-base font-semibold">Online Consultations</p>
                             </div>
-                            <div className="flex flex-col items-center">
-                                <FaStethoscope size={30} className="mb-2" />
-                                <p className="text-lg font-semibold mb-0">Affordable Healthcare</p>
+                            <div className="flex flex-col items-center justify-center w-1/3">
+                                <FaStethoscope size={24} className="mb-2" />
+                                <p className="text-base font-semibold">Affordable Healthcare</p>
                             </div>
                         </div>
                     </div>
