@@ -38,11 +38,13 @@ const Pricing = () => {
                 </li>
               ))}
             </ul>
-            <button
-              className={`mt-auto py-3 px-6 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition`}
-            >
-              Get Started
-            </button>
+            <a href='/sign-up'>
+              <button
+                className={`mt-auto py-3 px-6 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition`}
+              >
+                Get Started
+              </button>
+            </a>
           </div>
         ))}
       </div>

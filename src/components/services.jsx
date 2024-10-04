@@ -2,19 +2,19 @@ import React from 'react';
 import { FaHouseDamage, FaHeartbeat, FaUserMd } from 'react-icons/fa'; // Updated icons for better correspondence
 
 const services = [
-  { 
-    title: "Virtual Consultations", 
-    description: "We offer virtual consultations with experienced doctors, providing you expert care from the comfort of your home.", 
+  {
+    title: "Virtual Consultations",
+    description: "We offer virtual consultations with experienced doctors, providing you expert care from the comfort of your home.",
     icon: <FaHouseDamage size={40} />  // Set icon size to medium (40px)
   },
-  { 
-    title: "Home Consultations", 
-    description: "Our doctors can visit your home for personalized care, ensuring your health and convenience are prioritized.", 
+  {
+    title: "Home Consultations",
+    description: "Our doctors can visit your home for personalized care, ensuring your health and convenience are prioritized.",
     icon: <FaHeartbeat size={40} />  // Set icon size to medium (40px)
   },
-  { 
-    title: "Speak to a Therapist", 
-    description: "Our licensed therapists are available to support your mental well-being and provide expert therapy services.", 
+  {
+    title: "Speak to a Therapist",
+    description: "Our licensed therapists are available to support your mental well-being and provide expert therapy services.",
     icon: <FaUserMd size={40} />  // Set icon size to medium (40px)
   },
 ];
@@ -37,9 +37,12 @@ const Services = () => {
           ))}
         </div>
         <div className="text-center mt-12">
-          <button className="bg-blue-500 text-white py-3 px-8 rounded-lg text-lg font-semibold hover:bg-blue-600 transition duration-300">
-            Book Appointment
-          </button>
+          <a href="/sign-in">
+            <button className="bg-blue-500 text-white py-3 px-8 rounded-lg text-lg font-semibold hover:bg-blue-600 transition duration-300">
+              Book Appointment
+            </button>
+          </a>
+
         </div>
       </div>
     </div>
