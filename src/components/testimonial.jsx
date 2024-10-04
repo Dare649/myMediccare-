@@ -4,10 +4,10 @@ import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; 
 
 const testimonials = [
-    { quote: "I frequently use MyMedicare, and one benefit is how quickly I receive my test results...", name: "Client Name" },
-    { quote: "The doctor constantly follows up and gives me the same treatment as before...", name: "Client Name" },
-    { quote: "MyMedicare has provided excellent customer service throughout my journey...", name: "Client Name" },
-    { quote: "Highly recommend their services, very reliable!", name: "Client Name" },
+    { quote: "I frequently use MyMedicare, and one benefit is how quickly I receive my test results...", name: "Bruce Wayne" },
+    { quote: "The doctor constantly follows up and gives me the same treatment as before...", name: "Clark Kent" },
+    { quote: "MyMedicare has provided excellent customer service throughout my journey...", name: "Donald Bassey" },
+    { quote: "Highly recommend their services, very reliable!", name: "Kim Reeves" },
 ];
 
 const Testimonials = () => {

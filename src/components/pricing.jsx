@@ -4,24 +4,10 @@ import { FaCheck } from 'react-icons/fa'; // Using react-icons for the checkmark
 const pricingPlans = [
   {
     title: "Pay As You Go",
-    price: "NGN 2,500",
+     price: "£10",
     features: ["One virtual session", "Free prescription", "Unlimited chat with doctors"],
     color: '#007bff',
     availableFeatures: [true, true, true]
-  },
-  {
-    title: "3 Months",
-    price: "NGN 25,000",
-    features: ["One virtual session", "Free prescription", "Home sample collection"],
-    color: '#28a745',
-    availableFeatures: [true, true, false]
-  },
-  {
-    title: "1 Months",
-    price: "NGN 25,000",
-    features: ["One virtual session", "Free prescription", "Home sample collection"],
-    color: '#28a745',
-    availableFeatures: [true, true, false]
   },
   // Add more pricing plans as needed
 ];
