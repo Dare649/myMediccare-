@@ -1,28 +1,30 @@
 import React from 'react';
-import { FaCheck } from 'react-icons/fa'; // Using react-icons for the checkmark icon
+import { FaCheck } from 'react-icons/fa';
 
 const pricingPlans = [
   {
     title: "Pay As You Go",
-     price: "£10",
+    price: "£10",
     features: ["One virtual session", "Free prescription", "Unlimited chat with doctors"],
     color: '#007bff',
     availableFeatures: [true, true, true]
   },
-  // Add more pricing plans as needed
 ];
 
 const Pricing = () => {
   return (
-    <div className="bg-white py-12 font-sans">
-      <h2 className="text-center font-bold text-3xl text-black mb-10">
+    <div className="bg-gray-50 py-12 font-sans">
+      <h2 className="text-center font-bold text-4xl text-black mb-10">
         The Right Plan for Your Health
       </h2>
-      <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="container mx-auto px-4 flex justify-center">
         {pricingPlans.map((plan, index) => (
-          <div key={index} className="bg-white rounded-lg shadow-lg p-6 flex flex-col text-center">
+          <div
+            key={index}
+            className="bg-white w-full max-w-md rounded-xl shadow-lg p-8 flex flex-col text-center transform transition duration-500 hover:scale-105 hover:shadow-2xl"
+          >
             <h3 className="text-2xl font-bold text-black mb-4">{plan.title}</h3>
-            <p className="text-4xl font-bold text-black mb-4">{plan.price}</p>
+            <p className="text-5xl font-extrabold text-black mb-4">{plan.price}</p>
             <ul className="list-none mb-6 space-y-4">
               {plan.features.map((feature, idx) => (
                 <li key={idx} className="flex items-center justify-center">
