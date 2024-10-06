@@ -109,13 +109,16 @@ const Appointment = ({ formData, updateFormData, nextStep }) => {
           <div className="w-full h-full bg-white p-5 mt-20">
             <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 lg:w-40 lg:h-40 sm:w-20 sm:h-20 rounded-full border-4 border-white bg-white flex items-center justify-center">
             {
-              doctor.name === "Damilare Ajayi" ? <img src={doc1} alt="" className="w-full h-full object-cover rounded-full"/>:
-              doctor.name === "Roman Q" ? <img src={doct3} alt="" className="w-full h-full object-cover rounded-full"/>:
-              
-              <img src={doc7} alt="" className="w-full h-full object-cover rounded-full"/>
+              doctor.uuid === "425F6E8Y" ? (
+                <img src={doc5} alt="" className="w-full h-full object-cover rounded-full" />
+              ) : doctor.uuid === "G35A167H" ? (
+                <img src={doc2} alt="" className="w-full h-full object-cover rounded-full" />
+              ) : (
+                <img src={doct3} alt="" className="w-full h-full object-cover rounded-full" />
+              )
             }
             </div>
-            <h2 className="text-2xl font-bold text-center mb-2">{doctor.name}</h2>
+            <h2 className="text-2xl font-bold text-center mb-2 capitalize">dr. {doctor.name}</h2>
             <h2 className="text-center text-xl text-neutral-50 mb-2">{doctor.speciality}</h2>
             <p className="text-center leading-relaxed text-neutral-700 font-medium text-sm">{doctor.biography}</p>
 

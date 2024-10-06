@@ -10,7 +10,8 @@ import withReactContent from "sweetalert2-react-content";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 
-const APP_ID = "894b043a9e60426285be31a3e8e9c4c0";  // Replace with your App ID
+const APP_ID = "894b043a9e60426285be31a3e8e9c4c0"; 
+const APP_CERTIFICATE = "eca78ddaa19147bfb92c20f6091af862"
 
 // Function to hash the input if it exceeds 64 bytes
 const getValidString = (input) => {
@@ -69,7 +70,7 @@ const VideoCall = () => {
 
       try {
         // Join the channel
-        await agoraClient.join(APP_ID, validChannelName, token, validUserUuid);
+        await agoraClient.join(APP_ID,APP_CERTIFICATE, validChannelName, token, validUserUuid);
 
         // Create and play local tracks
         const [audioTrack, videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();

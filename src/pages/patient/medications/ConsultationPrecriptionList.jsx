@@ -82,7 +82,7 @@ const ConsultationPrescriptionList = () => {
             <div className="w-full bg-neutral-50 p-3 flex flex-row items-center justify-between rounded-lg">
               <div>
                 <h2 className="capitalize font-bold lg:text-xl sm:text-md">
-                  {consultation.doctor_name || "Loading..."}
+                  dr. {consultation.doctor_name || "Loading..."}
                 </h2>
                 <h3 className="mt-4 capitalize font-bold lg:text-lg sm:text-sm">
                   {consultation?.prefix || ""}

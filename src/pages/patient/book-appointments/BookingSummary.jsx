@@ -69,15 +69,18 @@ const BookingSummary = ({ formData, handleSubmit, prevStep }) => {
         <div className="h-20 w-20 rounded-full">
          
         {
-          doctor.name === "Damilare Ajayi" ? <img src={doc1} alt="" className="w-full h-full object-cover rounded-full"/>:
-          doctor.name === "Roman Q" ? <img src={doct3} alt="" className="w-full h-full object-cover rounded-full"/>:
-          
-          <img src={doc7} alt="" className="w-full h-full object-cover rounded-full"/>
+          doctor.uuid === "425F6E8Y" ? (
+            <img src={doc5} alt="" className="w-full h-full object-cover rounded-full" />
+          ) : doctor.uuid === "G35A167H" ? (
+            <img src={doc2} alt="" className="w-full h-full object-cover rounded-full" />
+          ) : (
+            <img src={doct3} alt="" className="w-full h-full object-cover rounded-full" />
+          )
         }
           
         </div>
         <div className="">
-          <h2 className="font-bold text-neutral-100">{doctor.name || "N/A"}</h2>
+          <h2 className="font-bold text-neutral-100 capitalize">dr. {doctor.name || "N/A"}</h2>
           <h2 className="font-bold text-primary-100 text-xl">{doctor.speciality || "N/A"}</h2>
         </div>
       </div>

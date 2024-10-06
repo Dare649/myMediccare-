@@ -297,7 +297,7 @@ const handleDeclineAppt = async (booking_id) => {
                             }
                           </td>
                           <td className="text-lg font-medium capitalize py-5 px-5">
-                          {item.doctor_name}
+                          {item.patient_name}
                           </td>
                           <td className="text-lg font-medium capitalize py-5 px-5">
                             {item.appointment_type}
@@ -404,7 +404,7 @@ const handleDeclineAppt = async (booking_id) => {
                           className="h-12 w-12 rounded-full"
                         />
                         <div className="text-md font-bold capitalize">
-                          {item.doctor_name}
+                          {item.patient_name}
                         </div>
                       </div>
                       <div className="flex items-center gap-x-2">
@@ -440,7 +440,6 @@ const handleDeclineAppt = async (booking_id) => {
                             >
                   
                                 join
-                          
                             </button>
                         )
                     }

@@ -70,7 +70,7 @@ const PatientSignup = ({ formData, updateFormData, nextStep }) => {
             <div className="signupForm w-full">
                 <form onSubmit={handleContinue} className="w-full">
                     <div className="name flex flex-col mb-2 w-full">
-                        <label className="capitalize text-primary-100 text-md font-semibold mb-2">username</label>
+                        <label className="capitalize text-primary-100 text-md font-semibold mb-2">name</label>
                         <input
                             id="name"
                             name="name"

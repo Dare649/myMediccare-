@@ -53,9 +53,10 @@ const TopBar = ({ onChange, placeholder }) => {
       <div className="desktopView hidden lg:flex w-[80%] fixed top-0 z-50 bg-white">
         <div className="px-4 py-8 flex flex-row items-center justify-between w-full">
           <div className="welcome">
-            <h2 className="text-3xl text-primary-100 font-bold capitalize">
-              hi, {user?.role === "patient" ? user?.username : user?.name}
-            </h2>
+          <h2 className="text-3xl text-primary-100 font-bold capitalize">
+  Hi, {user?.role === "patient" ? user?.username : `Dr. ${user?.name}`}
+</h2>
+
             <p className="first-letter:capitalize font-bold text-neutral-50">
               how are you doing today?
             </p>

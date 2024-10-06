@@ -236,17 +236,19 @@ const PatientAppointments = () => {
                                 <img src={doc1} alt="" className="w-full h-full object-cover rounded-full"/>
                               } */}
 
-{
-          item.doctor_name === "Damilare Ajayi" ? <img src={doc1} alt="" className="w-full h-full object-cover rounded-full"/>:
-          item.doctor_name === "Roman Q" ? <img src={doct3} alt="" className="w-full h-full object-cover rounded-full"/>:
-          
-          <img src={doc7} alt="" className="w-full h-full object-cover rounded-full"/>
-        }
-                      
+            {
+              item.doctor_id === 1 ? (
+                <img src={doc5} alt="" className="w-full h-full object-cover rounded-full" />
+              ) : item.doctor_id === 3 ? (
+                <img src={doc2} alt="" className="w-full h-full object-cover rounded-full" />
+              ) : (
+                <img src={doct3} alt="" className="w-full h-full object-cover rounded-full" />
+              )
+            }
                     
                           </td>
                           <td className="text-lg font-medium capitalize py-5 px-5">
-                            {item.doctor_name}
+                            dr. {item.doctor_name}
                           </td>
                           <td className="text-lg font-medium capitalize py-5 px-5">
                             {item.appointment_type}
@@ -352,18 +354,20 @@ const PatientAppointments = () => {
                         <div className="flex items-center justify-center border-2 border-neutral-100 rounded-full h-20 w-20">
                           <div className="h-12 w-12 rounded-full">
                           {
-                                item.appointment_type === "hc" ? <img src={doc1} alt="" className="w-full h-full object-cover rounded-full"/>:
-                                item.appointment_type === "oc" ? <img src={doct3} alt="" className="w-full h-full object-cover rounded-full"/>:
-                                item.appointment_type === "st" ? <img src={doc7} alt="" className="w-full h-full object-cover rounded-full"/>:
-                                item.appointment_type === "lt" ? <img src={doc2} alt="" className="w-full h-full object-cover rounded-full"/>:
-                                <img src={doc5} alt="" className="w-full h-full object-cover rounded-full"/>
-                              }
+                            item.doctor_id === 1 ? (
+                              <img src={doc5} alt="" className="w-full h-full object-cover rounded-full" />
+                            ) : item.doctor_id === 3 ? (
+                              <img src={doc2} alt="" className="w-full h-full object-cover rounded-full" />
+                            ) : (
+                              <img src={doct3} alt="" className="w-full h-full object-cover rounded-full" />
+                            )
+                          }
                           </div>
                           
                           
                         </div>
                         <div className="text-md font-bold capitalize">
-                          {item.doctor_name}
+                          dr. {item.doctor_name}
                         </div>
                         
                         {

@@ -8,7 +8,7 @@ import doc1 from "../../../../public/images/doc1.jpg"
 import doc2 from "../../../../public/images/doc2.jpg"
 import doc5 from "../../../../public/images/doc5.jpg"
 import doct3 from "../../../../public/images/doct3.jpg"
-import doc7 from "../../../../public/images/doc7.jpg"
+import doc4 from "../../../../public/images/doc4.jpg"
 
 const AvailableDoctor = ({ formData, updateFormData, nextStep }) => {
   const [data, setData] = useState([]);
@@ -54,16 +54,20 @@ const AvailableDoctor = ({ formData, updateFormData, nextStep }) => {
                     <div className="lg:w-20 lg:h-20 sm:w-10 sm:h-10 rounded-full border-2 border-neutral-50 flex items-center justify-center">
                       
                     {
-                      item.name === "Damilare Ajayi" ? <img src={doc1} alt="" className="w-full h-full object-cover rounded-full"/>:
-                      item.name === "Roman Q" ? <img src={doct3} alt="" className="w-full h-full object-cover rounded-full"/>:
-                      
-                      <img src={doc7} alt="" className="w-full h-full object-cover rounded-full"/>
+                      item.uuid === "425F6E8Y" ? (
+                        <img src={doc5} alt="" className="w-full h-full object-cover rounded-full" />
+                      ) : item.uuid === "G35A167H" ? (
+                        <img src={doc2} alt="" className="w-full h-full object-cover rounded-full" />
+                      ) : (
+                        <img src={doct3} alt="" className="w-full h-full object-cover rounded-full" />
+                      )
                     }
+
 
                     </div>
                     <div>
                       <h2 className="lg:text-lg sm:text-md font-semibold capitalize">
-                        {item.name}
+                        dr. {item.name}
                       </h2>
                       <p className="text-sm font-semibold capitalize text-neutral-50">
                         {item.speciality}

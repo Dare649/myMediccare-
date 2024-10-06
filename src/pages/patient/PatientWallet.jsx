@@ -43,7 +43,7 @@ const PatientWallet = () => {
     : [];
   const pageCount = Math.ceil(
     (Array.isArray(fetchedTransactions) ? fetchedTransactions.length : 0) /
-      itemsPerPage
+    itemsPerPage
   );
 
   useEffect(() => {
@@ -68,7 +68,7 @@ const PatientWallet = () => {
         setLoading(true);
         const response = await axiosClient.get("/api/patient/tx/all");
         const transactions = response?.data?.data || [];
-      
+        setFetchedTransactions(transactions); // Set fetched transactions to state
       } catch (error) {
         MySwal.fire({
           icon: "error",
@@ -149,55 +149,50 @@ const PatientWallet = () => {
         </div>
       </div>
 
-  
       {/* Desktop View */}
       <div className="desktopView hidden lg:flex w-full">
         <div className="w-full bg-white rounded-lg my-5 p-5">
           <table className="w-full">
             <tbody className="capitalize font-normal text-lg">
-             {
-              currentItems.length < 0 ? (
-                <p className="text-center font-bold capitalize text-primary-100 text-lg">no available transaction list</p>
-              ):(
+              {currentItems.length === 0 ? (
+                <p className="text-center font-bold capitalize text-primary-100 text-lg">
+                  No available transaction list
+                </p>
+              ) : (
                 <>
-                   {currentItems.map((item, id) => (
-                <tr key={id} className="border-b-2 border-neutral-50 font-bold">
-                  <td
-                    className={`w-20 h-20 rounded-full flex my-2 px-6 flex-row items-center justify-center text-white ${
-                      item.type === "deposit" ? "bg-green-500" : "bg-red-500"
-                    }`}
-                  >
-                    <BiTransferAlt size={30} />
-                  </td>
-                  <td className="py-2 px-6">{item.created_at}</td>
-                  <td className="py-2 px-6">{item.description}</td>
-                  <td
-                    className={`py-2 px-6 ${
-                      item.type === "deposit"
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {item.type}
-                  </td>
-                  <td
-                    className={`py-2 px-6 ${
-                      item.status === "successful"
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {item.status}
-                  </td>
-                  <td className="py-2 px-6 flex flex-row items-center gap-x-2">
-                    <LiaPoundSignSolid size={15} />
-                    <span>{formatAmountWithCommas(item.amount)}</span>
-                  </td>
-                </tr>
-              ))}
+                  {currentItems.map((item, id) => (
+                    <tr key={id} className="border-b-2 border-neutral-50 font-bold">
+                      <td
+                        className={`w-20 h-20 rounded-full flex my-2 px-6 flex-row items-center justify-center text-white ${
+                          item.type === "deposit" ? "bg-green-500" : "bg-red-500"
+                        }`}
+                      >
+                        <BiTransferAlt size={30} />
+                      </td>
+                      <td className="py-2 px-6">{item.created_at}</td>
+                      <td className="py-2 px-6">{item.description}</td>
+                      <td
+                        className={`py-2 px-6 ${
+                          item.type === "deposit" ? "text-green-500" : "text-red-500"
+                        }`}
+                      >
+                        {item.type}
+                      </td>
+                      <td
+                        className={`py-2 px-6 ${
+                          item.status === "successful" ? "text-green-500" : "text-red-500"
+                        }`}
+                      >
+                        {item.status}
+                      </td>
+                      <td className="py-2 px-6 flex flex-row items-center gap-x-2">
+                        <LiaPoundSignSolid size={15} />
+                        <span>{formatAmountWithCommas(item.amount)}</span>
+                      </td>
+                    </tr>
+                  ))}
                 </>
-              )
-             }
+              )}
             </tbody>
           </table>
           <div className="paginate flex items-end justify-end py-5">
@@ -228,11 +223,12 @@ const PatientWallet = () => {
       <div className="mobile-view flex lg:hidden">
         <div className="w-full bg-white rounded-lg my-5 p-5 ">
           <div className="w-full flex flex-col py-2">
-            {
-              currentItems.length < 0 ? (
-                <p className="text-center font-bold capitalize text-primary-100 text-lg">no available transaction list</p>
-              ):(
-                <>
+            {currentItems.length === 0 ? (
+              <p className="text-center font-bold capitalize text-primary-100 text-lg">
+                No available transaction list
+              </p>
+            ) : (
+              <>
                 {currentItems.map((item, id) => (
                   <div
                     className="w-full flex flex-row items-center justify-between border-b-2 border-neutral-50"
@@ -240,38 +236,27 @@ const PatientWallet = () => {
                   >
                     <div className="flex items-center gap-x-5 w-full">
                       <div
-                        className={`w-10 h-10 rounded-full flex flex-row items-center justify-center p-2 text-white ${
+                        className={`w-10 h-10 rounded-full flex items-center justify-center text-white ${
                           item.type === "deposit" ? "bg-green-500" : "bg-red-500"
                         }`}
                       >
-                        <BiTransferAlt size={30} />
+                        <BiTransferAlt size={15} />
                       </div>
                       <div>
-                        <h2 className={`capitalize ${
-                              item.type === "deposit"
-                                ? "text-green-500"
-                                : "text-red-500"
-                            }`} >
-                          {item.type}
-                        </h2>
-                        <h2 className="text-xl font-medium capitalize">
-                          {item.created_at}
-                        </h2>
+                        <p className="capitalize font-bold lg:text-xl">{item.type}</p>
+                        <p className="font-normal text-neutral-50">{item.created_at}</p>
                       </div>
                     </div>
-                    <div className="flex float-right">
-                    <h2 className="flex items-center w-full text-xl font-bold">
+                    <div className="flex flex-row items-center gap-x-2">
                       <LiaPoundSignSolid size={15} />
-                      <h2>{formatAmountWithCommas(item.amount)}</h2>
-                    </h2>
+                      <span>{formatAmountWithCommas(item.amount)}</span>
                     </div>
                   </div>
                 ))}
-                </>
-              )
-            }
+              </>
+            )}
           </div>
-          <div className="paginate w-full flex items-center justify-center p-5">
+          <div className="paginate flex items-end justify-end py-5">
             <ReactPaginate
               breakLabel="..."
               previousLabel={"Prev"}
@@ -294,14 +279,14 @@ const PatientWallet = () => {
           </div>
         </div>
       </div>
-  
-
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      {loading && (
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={loading}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      )}
     </section>
   );
 };
