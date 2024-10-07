@@ -24,8 +24,7 @@ const Records = () => {
         const fetchBloodPressure = async () => {
             try {
                 const response = await axiosClient.get(`/api/patient/rm/get_latest_reading/blood_pressure`);
-                
-                setBloodPressure(response?.data?.data || null);
+                setBloodPressure(response?.data?.data ?? 0);
             } catch (error) {
                 Swal.fire({
                     text: "Error fetching latest blood pressure reading",
@@ -38,8 +37,7 @@ const Records = () => {
         const fetchBloodSugar = async () => {
             try {
                 const response = await axiosClient.get(`/api/patient/rm/get_latest_reading/blood_sugar`);
-                
-                setBloodSugar(response?.data?.data || null);
+                setBloodSugar(response?.data?.data ?? 0);
             } catch (error) {
                 Swal.fire({
                     text: "Error fetching latest blood sugar reading",
@@ -48,12 +46,11 @@ const Records = () => {
                 });
             }
         };
-
+    
         const fetchWeight = async () => {
             try {
                 const response = await axiosClient.get(`/api/patient/rm/get_latest_reading/weight`);
-                
-                setWeight(response?.data?.data || null);
+                setWeight(response?.data?.data ?? 0);
             } catch (error) {
                 Swal.fire({
                     text: "Error fetching latest weight reading",
@@ -62,12 +59,11 @@ const Records = () => {
                 });
             }
         };
-
+    
         const fetchFood = async () => {
             try {
                 const response = await axiosClient.get(`/api/patient/rm/get_latest_reading/food`);
-                
-                setFood(response?.data?.data || null);
+                setFood(response?.data?.data ?? 0);
             } catch (error) {
                 Swal.fire({
                     text: "Error fetching latest food reading",
@@ -76,7 +72,7 @@ const Records = () => {
                 });
             }
         };
-
+    
         const fetchAllReadings = async () => {
             setLoading(true);
             try {
@@ -87,9 +83,10 @@ const Records = () => {
                 setLoading(false);
             }
         };
-
+    
         fetchAllReadings();
     }, []);
+    
 
     const handleVitals = () => {
         setOpenVitals((prev) => !prev);
@@ -110,7 +107,7 @@ const Records = () => {
                 </div>
             </div>
             <div className="w-full mb-8 flex lg:flex-row sm:flex-col gap-8">
-                <div className="lg:w-[50%] sm:w-full rounded-lg grid lg:grid-cols-2 sm:grid-cols-1 gap-5">
+                <div className="lg:w-[50%] sm:w-full rounded-lg grid grid-cols-2 gap-5">
                     <div className="bloodPressure bg-white rounded-lg">
                         {bloodPressure ? (
                             <div className="w-full lg:p-3 sm:p-1 ">

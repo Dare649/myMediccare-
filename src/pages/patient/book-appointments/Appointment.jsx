@@ -18,6 +18,7 @@ import doc5 from "../../../../public/images/doc5.jpg"
 const Appointment = ({ formData, updateFormData, nextStep }) => {
   const MySwal = withReactContent(Swal);
   const [doctor, setDoctor] = useState(null);
+  const [rating, setRating] = useState(null)
   const [selectedDate, setSelectedDate] = useState(new Date()); // Set to current date initially
   const [loading, setLoading] = useState(false);
   const [timeSlots, setTimeSlots] = useState([]);
@@ -103,6 +104,20 @@ const Appointment = ({ formData, updateFormData, nextStep }) => {
       nextStep();
     }
   };
+
+  // useEffect(() => {
+  //   const fetchRatings = async () => {
+  //     try {
+  //       const response = await axiosClient.get()
+  //     } catch (error) {
+  //       MySwal.fire({
+  //         icon: "error",
+  //         title: "Error",
+  //         text: "An error occured while getting doctor's ratings",
+  //       });
+  //     }
+  //   }
+  // }, [])
 
   return (
     <section className="w-full h-full lg:p-5 sm:p-0 lg:mt-40 sm:mt-20">
