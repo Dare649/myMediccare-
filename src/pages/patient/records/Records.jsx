@@ -24,7 +24,7 @@ const Records = () => {
         const fetchBloodPressure = async () => {
             try {
                 const response = await axiosClient.get(`/api/patient/rm/get_latest_reading/blood_pressure`);
-                console.log("Blood Pressure Data:", response?.data?.data);
+                
                 setBloodPressure(response?.data?.data || null);
             } catch (error) {
                 Swal.fire({
@@ -38,7 +38,7 @@ const Records = () => {
         const fetchBloodSugar = async () => {
             try {
                 const response = await axiosClient.get(`/api/patient/rm/get_latest_reading/blood_sugar`);
-                console.log("Blood Sugar Data:", response?.data?.data);
+                
                 setBloodSugar(response?.data?.data || null);
             } catch (error) {
                 Swal.fire({
@@ -52,7 +52,7 @@ const Records = () => {
         const fetchWeight = async () => {
             try {
                 const response = await axiosClient.get(`/api/patient/rm/get_latest_reading/weight`);
-                console.log("Weight Data:", response?.data?.data);
+                
                 setWeight(response?.data?.data || null);
             } catch (error) {
                 Swal.fire({
@@ -66,7 +66,7 @@ const Records = () => {
         const fetchFood = async () => {
             try {
                 const response = await axiosClient.get(`/api/patient/rm/get_latest_reading/food`);
-                console.log("Food Data:", response?.data?.data);
+                
                 setFood(response?.data?.data || null);
             } catch (error) {
                 Swal.fire({

@@ -91,7 +91,42 @@ const Payment = ({ formData, updateFormData, nextStep, prevStep }) => {
     }
   };
 
+  const validateForm = () => {
+    const { consultation_type, payment_method, amount } = localData;
+
+    if (!consultation_type) {
+      MySwal.fire({
+        text: "Please select a consultation type.",
+        icon: "warning",
+        title: "Validation Error",
+      });
+      return false;
+    }
+
+    if (!payment_method) {
+      MySwal.fire({
+        text: "Please select a payment method.",
+        icon: "warning",
+        title: "Validation Error",
+      });
+      return false;
+    }
+
+    if (!amount || amount <= 0) {
+      MySwal.fire({
+        text: "Please enter a valid amount.",
+        icon: "warning",
+        title: "Validation Error",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
   const handleNext = async () => {
+    if (!validateForm()) return; // Perform validation before proceeding
+
     updateFormData({
       ...formData,
       amount: localData.amount,

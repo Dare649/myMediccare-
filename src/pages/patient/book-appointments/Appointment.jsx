@@ -12,6 +12,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import doc1 from "../../../../public/images/doc1.jpg"
 import doct3 from "../../../../public/images/doct3.jpg"
 import doc7 from "../../../../public/images/doc7.jpg"
+import doc2 from "../../../../public/images/doc2.jpg"
+import doc5 from "../../../../public/images/doc5.jpg"
 
 const Appointment = ({ formData, updateFormData, nextStep }) => {
   const MySwal = withReactContent(Swal);

@@ -128,13 +128,13 @@ const FundModal = ({ handleClose }) => {
       </div>
       <div className="lg:px-5 sm:px-2 flex flex-col w-full mb-5">
         <div className="border-2 border-neutral-50 rounded-lg flex flex-row gap-x-2 w-full my-3 p-2">
-          <div className="bg-neutral-50 rounded-lg lg:p-3 sm:p-1">
+          <div className="bg-neutral-50/50 rounded-lg lg:p-3 sm:p-1">
             <LiaPoundSignSolid size={30}/>
           </div>
           <input
             type="number"
             placeholder="Enter Amount"
-            className="w-full bg-neutral-50 rounded-lg lg:p-3 sm:p-1 outline-none border-none"
+            className="w-full bg-neutral-50/50 text-lg rounded-lg lg:p-3 sm:p-1 outline-none border-none"
             value={formData.amount}
             onChange={handleChange}
             name="amount"

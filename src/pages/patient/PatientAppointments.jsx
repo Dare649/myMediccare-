@@ -35,6 +35,8 @@ const PatientAppointments = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
+        setAppointments([]); // Clear previous appointments data
+        setLoading(true);
         let response;
         if (filter === "today") {
           response = await axiosClient.get("/api/patient/get_appt/today");
@@ -45,31 +47,20 @@ const PatientAppointments = () => {
         } else if (filter === "completed") {
           response = await axiosClient.get("/api/patient/get_appt/completed");
         }
+        setLoading(false);
         setAppointments(response.data?.data || []);
-        const appointmentsData = response.data?.data || [];
-
-        // Set booking_id from the first appointment if available
-        if (appointmentsData.length > 0) {
-          const firstAppointment = appointmentsData[0];
-          setBookingId(firstAppointment.booking_id); // Store booking_id
-        }
-      
       } catch (error) {
-        MySwal({
+        setLoading(false);
+        MySwal.fire({
           title: "Error",
           text: "Error fetching appointment, try again.",
-          icon: "error"
-        })
+          icon: "error",
+        });
       }
     };
 
-    
-
-
     fetchAppointments();
- 
   }, [filter]);
-
   
 
   const lastIndex = currentPage * recordsPerPage;
@@ -351,7 +342,7 @@ const PatientAppointments = () => {
                     className="w-full border-b-2 border-neutral-50 p-4 rounded-lg bg-white shadow hover:bg-primary-100/10 cursor-pointer flex flex-col gap-y-3" 
                   >
                       <div className="flex flex-row justify-between items-center gap-x-2">
-                        <div className="flex items-center justify-center border-2 border-neutral-100 rounded-full h-20 w-20">
+                        <div className="flex items-center justify-center rounded-full h-20 w-20">
                           <div className="h-12 w-12 rounded-full">
                           {
                             item.doctor_id === 1 ? (

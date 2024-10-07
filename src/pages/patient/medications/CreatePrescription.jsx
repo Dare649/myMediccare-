@@ -123,7 +123,7 @@ const CreatePrescription = ({handleClose}) => {
   };
 
   return (
-    <div className="lg:w-[50%] sm:w-full bg-white rounded-lg">
+    <div className="lg:w-[50%] sm:w-full bg-white rounded-lg h-[95%] overflow-y-scroll">
       <div className='flex flex-row items-center justify-between lg:p-5 sm:p-2'>
         <h2 className="lg:text-2xl font-bold capitalize sm:text-lg">request prescription</h2>
         <IoMdClose size={20} onClick={handleClose} className="cursor-pointer font-bold text-red-500"/>
@@ -132,7 +132,7 @@ const CreatePrescription = ({handleClose}) => {
       <form 
         onSubmit={handleSubmit}
         className="w-full sm:p-2 lg:p-5"
-    >
+      >
         <div className="w-full grid lg:grid-cols-2 sm:grid-cols-1 gap-5">
         <div className="my-2">
             <h2 className="text-primary-100 text-md font-bold capitalize">

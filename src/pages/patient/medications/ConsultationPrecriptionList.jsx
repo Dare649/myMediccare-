@@ -3,12 +3,13 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import med3 from "../../../../public/images/med3.png";
 import { axiosClient } from "../../../axios";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import logo from "../../../assets/images/logo.png";
+import { FaLongArrowAltLeft } from "react-icons/fa";
 
 const ConsultationPrescriptionList = () => {
   const MySwal = withReactContent(Swal);
@@ -75,6 +76,9 @@ const ConsultationPrescriptionList = () => {
     <section className="monitoring sm:mt-10 lg:mt-40 w-full h-full lg:p-5 sm:p-2">
       {consultation ? (
         <div className="w-full bg-white lg:p-10 sm:p-5">
+          <Link to={"/patient-schedules"} className="my-5 font-bold text-primary-100">
+            <FaLongArrowAltLeft size={30}/>
+          </Link>
           <h2 className="lg:text-2xl sm:text-lg font-bold capitalize lg:py-5 sm:py-2">
             {consultation.diagnosis || "Loading Prescription..."}
           </h2>

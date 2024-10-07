@@ -25,6 +25,7 @@ const Appointments = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
+        setAppointments([]); // Clear previous appointments data
         setLoading(true);
         let response;
         if (filter === "today") {
@@ -174,7 +175,7 @@ const Appointments = () => {
   
 
    // decline appointment function
-const handleDeclineAppt = async (booking_id) => {
+  const handleDeclineAppt = async (booking_id) => {
     try {
       // Show confirmation dialog
       const result = await MySwal.fire({

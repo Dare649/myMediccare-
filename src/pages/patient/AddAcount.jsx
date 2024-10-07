@@ -1,26 +1,19 @@
 import { useState } from "react";
 import { IoMdClose } from "react-icons/io";
-import PhoneInput from 'react-phone-number-input';
-import 'react-phone-number-input/style.css';
-import countryList from 'react-select-country-list';
-import Select from 'react-select';
 import { axiosClient } from "../../../axios";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 
-const AddAccount = ({handleClose, onClick}) => {
+const AddAccount = ({ handleClose, onClick }) => {
   const [loading, setLoading] = useState(false);
-  const countries = countryList().getData();
   const MySwal = withReactContent(Swal);
   const [error, setError] = useState({});
   const [formData, setFormData] = useState({
     name: "",
-    country_code: "",
-    phone: "",
     sex: "",
-    date_of_birth: "",
+    age: "",
     relationship: "",
   });
 
@@ -32,28 +25,12 @@ const AddAccount = ({handleClose, onClick}) => {
     });
   };
 
-  const handleCountryChange = (selectedCountry) => {
-    if (selectedCountry) {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        country: selectedCountry.label,
-        country_code: selectedCountry.value,
-      }));
-    }
-  };
-
-  const handlePhoneChange = (value) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      phone: value,
-    }));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError({});
 
-    const requiredFields = ["name", "country_code", "phone", "sex", "date_of_birth", "relationship"];
+    // Check if required fields are filled
+    const requiredFields = ["name", "sex", "age", "relationship"];
     let formErrors = {};
 
     requiredFields.forEach((field) => {
@@ -70,6 +47,7 @@ const AddAccount = ({handleClose, onClick}) => {
     setLoading(true);
 
     try {
+      console.log("Submitting formData:", formData); // Debugging line
       await axiosClient.post("/api/patient/add_account", formData);
       setLoading(false);
       MySwal.fire({
@@ -77,17 +55,16 @@ const AddAccount = ({handleClose, onClick}) => {
         text: "Account has been added successfully!",
         icon: "success",
       }).then(() => {
-        handleClose()
+        handleClose();
       });
     } catch (error) {
       setLoading(false);
+      console.error("Error submitting form:", error); // Debugging line
       MySwal.fire({
         title: "Error!",
-        text: "Something went wrong!",
+        text: error.response?.data?.message || "Something went wrong!",
         icon: "error",
       });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -95,13 +72,13 @@ const AddAccount = ({handleClose, onClick}) => {
     <div className="lg:w-[50%] sm:w-full bg-white rounded-lg">
       <div className="flex flex-row items-center justify-between sm:p-2 lg:p-5">
         <h2 className="capitalize lg:text-2xl sm:text-lg font-bold">add account</h2>
-        <IoMdClose size={30} className="text-red-500 font-bold cursor-pointer" onClick={onClick}/>
+        <IoMdClose size={30} className="text-red-500 font-bold cursor-pointer" onClick={onClick} />
       </div>
       <hr className="w-full bg-neutral-50 h-2 my-3" />
       <form onSubmit={handleSubmit} className="w-full sm:p-2 lg:p-5">
         <div className="grid lg:grid-cols-2 sm:grid-cols-1 gap-5">
           <div className="w-full">
-            <h2 className="capitalize font-bold mb-2 ">username</h2>
+            <h2 className="capitalize font-bold mb-2">name</h2>
             <input
               type="text"
               id="name"
@@ -112,30 +89,8 @@ const AddAccount = ({handleClose, onClick}) => {
             />
             {error.name && <span className="text-red-500">{error.name}</span>}
           </div>
-          {/* <div className="w-full">
-            <h2 className="capitalize font-bold mb-2 ">phone</h2>
-            <PhoneInput
-              international
-              defaultCountry="US"
-              value={formData.phone}
-              onChange={handlePhoneChange}
-              className={`outline-none border-2 ${error.phone ? "border-red-500" : "border-neutral-50"} p-2 w-full text-lg font-medium rounded-lg focus:border-primary-100`}
-            />
-            {error.phone && <span className="text-red-500">{error.phone}</span>}
-          </div> */}
-          {/* <div className="w-full">
-            <h2 className="capitalize font-bold mb-2 ">country</h2>
-            <Select
-              options={countries}
-              value={countries.find((country) => country.value === formData.country_code)}
-              onChange={handleCountryChange}
-              className="outline-none w-full text-lg font-medium rounded-lg focus:border-primary-100"
-              placeholder="Select your country"
-            />
-            {error.country_code && <span className="text-red-500">{error.country_code}</span>}
-          </div> */}
           <div className="w-full">
-            <h2 className="capitalize font-bold mb-2 ">sex</h2>
+            <h2 className="capitalize font-bold mb-2">sex</h2>
             <select
               className={`outline-none border-2 ${error.sex ? "border-red-500" : "border-neutral-50"} p-2 w-full text-lg font-medium rounded-lg focus:border-primary-100 capitalize`}
               id="sex"
@@ -151,18 +106,15 @@ const AddAccount = ({handleClose, onClick}) => {
             {error.sex && <span className="text-red-500">{error.sex}</span>}
           </div>
           <div className="w-full">
-            <h2 className="capitalize font-bold mb-2 ">age</h2>
+            <h2 className="capitalize font-bold mb-2">age</h2>
             <select
-            className={`outline-none border-2 ${error.age ? 'border-red-500' : 'border-neutral-50'} p-2 w-full text-lg font-medium rounded-lg focus:border-primary-100`}
-            type="text"
-            id="age" 
-            name="age"
-            value={formData.age} 
-            onChange={handleChange}
+              className={`outline-none border-2 ${error.age ? "border-red-500" : "border-neutral-50"} p-2 w-full text-lg font-medium rounded-lg focus:border-primary-100`}
+              id="age"
+              name="age"
+              onChange={handleChange}
+              value={formData.age}
             >
-              <option value="" disabled>
-                --Select Age Group--
-              </option>
+              <option value="">--Select Age Group--</option>
               <option value="Infants/Toddlers: 0 - 2 years">Infants/Toddlers: 0 - 2 years</option>
               <option value="Children: 3 - 12 years">Children: 3 - 12 years</option>
               <option value="Teens/Adolescents: 13 - 17 years">Teens/Adolescents: 13 - 17 years</option>
@@ -171,11 +123,10 @@ const AddAccount = ({handleClose, onClick}) => {
               <option value="Middle-aged Adults: 41 - 60 years">Middle-aged Adults: 41 - 60 years</option>
               <option value="Seniors/Elderly: 61+ years">Seniors/Elderly: 61+ years</option>
             </select>
-            
             {error.age && <span className="text-red-500">{error.age}</span>}
           </div>
           <div className="w-full">
-            <h2 className="capitalize font-bold mb-2 ">relationship</h2>
+            <h2 className="capitalize font-bold mb-2">relationship</h2>
             <input
               type="text"
               id="relationship"
