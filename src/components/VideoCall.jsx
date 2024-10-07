@@ -162,32 +162,26 @@ const VideoCall = () => {
     }
   };
 
-
-  // Handle sending chat messages
   const handleSendMessage = () => {
     if (newMessage.trim() !== "") {
       setMessages([...messages, { sender: "You", message: newMessage }]);
       setNewMessage("");
-      // Scroll the chat box to the latest message
       messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight;
     }
   };
 
-
-  //toggle notes for doctors
   const handleNotes = () => {
-    setNotes((prev)=> !prev);
+    setNotes(prev => !prev);
   };
 
-
   const handleSubmit = async (e) => {
-    e.preventDefault();  // Prevent the form from reloading the page
-  
+    e.preventDefault();
+
     if (!formData.patient_history || !formData.differential_diagnosis || !formData.mental_health_screening ||
-        !formData.radiology || !formData.final_diagnosis || !formData.recommendation ||
-        !formData.general_exam || !formData.eye_exam || !formData.breast_exam ||
-        !formData.throat_exam || !formData.abdomen_exam || !formData.chest_exam ||
-        !formData.reproductive_exam || !formData.skin_exam || !formData.ros_items.length) {
+      !formData.radiology || !formData.final_diagnosis || !formData.recommendation ||
+      !formData.general_exam || !formData.eye_exam || !formData.breast_exam ||
+      !formData.throat_exam || !formData.abdomen_exam || !formData.chest_exam ||
+      !formData.reproductive_exam || !formData.skin_exam || !formData.ros_items.length) {
       Swal.fire({
         icon: 'error',
         title: 'Validation Error',
@@ -195,20 +189,19 @@ const VideoCall = () => {
       });
       return;
     }
-  
+
     try {
-      // Ensure that ros_items has the correct structure with header_id
       const formattedRosItems = formData.ros_items.map(item => ({
-        header_id: item.id,  // Use `header_id` instead of `id` to match the backend requirement
-        name: item.name || '', // Ensure name is valid
-        is_present: item.is_present === 1 ? 1 : 0, // Convert to integer (1 or 0)
+        header_id: item.id,
+        name: item.name || '',
+        is_present: item.is_present === 1 ? 1 : 0,
       }));
-  
+
       await axiosClient.post(`/api/doctor/${consultationUUID}/update_consultation`, {
         ...formData,
-        ros_items: formattedRosItems, // Send formatted ROS items with `header_id`
+        ros_items: formattedRosItems,
       });
-  
+
       Swal.fire({
         title: 'Success!',
         text: 'Notes have been added successfully.',
@@ -216,7 +209,7 @@ const VideoCall = () => {
       });
       handleNotes();
     } catch (error) {
-      console.error('Error during submission:', error);  // Log error for debugging
+      console.error('Error during submission:', error);
       Swal.fire({
         title: 'Error!',
         text: 'Something went wrong!',
@@ -225,7 +218,6 @@ const VideoCall = () => {
       handleNotes();
     }
   };
-
 
   return (
     <div className="video-call-container">
@@ -247,43 +239,34 @@ const VideoCall = () => {
         <div
           className="messages"
           ref={messageBoxRef}
-          style={{ flex: '1', overflowY: 'auto', marginBottom: '10px', backgroundColor: '#f9f9f9', padding: '10px', borderRadius: '5px' }}
+          style={{ flex: '1', overflowY: 'auto', marginBottom: '10px', backgroundColor: '#f9f9f9', padding: '10px' }}
         >
           {messages.map((msg, index) => (
             <div key={index} style={{ marginBottom: '5px' }}>
-              <strong>{msg.sender}: </strong>{msg.message}
+              <strong>{msg.sender}:</strong> {msg.message}
             </div>
           ))}
         </div>
-
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div className="message-input" style={{ display: 'flex' }}>
           <input
             type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="Type a message"
-            style={{ flex: '1', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
+            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+            style={{ flex: '1', padding: '10px', border: '1px solid #ccc' }}
+            placeholder="Type your message..."
           />
-          <button onClick={handleSendMessage} style={{ padding: '10px 20px', borderRadius: '5px', border: 'none', backgroundColor: '#007bff', color: 'white' }}>Send</button>
+          <button onClick={handleSendMessage} style={{ padding: '10px' }}>Send</button>
         </div>
-        
       </div>
-      {/* Doctor's Notes Section */}
-      {
-        user_type === "doctor" &&
-        <button 
-          onClick={handleNotes}
-          className="bg-primary-100 text-white font-bold capitalize rounded-lg p-2">
-            add notes
-        </button>
-      }
-      
-      </div>
-      {notes &&
-        <Modal visible={notes} onClick={handleNotes}>
-          <ConsultationNote handleSubmit={handleSubmit} handleClose={handleNotes} formData={formData} setFormData={setFormData} />
-        </Modal>
-      }
+      {/* Notes Modal */}
+      <Modal open={notes} onClose={handleNotes}>
+        <ConsultationNote
+          formData={formData}
+          setFormData={setFormData}
+          handleSubmit={handleSubmit}
+        />
+      </Modal>
       {loading && (
         <Backdrop open={loading} style={{ color: '#fff', zIndex: 999 }}>
           <CircularProgress color="inherit" />
