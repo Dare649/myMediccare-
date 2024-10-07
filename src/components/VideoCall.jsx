@@ -70,8 +70,10 @@ const VideoCall = () => {
         const [audioTrack, videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
         setLocalTracks({ audioTrack, videoTrack });
 
+        // Play the local video
         videoTrack.play(localVideoRef.current);
 
+        // Publish local tracks
         await agoraClient.publish([audioTrack, videoTrack]);
         setClient(agoraClient);
       } catch (error) {
@@ -90,22 +92,35 @@ const VideoCall = () => {
 
   const handleUserPublished = async (user, mediaType) => {
     await client.subscribe(user, mediaType);
-    if (mediaType === 'video' || mediaType === 'audio') {
-      const playerContainer = document.createElement('div');
-      playerContainer.id = user.uid;
+    let playerContainer = document.getElementById(`player-${user.uid}`);
+    
+    if (!playerContainer) {
+      playerContainer = document.createElement('div');
+      playerContainer.id = `player-${user.uid}`;
       playerContainer.style.width = '100%';
       playerContainer.style.height = '50vh';
-      document.getElementById('remote-user-container').append(playerContainer);
-      if (user.videoTrack) user.videoTrack.play(playerContainer);
-      if (user.audioTrack) user.audioTrack.play();
+      document.getElementById('remote-user-container').appendChild(playerContainer);
     }
-    setRemoteUsers(prevUsers => ({ ...prevUsers, [user.uid]: user }));
+
+    if (mediaType === 'video') {
+      user.videoTrack.play(playerContainer);
+    } else if (mediaType === 'audio') {
+      user.audioTrack.play();
+    }
+
+    setRemoteUsers((prevUsers) => ({
+      ...prevUsers,
+      [user.uid]: user,
+    }));
   };
 
   const handleUserUnpublished = (user) => {
-    const playerContainer = document.getElementById(user.uid);
-    if (playerContainer) playerContainer.remove();
-    setRemoteUsers(prevUsers => {
+    const playerContainer = document.getElementById(`player-${user.uid}`);
+    if (playerContainer) {
+      playerContainer.remove();
+    }
+
+    setRemoteUsers((prevUsers) => {
       const { [user.uid]: removedUser, ...rest } = prevUsers;
       return rest;
     });
@@ -162,26 +177,29 @@ const VideoCall = () => {
     }
   };
 
+  // Handle sending chat messages
   const handleSendMessage = () => {
     if (newMessage.trim() !== "") {
       setMessages([...messages, { sender: "You", message: newMessage }]);
       setNewMessage("");
+      // Scroll the chat box to the latest message
       messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight;
     }
   };
 
+  // Toggle notes for doctors
   const handleNotes = () => {
-    setNotes(prev => !prev);
+    setNotes((prev) => !prev);
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-
+    e.preventDefault();  // Prevent the form from reloading the page
+  
     if (!formData.patient_history || !formData.differential_diagnosis || !formData.mental_health_screening ||
-      !formData.radiology || !formData.final_diagnosis || !formData.recommendation ||
-      !formData.general_exam || !formData.eye_exam || !formData.breast_exam ||
-      !formData.throat_exam || !formData.abdomen_exam || !formData.chest_exam ||
-      !formData.reproductive_exam || !formData.skin_exam || !formData.ros_items.length) {
+        !formData.radiology || !formData.final_diagnosis || !formData.recommendation ||
+        !formData.general_exam || !formData.eye_exam || !formData.breast_exam ||
+        !formData.throat_exam || !formData.abdomen_exam || !formData.chest_exam ||
+        !formData.reproductive_exam || !formData.skin_exam || !formData.ros_items.length) {
       Swal.fire({
         icon: 'error',
         title: 'Validation Error',
@@ -189,19 +207,19 @@ const VideoCall = () => {
       });
       return;
     }
-
+  
     try {
       const formattedRosItems = formData.ros_items.map(item => ({
         header_id: item.id,
         name: item.name || '',
         is_present: item.is_present === 1 ? 1 : 0,
       }));
-
+  
       await axiosClient.post(`/api/doctor/${consultationUUID}/update_consultation`, {
         ...formData,
         ros_items: formattedRosItems,
       });
-
+  
       Swal.fire({
         title: 'Success!',
         text: 'Notes have been added successfully.',
@@ -222,7 +240,7 @@ const VideoCall = () => {
   return (
     <div className="video-call-container">
       <div className="local-video" ref={localVideoRef} style={{ width: '100%', height: '50vh' }}></div>
-      <div id="remote-user-container"></div>
+      <div id="remote-user-container" style={{ display: 'flex', flexDirection: 'row', width: '100%' }}></div>
       <div className="controls">
         <button onClick={toggleMuteAudio}>
           {isAudioMuted ? <FaMicrophoneSlash /> : <FaMicrophone />}
@@ -234,44 +252,35 @@ const VideoCall = () => {
           <FaPhoneSlash />
         </button>
       </div>
-      {/* Chat Box */}
-      <div className="chat-box" style={{ width: '100%', maxHeight: '200px', borderTop: '1px solid #ccc', display: 'flex', flexDirection: 'column', padding: '10px' }}>
-        <div
-          className="messages"
-          ref={messageBoxRef}
-          style={{ flex: '1', overflowY: 'auto', marginBottom: '10px', backgroundColor: '#f9f9f9', padding: '10px' }}
-        >
+      {/* Chat and Notes UI */}
+      <div className="chat-box">
+        <div className="messages" ref={messageBoxRef}>
           {messages.map((msg, index) => (
-            <div key={index} style={{ marginBottom: '5px' }}>
+            <div key={index}>
               <strong>{msg.sender}:</strong> {msg.message}
             </div>
           ))}
         </div>
-        <div className="message-input" style={{ display: 'flex' }}>
-          <input
-            type="text"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-            style={{ flex: '1', padding: '10px', border: '1px solid #ccc' }}
-            placeholder="Type your message..."
-          />
-          <button onClick={handleSendMessage} style={{ padding: '10px' }}>Send</button>
-        </div>
-      </div>
-      {/* Notes Modal */}
-      <Modal open={notes} onClose={handleNotes}>
-        <ConsultationNote
-          formData={formData}
-          setFormData={setFormData}
-          handleSubmit={handleSubmit}
+        <input
+          type="text"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          placeholder="Enter message"
         />
-      </Modal>
-      {loading && (
-        <Backdrop open={loading} style={{ color: '#fff', zIndex: 999 }}>
-          <CircularProgress color="inherit" />
-        </Backdrop>
+        <button onClick={handleSendMessage}>Send</button>
+      </div>
+      {notes && (
+        <Modal onClose={handleNotes}>
+          <ConsultationNote
+            formData={formData}
+            setFormData={setFormData}
+            handleSubmit={handleSubmit}
+          />
+        </Modal>
       )}
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 };
