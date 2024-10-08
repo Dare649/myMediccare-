@@ -98,7 +98,7 @@ const PatientAppointments = () => {
         icon: "success",
         text: "Joined successfully.",
       }).then(() => {
-        navigate(`/consultation-video-call`, {
+        navigate(`/appointment-video-call`, {
           state: {
             bookingId: booking_id,
             token: response?.data?.token,

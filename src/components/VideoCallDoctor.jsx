@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AgoraRTC from 'agora-rtc-sdk-ng';
-import Modal from "../components/Modal";
+import Modal from "./Modal";
 import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaPhoneSlash } from 'react-icons/fa';
 import ConsultationNote from '../pages/doctors/consultation/ConsultationNote';
 import { axiosClient } from '../axios';
@@ -17,13 +17,12 @@ const getValidString = (input) => {
   return input;
 };
 
-const VideoCall = () => {
+const VideoCallDoctor = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const MySwal = withReactContent(Swal);
   
   const { bookingId, token, channelName, role, user_uuid, user_type, consultationUUID } = location.state || {};
-  console.log(token, channelName,user_type)
   
   const validChannelName = getValidString(channelName);
   const validUserUuid = getValidString(user_uuid);
@@ -66,7 +65,6 @@ const VideoCall = () => {
       agoraClient.on('user-unpublished', handleUserUnpublished);
   
       try {
-        // Use null for UID to let Agora assign a unique ID
         await agoraClient.join(APP_ID, validChannelName, token, null);
   
         const [audioTrack, videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
@@ -89,7 +87,6 @@ const VideoCall = () => {
       if (client) client.leave();
     };
   }, [token, validChannelName]);
-  
 
   const handleUserPublished = async (user, mediaType) => {
     await client.subscribe(user, mediaType);
@@ -227,7 +224,9 @@ const VideoCall = () => {
 
   return (
     <div className="video-call-container lg:mt-40 sm:mt-20">
-      <div className="local-video" ref={localVideoRef} style={{ width: '100%', height: '50vh' }}></div>
+      {/* Local user video */}
+      <div className="local-video" ref={localVideoRef} style={{ width: '100%', height: '50vh', backgroundColor: 'black' }}></div>
+      {/* Remote user container */}
       <div id="remote-user-container" style={{ display: 'flex', flexDirection: 'row', width: '100%' }}></div>
       <div className="controls">
         <button onClick={toggleMuteAudio}>
@@ -260,18 +259,33 @@ const VideoCall = () => {
       <button onClick={handleNotes}>
         {notes ? "Close Notes" : "Open Notes"}
       </button>
-      <Modal isOpen={notes}>
-        <ConsultationNote
-          formData={formData}
-          setFormData={setFormData}
-          handleSubmit={handleSubmit}
-        />
-      </Modal>
-      <Backdrop open={loading}>
+      {notes && (
+        <form onSubmit={handleSubmit}>
+          {/* Form fields for consultation notes */}
+          <textarea
+            placeholder="Patient History"
+            value={formData.patient_history}
+            onChange={(e) => setFormData({ ...formData, patient_history: e.target.value })}
+          />
+          <textarea
+            placeholder="Differential Diagnosis"
+            value={formData.differential_diagnosis}
+            onChange={(e) => setFormData({ ...formData, differential_diagnosis: e.target.value })}
+          />
+          <textarea
+            placeholder="Final Diagnosis"
+            value={formData.final_diagnosis}
+            onChange={(e) => setFormData({ ...formData, final_diagnosis: e.target.value })}
+          />
+          {/* Additional fields can be added here */}
+          <button type="submit">Submit Notes</button>
+        </form>
+      )}
+      <Backdrop open={loading} style={{ zIndex: 9999 }}>
         <CircularProgress color="inherit" />
       </Backdrop>
     </div>
   );
 };
 
-export default VideoCall;
+export default VideoCallDoctor;

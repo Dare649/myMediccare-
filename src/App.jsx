@@ -29,7 +29,8 @@ import DoctorRoute from "./components/DoctorRoute";
 import Settings from "./pages/doctors/settings/Settings";
 import Records from './pages/patient/records/Records';
 import Appointments from './pages/doctors/consultation/Appointments';
-import VideoCall from './components/VideoCall';
+import VideoCallDoctor from './components/VideoCallDoctor';
+import VideoCallPatient from './components/VideoCallPatient';
 import PrescriptionList from './pages/patient/medications/PrescriptionList';
 import ConsultationPrescriptionList from "./pages/patient/medications/ConsultationPrecriptionList";
 import ViewPatient from "./pages/doctors/patient/ViewPatient";
@@ -71,7 +72,7 @@ const App = () => {
                       <Route path="/stripe-payment" element={<StripePayment />} />
                       <Route path="/card-payment" element={<CardPayment />} />
                       <Route path="/book-appointment" element={<BookAppointment />} />
-                      <Route path="/consultation-video-call" element={<VideoCall />} />
+                      <Route path="/appointment-video-call" element={<VideoCallPatient />} />
                       <Route path="/patient-records" element={<Records />} />
                       <Route path="*" element={<Navigate to="/patient-dashboard" replace />} />
                     </Route>
@@ -84,7 +85,7 @@ const App = () => {
                       <Route path="/doctor-profile" element={<Settings />} />
                       <Route path="/doctor-appointments" element={<Appointments />} />
                       <Route path="/view-patient/:id" element={<ViewPatient />} />
-                      <Route path="/consultation-video-call" element={<VideoCall />} />
+                      <Route path="/consultation-video-call" element={<VideoCallDoctor />} />
                       <Route path="*" element={<Navigate to="/doctor-dashboard" replace />} />
                     </Route>
                   </>
