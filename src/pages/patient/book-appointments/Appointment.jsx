@@ -14,6 +14,7 @@ import doct3 from "../../../../public/images/doct3.jpg"
 import doc7 from "../../../../public/images/doc7.jpg"
 import doc2 from "../../../../public/images/doc2.jpg"
 import doc5 from "../../../../public/images/doc5.jpg"
+import { useAuthContext } from "../../../context/AuthContext";
 
 const Appointment = ({ formData, updateFormData, nextStep }) => {
   const MySwal = withReactContent(Swal);
@@ -143,11 +144,11 @@ const Appointment = ({ formData, updateFormData, nextStep }) => {
               <div className="flex flex-row items-center gap-x-3">
                 <div className="bg-neutral-50/65 rounded-lg p-3 flex flex-row items-center gap-x-3">
                   <FaStar className="text-yellow-300" />
-                  <h4 className="font-medium lg:text-md sm:text-sm">4.6 ratings</h4>
+                  <h4 className="font-medium lg:text-md sm:text-sm">{doctor.average_rating} ratings</h4>
                 </div>
                 <div className="bg-neutral-50/65 rounded-lg p-3 flex flex-row items-center gap-x-3">
                   <FaStar className="text-yellow-300" />
-                  <h4 className="font-medium lg:text-md sm:text-sm">80 reviews</h4>
+                  <h4 className="font-medium lg:text-md sm:text-sm">5 reviews</h4>
                 </div>
               </div>
             </div>
