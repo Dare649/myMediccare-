@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import AgoraRTC from 'agora-rtc-sdk-ng';
 import { VideoPlayer } from './VideoPlayer';
 import { useLocation } from 'react-router-dom';
-import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaPhoneSlash } from 'react-icons/fa'; // Importing icons
+import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaPhoneSlash } from 'react-icons/fa'; 
 
-const APP_ID = "894b043a9e60426285be31a3e8e9c4c0";
+const APP_ID = "894b043a9e60426285be31a3e8e9c4c0";  // Make sure this is your actual Agora App ID
 
 const client = AgoraRTC.createClient({
   mode: 'rtc',
@@ -18,39 +18,39 @@ export const VideoRoom = () => {
   const [users, setUsers] = useState([]);
   const [localTracks, setLocalTracks] = useState([]);
   const [isJoined, setIsJoined] = useState(false);
-  const [isMutedAudio, setIsMutedAudio] = useState(false); // Audio mute state
-  const [isMutedVideo, setIsMutedVideo] = useState(false); // Video mute state
+  const [isMutedAudio, setIsMutedAudio] = useState(false); 
+  const [isMutedVideo, setIsMutedVideo] = useState(false); 
 
+  // Handle user joining (for both doctor and patient)
   const handleUserJoined = async (user, mediaType) => {
     await client.subscribe(user, mediaType);
-
+    
     if (mediaType === 'video') {
       setUsers((previousUsers) => [...previousUsers, user]);
     }
 
     if (mediaType === 'audio') {
-      // user.audioTrack.play()
+      user.audioTrack.play();  // Play audio stream
     }
   };
 
+  // Handle user leaving
   const handleUserLeft = (user) => {
-    setUsers((previousUsers) =>
-      previousUsers.filter((u) => u.uid !== user.uid)
-    );
+    setUsers((previousUsers) => previousUsers.filter((u) => u.uid !== user.uid));
   };
 
   useEffect(() => {
     client.on('user-published', handleUserJoined);
     client.on('user-left', handleUserLeft);
 
+    // Joining the channel
     client
       .join(APP_ID, channelName, token, user_uuid)
       .then((uid) => {
         setIsJoined(true);
 
-        if (role === 1) {
-          // Publisher logic
-          return AgoraRTC.createMicrophoneAndCameraTracks().then((tracks) => {
+        if (role === 1) {  // Doctor (Publisher)
+          AgoraRTC.createMicrophoneAndCameraTracks().then((tracks) => {
             const [audioTrack, videoTrack] = tracks;
             setLocalTracks(tracks);
             setUsers((previousUsers) => [
@@ -62,13 +62,14 @@ export const VideoRoom = () => {
                 user_uuid,
               },
             ]);
-            client.publish(tracks);
+            client.publish(tracks);  // Publish tracks
           });
         } else {
-          console.log('Joined as subscriber');
+          console.log('Joined as subscriber');  // Patient (Subscriber)
         }
       });
 
+    // Cleanup when leaving the channel
     return () => {
       if (isJoined) {
         for (let localTrack of localTracks) {
@@ -77,11 +78,7 @@ export const VideoRoom = () => {
         }
         client.off('user-published', handleUserJoined);
         client.off('user-left', handleUserLeft);
-        if (role === 1) {
-          client.unpublish(localTracks).then(() => client.leave());
-        } else {
-          client.leave();
-        }
+        client.leave();
       }
     };
   }, [channelName, token, role, user_uuid, localTracks, isJoined]);
@@ -117,7 +114,7 @@ export const VideoRoom = () => {
       localTrack.close();
     }
     client.leave();
-    setUsers([]); // Clear the user list on call end
+    setUsers([]); 
   };
 
   return (
