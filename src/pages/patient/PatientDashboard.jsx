@@ -44,7 +44,9 @@ const dashAppointments = appointments.slice(0, 3)
               <div className="">
                 <h2 className="first-letter:capitalize lg:text-xl sm:text-lg font-semibold">do you need to see a doctor?</h2>
                 <p className="first-letter:capitalize lg:text-lg sm:text-sm">an appointment is just a cliq away!</p>
-                <Link to={"/book-appointment"} className="lg:w-60 sm:w-full sm:h-10 lg:h-14 lg:mt-5 sm:mt-2 text-center bg-primary-100 text-white first-letter:capitalize font-medium rounded-lg lg:text-lg sm:text-xs">book an appointment</Link>
+                <div className="mt-10">
+                 <Link to={"/book-appointment"} className="p-4 text-center bg-primary-100 text-white capitalize font-medium rounded-lg lg:text-lg sm:text-xs">book an appointment</Link>
+                </div>
               </div>
               <div className="lg:flex sm:hidden">
                 <img src={doc} alt="MyMedicare" className=""/>

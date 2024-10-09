@@ -171,8 +171,6 @@ const Appointments = () => {
   
   
 
-  
-  
 
    // decline appointment function
   const handleDeclineAppt = async (booking_id) => {
@@ -198,7 +196,9 @@ const Appointments = () => {
           title: "Success",
           icon: "success",
           text: "Consultation declined successfully.",
-        });
+        }).then(() => {
+          window.location.reload();
+        })
       }
     } catch (error) {
       // Show error message
@@ -206,7 +206,9 @@ const Appointments = () => {
         title: "Error",
         icon: "error",
         text: "An error occurred. Please try again.",
-      });
+      }).then(() => {
+        window.location.reload();
+      })
     } finally {
       setLoading(false);
     }
