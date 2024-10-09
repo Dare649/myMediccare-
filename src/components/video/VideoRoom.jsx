@@ -121,7 +121,7 @@ export const VideoRoom = () => {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+    <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }} className="lg:mt-40 sm:mt-10">
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 200px)' }}>
         {users.map((user) => (
           <VideoPlayer key={user.uid} user={user} user_uuid={user_uuid} />
