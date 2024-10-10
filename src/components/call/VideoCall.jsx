@@ -340,7 +340,7 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid, consult, user }) => {
       {prescription && (
         <Modal onClose={handlePrescription}>
           <Prescription
-            consultationUUID={consult}
+            handleClose={handlePrescription}
             handleSubmit={handleSubmitPrescription}
             prescriptions={prescriptions}
             setPrescriptions={setPrescriptions}
