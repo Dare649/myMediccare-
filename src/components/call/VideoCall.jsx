@@ -20,6 +20,7 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid }) => {
     if (client) {
       await client.leave();
       console.log("Left the channel");
+      setRemoteUsers({}); // Clear remote users on leave
     }
   };
 
@@ -64,6 +65,11 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid }) => {
         // Create and publish video track if available
         if (localVideoTrack) {
           await client.publish([localVideoTrack]); // Publish video track
+        } else {
+          const newVideoTrack = await AgoraRTC.createCameraVideoTrack();
+          setLocalVideoTrack(newVideoTrack);
+          await client.publish([newVideoTrack]); // Publish video track
+          newVideoTrack.play('local-player');
         }
 
         // Subscribe to remote users
@@ -72,8 +78,7 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid }) => {
           console.log("Subscribed to user:", user.uid);
           if (mediaType === 'audio') {
             // Play the remote audio track
-            const remoteAudioTrack = user.audioTrack;
-            remoteAudioTrack.play();
+            user.audioTrack.play();
           }
           if (mediaType === 'video') {
             // Play the remote video track
