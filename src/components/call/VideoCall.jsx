@@ -8,6 +8,7 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid }) => {
   const [localVideoTrack, setLocalVideoTrack] = useState(null);
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [isVideoMuted, setIsVideoMuted] = useState(false);
+  const [remoteUsers, setRemoteUsers] = useState({}); // State to store remote users
 
   const handleLeave = async () => {
     if (localAudioTrack) {
@@ -65,6 +66,42 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid }) => {
           await client.publish([localVideoTrack]); // Publish video track
         }
 
+        // Subscribe to remote users
+        client.on('user-published', async (user, mediaType) => {
+          await client.subscribe(user, mediaType);
+          console.log("Subscribed to user:", user.uid);
+          if (mediaType === 'audio') {
+            // Play the remote audio track
+            const remoteAudioTrack = user.audioTrack;
+            remoteAudioTrack.play();
+          }
+          if (mediaType === 'video') {
+            // Play the remote video track
+            const remoteVideoTrack = user.videoTrack;
+            const remotePlayerId = `remote-player-${user.uid}`;
+            remoteVideoTrack.play(remotePlayerId);
+            setRemoteUsers((prev) => ({
+              ...prev,
+              [user.uid]: remotePlayerId,
+            }));
+          }
+        });
+
+        client.on('user-unpublished', (user, mediaType) => {
+          if (mediaType === 'video') {
+            const remotePlayerId = remoteUsers[user.uid];
+            if (remotePlayerId) {
+              // Optionally hide the remote video player when the user leaves
+              document.getElementById(remotePlayerId)?.remove();
+              setRemoteUsers((prev) => {
+                const updated = { ...prev };
+                delete updated[user.uid];
+                return updated;
+              });
+            }
+          }
+        });
+
       } catch (error) {
         console.error("Failed to join channel: ", error);
       }
@@ -85,6 +122,13 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid }) => {
         id="local-player"
         style={{ width: "400px", height: "300px", border: "1px solid black", backgroundColor: "black" }}
       />
+      {Object.keys(remoteUsers).map((uid) => (
+        <div
+          key={uid}
+          id={remoteUsers[uid]}
+          style={{ width: "400px", height: "300px", border: "1px solid black", backgroundColor: "gray", marginTop: '10px' }}
+        />
+      ))}
       <div className="mt-4 flex">
         <button onClick={handleLeave} className="mx-2 bg-red-500 text-white py-2 px-4 rounded">
           <FaPhoneSlash />
