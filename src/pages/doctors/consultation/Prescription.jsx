@@ -5,7 +5,7 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 
 
-const Prescription = ({ handleClose, handleSubmit, prescriptions, setPrescriptions }) => {
+const Prescription = ({ handleClose, handleSubmit }) => {
     const MySwal = withReactContent(Swal);
   const [prescriptions, setPrescriptions] = useState([
     {
