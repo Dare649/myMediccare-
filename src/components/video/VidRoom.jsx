@@ -7,29 +7,34 @@ import { FaVideo, FaVideoSlash, FaMicrophone, FaMicrophoneSlash, FaPhoneSlash } 
 const VidRoom = () => {
     const location = useLocation();
     const { bookingId, token, channelName, role, user_uuid } = location.state || {};
-    const APP_ID = "894b043a9e60426285be31a3e8e9c4c0";
+    const APP_ID = "894b043a9e60426285be31a3e8e9c4c0"; // Your Agora App ID
     const TOKEN = token;
     const CHANNEL = channelName;
+
     const [users, setUsers] = useState([]);
     const [localTracks, setLocalTracks] = useState([]);
     const [isAudioMuted, setIsAudioMuted] = useState(false);
     const [isVideoMuted, setIsVideoMuted] = useState(false);
-
     const client = AgoraRTC.createClient({
         mode: "rtc",
-        codec: 'vp8'
+        codec: 'vp8',
     });
+
+    // Check if already in a channel
+    const [isJoined, setIsJoined] = useState(false);
 
     const handleUserJoined = async (user, mediaType) => {
         await client.subscribe(user, mediaType);
-
         if (mediaType === "video") {
-            const videoTrack = user.videoTrack;
-            videoTrack.play(`remote-player-${user.uid}`);
             setUsers((previousUsers) => [
-                ...previousUsers, 
-                { uid: user.uid, videoTrack, audioTrack: user.audioTrack }
+                ...previousUsers,
+                {
+                    uid: user.uid,
+                    videoTrack: user.videoTrack,
+                    audioTrack: user.audioTrack,
+                },
             ]);
+            user.videoTrack.play(`remote-player-${user.uid}`);
         }
 
         if (mediaType === "audio") {
@@ -38,7 +43,7 @@ const VidRoom = () => {
     };
 
     const handleUserLeft = (user) => {
-        setUsers((previousUsers) => 
+        setUsers((previousUsers) =>
             previousUsers.filter((u) => u.uid !== user.uid)
         );
     };
@@ -55,7 +60,7 @@ const VidRoom = () => {
 
             if (client) {
                 await client.leave();
-                console.log("Left the channel");
+                setIsJoined(false);
             }
         } catch (error) {
             console.error("Error leaving channel:", error);
@@ -65,7 +70,7 @@ const VidRoom = () => {
     const toggleAudio = () => {
         if (localTracks[0]) {
             const audioTrack = localTracks[0];
-            audioTrack.setMuted(isAudioMuted);
+            audioTrack.setMuted(!isAudioMuted);
             setIsAudioMuted(!isAudioMuted);
         }
     };
@@ -75,13 +80,6 @@ const VidRoom = () => {
             const videoTrack = localTracks[1];
             try {
                 await videoTrack.setEnabled(!isVideoMuted);
-
-                if (!isVideoMuted) {
-                    videoTrack.play('local-player');
-                } else {
-                    videoTrack.stop();
-                }
-
                 setIsVideoMuted(!isVideoMuted);
             } catch (error) {
                 console.error("Error toggling video:", error);
@@ -91,22 +89,22 @@ const VidRoom = () => {
 
     useEffect(() => {
         const joinChannel = async () => {
+            if (isJoined) return;
             try {
-                const uid = user_uuid;
-                await client.join(APP_ID, CHANNEL, TOKEN, uid);
-                console.log("User connected with uid:", uid);
-
+                await client.join(APP_ID, CHANNEL, TOKEN, user_uuid);
                 const [audioTrack, videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
                 videoTrack.play('local-player');
 
                 setLocalTracks([audioTrack, videoTrack]);
                 await client.publish([audioTrack, videoTrack]);
-                console.log("Tracks published");
 
-                setUsers((previousUsers) => [
-                    ...previousUsers,
-                    { uid, audioTrack, videoTrack }
-                ]);
+                setUsers((prevUsers) => [...prevUsers, {
+                    uid: user_uuid,
+                    audioTrack,
+                    videoTrack,
+                }]);
+
+                setIsJoined(true);
             } catch (error) {
                 console.error("Error joining channel:", error);
             }
@@ -122,22 +120,22 @@ const VidRoom = () => {
             client.off('user-published', handleUserJoined);
             client.off('user-left', handleUserLeft);
         };
-    }, [client, user_uuid, TOKEN, CHANNEL]);
+    }, [client, user_uuid, TOKEN, CHANNEL, isJoined]);
 
     return (
         <div className="flex flex-col items-center justify-center mx-auto mt-60">
             <h2>Video Room</h2>
-            <div 
-                id="local-player" 
+            <div
+                id="local-player"
                 style={{ width: "400px", height: "300px", border: "1px solid black", backgroundColor: "black" }}
             ></div>
             <div style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", 
-                gap: "10px" 
+                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+                gap: "10px"
             }}>
                 {users.map((user) => (
-                    <VidPlayer key={`${user.uid}-${bookingId}`} user={user} /> 
+                    <VidPlayer key={user.uid} user={user} />
                 ))}
             </div>
             <div className="mt-4 flex">
