@@ -41,7 +41,43 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid, consult, user, handleClo
   });
 
 
+  const handleLeave = async () => {
+    try {
+        setLoading(true);
+      // Close local tracks
+      if (localAudioTrack) {
+        localAudioTrack.close();
+      }
+      if (localVideoTrack) {
+        localVideoTrack.close();
+      }
+      
+      // Leave the Agora channel
+      if (client) {
+        await client.leave();
+        console.log("Left the channel");
+        setRemoteUsers({});
+        handleCloseCall();
+      }
 
+      // Make the POST API call to end the consultation
+      await axiosClient.post(`/api/doctor/${consult}/end_consultation`);
+      setLoading(false);
+      MySwal.fire({
+        icon: "success",
+        text: "Consultation ended successfully.",
+        title: "Success"
+      });
+      
+    } catch (error) {
+        setLoading(false);
+        MySwal.fire({
+            icon: "error",
+            text: "Failed to end consultation, try again later.",
+            title: "Error"
+          });
+    }
+  };
 
   const toggleAudio = () => {
     if (localAudioTrack) {
@@ -63,78 +99,92 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid, consult, user, handleClo
     }
   };
 
-  // Join Agora channel
   const joinChannel = async () => {
     if (!client) {
       const agoraClient = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
       setClient(agoraClient);
-      await agoraClient.join(APP_ID, CHANNEL, TOKEN, user_uuid);
-
-      const audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-      setLocalAudioTrack(audioTrack);
-      await agoraClient.publish([audioTrack]);
-
-      const videoTrack = await AgoraRTC.createCameraVideoTrack();
-      setLocalVideoTrack(videoTrack);
-      await agoraClient.publish([videoTrack]);
-      videoTrack.play('local-player');
-
-      agoraClient.on('user-published', async (user, mediaType) => {
-        await agoraClient.subscribe(user, mediaType);
-        if (mediaType === 'audio') user.audioTrack.play();
-        if (mediaType === 'video') {
-          const remotePlayerId = `remote-player-${user.uid}`;
-          user.videoTrack.play(remotePlayerId);
-          setRemoteUsers((prev) => ({ ...prev, [user.uid]: remotePlayerId }));
+    }
+  
+    if (client) {
+      try {
+        await client.join(APP_ID, CHANNEL, TOKEN, user_uuid);
+        console.log("Joined the channel");
+  
+        // Create and publish local audio track
+        const audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+        setLocalAudioTrack(audioTrack);
+        await client.publish([audioTrack]); // Publish audio track
+  
+        // Create and publish video track if available
+        if (localVideoTrack) {
+          await client.publish([localVideoTrack]); // Publish video track
+        } else {
+          const newVideoTrack = await AgoraRTC.createCameraVideoTrack();
+          setLocalVideoTrack(newVideoTrack);
+          await client.publish([newVideoTrack]); // Publish video track
+          newVideoTrack.play('local-player');
         }
-      });
-
-      agoraClient.on('user-unpublished', (user, mediaType) => {
-        if (mediaType === 'video') {
-          const remotePlayerId = remoteUsers[user.uid];
-          if (remotePlayerId) document.getElementById(remotePlayerId)?.remove();
-          setRemoteUsers((prev) => {
-            const updated = { ...prev };
-            delete updated[user.uid];
-            return updated;
-          });
-        }
-      });
+  
+        // Subscribe to remote users
+        client.on('user-published', async (user, mediaType) => {
+          await client.subscribe(user, mediaType);
+          console.log("Subscribed to user:", user.uid);
+          if (mediaType === 'audio') {
+            user.audioTrack.play();
+          }
+          if (mediaType === 'video') {
+            const remoteVideoTrack = user.videoTrack;
+            const remotePlayerId = `remote-player-${user.uid}`;
+            remoteVideoTrack.play(remotePlayerId);
+            setRemoteUsers((prev) => ({
+              ...prev,
+              [user.uid]: remotePlayerId,
+            }));
+            console.log(`Remote video published for user: ${user.uid}`);
+          }
+        });
+  
+        client.on('user-unpublished', (user, mediaType) => {
+          if (mediaType === 'video') {
+            const remotePlayerId = remoteUsers[user.uid];
+            if (remotePlayerId) {
+              document.getElementById(remotePlayerId)?.remove();
+              setRemoteUsers((prev) => {
+                const updated = { ...prev };
+                delete updated[user.uid];
+                return updated;
+              });
+            }
+          }
+        });
+      } catch (error) {
+        console.error("Failed to join channel: ", error);
+      }
     }
   };
-
-  // Leave the channel and end consultation
-  const handleLeave = async () => {
-    setLoading(true);
-    if (localAudioTrack) localAudioTrack.close();
-    if (localVideoTrack) localVideoTrack.close();
-    if (client) await client.leave();
-    setRemoteUsers({});
-    handleCloseCall();
-
-    try {
-      await axiosClient.post(`/api/doctor/${consult}/end_consultation`);
-      MySwal.fire({ icon: "success", text: "Consultation ended.", title: "Success" });
-    } catch {
-      MySwal.fire({ icon: "error", text: "Failed to end consultation.", title: "Error" });
-    }
-    setLoading(false);
-  };
+  
 
   useEffect(() => {
     joinChannel();
-    return () => handleLeave(); // Cleanup
-  }, []);
+    return () => {
+      handleLeave();
+    };
+  }, [client]); // Add client as a dependency
 
 
 
   const handleNotes = () => {
-    setNotes((prev) => !prev);
+    setNotes(prev => {
+      console.log("Toggling Notes Modal: ", !prev);
+      return !prev;
+    });
   };
   
   const handlePrescription = () => {
-    setPrescription((prev) => !prev)
-    };
+    setPrescription(prev => {
+      console.log("Toggling Prescription Modal: ", !prev);
+      return !prev;
+    });
   };
   
 
@@ -289,14 +339,14 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid, consult, user, handleClo
 
       {/* Modal for Notes */}
       {notes && (
-        <Modal visible={notes} onClose={handleNotes}>
+        <Modal onClose={handleNotes}>
           <ConsultationNote handleSubmit={handleSubmit} handleClose={handleNotes} formData={formData} setFormData={setFormData}/>
         </Modal>
       )}
 
       {/* Modal for Prescription */}
       {prescription && (
-        <Modal visible={prescription} onClose={handlePrescription}>
+        <Modal onClose={handlePrescription}>
           <Prescription
             handleClose={handlePrescription}
             handleSubmit={handleSubmitPrescription}
@@ -310,6 +360,6 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid, consult, user, handleClo
       </Backdrop>
     </div>
   );
-
+};
 
 export default VideoCall;
