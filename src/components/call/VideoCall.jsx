@@ -46,22 +46,20 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid }) => {
 
   const joinChannel = async () => {
     if (!client) {
-      // Create the client instance if it doesn't exist
       const agoraClient = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
       setClient(agoraClient);
     }
-
-    // Wait until the client is set
+  
     if (client) {
       try {
         await client.join(APP_ID, CHANNEL, TOKEN, user_uuid);
         console.log("Joined the channel");
-
+  
         // Create and publish local audio track
         const audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
         setLocalAudioTrack(audioTrack);
         await client.publish([audioTrack]); // Publish audio track
-
+  
         // Create and publish video track if available
         if (localVideoTrack) {
           await client.publish([localVideoTrack]); // Publish video track
@@ -71,17 +69,15 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid }) => {
           await client.publish([newVideoTrack]); // Publish video track
           newVideoTrack.play('local-player');
         }
-
+  
         // Subscribe to remote users
         client.on('user-published', async (user, mediaType) => {
           await client.subscribe(user, mediaType);
           console.log("Subscribed to user:", user.uid);
           if (mediaType === 'audio') {
-            // Play the remote audio track
             user.audioTrack.play();
           }
           if (mediaType === 'video') {
-            // Play the remote video track
             const remoteVideoTrack = user.videoTrack;
             const remotePlayerId = `remote-player-${user.uid}`;
             remoteVideoTrack.play(remotePlayerId);
@@ -89,14 +85,14 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid }) => {
               ...prev,
               [user.uid]: remotePlayerId,
             }));
+            console.log(`Remote video published for user: ${user.uid}`);
           }
         });
-
+  
         client.on('user-unpublished', (user, mediaType) => {
           if (mediaType === 'video') {
             const remotePlayerId = remoteUsers[user.uid];
             if (remotePlayerId) {
-              // Optionally hide the remote video player when the user leaves
               document.getElementById(remotePlayerId)?.remove();
               setRemoteUsers((prev) => {
                 const updated = { ...prev };
@@ -106,12 +102,12 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid }) => {
             }
           }
         });
-
       } catch (error) {
         console.error("Failed to join channel: ", error);
       }
     }
   };
+  
 
   useEffect(() => {
     joinChannel();
