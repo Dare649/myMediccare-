@@ -495,6 +495,7 @@ const Appointments = () => {
             role={role}
             consult={consult}
             user={user} 
+            handleCloseCall={handleCall}
           />
         </Modal>
       }

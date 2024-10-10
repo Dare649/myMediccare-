@@ -10,7 +10,7 @@ import ConsultationNote from '../../pages/doctors/consultation/ConsultationNote'
 import Prescription from '../../pages/doctors/consultation/Prescription';
 import Modal from '../Modal';
 
-const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid, consult, user }) => {
+const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid, consult, user, handleCloseCall }) => {
   const [client, setClient] = useState(null);
   const [localAudioTrack, setLocalAudioTrack] = useState(null);
   const [localVideoTrack, setLocalVideoTrack] = useState(null);
@@ -57,6 +57,7 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid, consult, user }) => {
         await client.leave();
         console.log("Left the channel");
         setRemoteUsers({});
+        handleCloseCall();
       }
 
       // Make the POST API call to end the consultation
@@ -173,12 +174,19 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid, consult, user }) => {
 
 
   const handleNotes = () => {
-    setNotes(prev => !prev);
+    setNotes(prev => {
+      
+      return !prev;
+    });
   };
-
+  
   const handlePrescription = () => {
-    setPrescription(prev => !prev);
+    setPrescription(prev => {
+    
+      return !prev;
+    });
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -460,6 +460,7 @@ const PatientAppointments = () => {
             user_uuid={user_uuid} 
             role={role}
             user={user} 
+            handleCloseCall={handleCall}
           />
         </Modal>
       }
