@@ -1,3 +1,4 @@
+// AddAccount.js
 import { useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { axiosClient } from "../../../axios";
@@ -5,8 +6,10 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useAuthContext } from "../../context/AuthContext";
 
 const AddAccount = ({ handleClose, onClick }) => {
+  const { updateUser } = useAuthContext(); // Use the context
   const [loading, setLoading] = useState(false);
   const MySwal = withReactContent(Swal);
   const [error, setError] = useState({});
@@ -48,8 +51,12 @@ const AddAccount = ({ handleClose, onClick }) => {
 
     try {
       console.log("Submitting formData:", formData); // Debugging line
-      await axiosClient.post("/api/patient/add_account", formData);
+      const response = await axiosClient.post("/api/patient/add_account", formData);
       setLoading(false);
+
+      // Update user details in AuthContext
+      updateUser(response.data.data.user); // Assuming response contains the new user data
+
       MySwal.fire({
         title: "Success!",
         text: "Account has been added successfully!",
@@ -138,19 +145,12 @@ const AddAccount = ({ handleClose, onClick }) => {
             {error.relationship && <span className="text-red-500">{error.relationship}</span>}
           </div>
         </div>
-        <div className="w-full py-5">
-          <button
-            type="submit"
-            className="bg-primary-100 text-white py-3 px-10 text-lg font-medium rounded-lg hover:bg-primary-200 transition duration-300 w-full"
-            disabled={loading}
-          >
-            {loading ? <CircularProgress size={24} /> : "Submit"}
+        <div className="mt-5">
+          <button type="submit" className="bg-primary-100 p-2 rounded-lg text-white text-lg font-medium w-full hover:bg-primary-200">
+            {loading ? <CircularProgress size={25} className="text-white" /> : "Add Account"}
           </button>
         </div>
       </form>
-      <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
     </div>
   );
 };

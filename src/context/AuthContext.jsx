@@ -49,22 +49,13 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
   };
 
-
-  // const signout = async () => {
-  //   try {
-  //     setToken(null);
-  //     localStorage.removeItem("token");
-  //     localStorage.removeItem("user");
-  //     localStorage.removeItem("pin");
-  //     setIsAuthenticated(false);
-  //     await axiosClient.delete("/v1/auth/logout");
-  //   } catch (error) {
-  //     console.error("Error signing out", error);
-  //   }
-  // };
+  const updateUser = (newUserData) => {
+    setUser(newUserData);
+    localStorage.setItem("user", JSON.stringify(newUserData));
+  };
 
   return (
-    <AuthContext.Provider value={{ token, signin, signout, user, isAuthenticated }}>
+    <AuthContext.Provider value={{ token, signin, signout, user, isAuthenticated, updateUser }}>
       {children}
     </AuthContext.Provider>
   );
