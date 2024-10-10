@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import AgoraRTC from 'agora-rtc-sdk-ng';
 import { VideoPlayer } from './VideoPlayer';
 import { useLocation } from 'react-router-dom';
-import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaPhoneSlash } from 'react-icons/fa'; 
+import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaPhoneSlash } from 'react-icons/fa'; // Importing icons
 
-const APP_ID = "894b043a9e60426285be31a3e8e9c4c0";  // Make sure this is your actual Agora App ID
+const APP_ID = "894b043a9e60426285be31a3e8e9c4c0";
 
 const client = AgoraRTC.createClient({
   mode: 'rtc',
@@ -18,39 +18,39 @@ export const VideoRoom = () => {
   const [users, setUsers] = useState([]);
   const [localTracks, setLocalTracks] = useState([]);
   const [isJoined, setIsJoined] = useState(false);
-  const [isMutedAudio, setIsMutedAudio] = useState(false); 
-  const [isMutedVideo, setIsMutedVideo] = useState(false); 
+  const [isMutedAudio, setIsMutedAudio] = useState(false); // Audio mute state
+  const [isMutedVideo, setIsMutedVideo] = useState(false); // Video mute state
 
-  // Handle user joining (for both doctor and patient)
   const handleUserJoined = async (user, mediaType) => {
     await client.subscribe(user, mediaType);
-    
+
     if (mediaType === 'video') {
       setUsers((previousUsers) => [...previousUsers, user]);
     }
 
     if (mediaType === 'audio') {
-      user.audioTrack.play();  // Play audio stream
+      // user.audioTrack.play()
     }
   };
 
-  // Handle user leaving
   const handleUserLeft = (user) => {
-    setUsers((previousUsers) => previousUsers.filter((u) => u.uid !== user.uid));
+    setUsers((previousUsers) =>
+      previousUsers.filter((u) => u.uid !== user.uid)
+    );
   };
 
   useEffect(() => {
     client.on('user-published', handleUserJoined);
     client.on('user-left', handleUserLeft);
 
-    // Joining the channel
     client
       .join(APP_ID, channelName, token, user_uuid)
       .then((uid) => {
         setIsJoined(true);
 
-        if (role === 1) {  // Doctor (Publisher)
-          AgoraRTC.createMicrophoneAndCameraTracks().then((tracks) => {
+        if (role === 1) {
+          // Publisher logic
+          return AgoraRTC.createMicrophoneAndCameraTracks().then((tracks) => {
             const [audioTrack, videoTrack] = tracks;
             setLocalTracks(tracks);
             setUsers((previousUsers) => [
@@ -62,14 +62,13 @@ export const VideoRoom = () => {
                 user_uuid,
               },
             ]);
-            client.publish(tracks);  // Publish tracks
+            client.publish(tracks);
           });
         } else {
-          console.log('Joined as subscriber');  // Patient (Subscriber)
+          console.log('Joined as subscriber');
         }
       });
 
-    // Cleanup when leaving the channel
     return () => {
       if (isJoined) {
         for (let localTrack of localTracks) {
@@ -78,7 +77,11 @@ export const VideoRoom = () => {
         }
         client.off('user-published', handleUserJoined);
         client.off('user-left', handleUserLeft);
-        client.leave();
+        if (role === 1) {
+          client.unpublish(localTracks).then(() => client.leave());
+        } else {
+          client.leave();
+        }
       }
     };
   }, [channelName, token, role, user_uuid, localTracks, isJoined]);
@@ -114,7 +117,45 @@ export const VideoRoom = () => {
       localTrack.close();
     }
     client.leave();
-    setUsers([]); 
+    setUsers([]); // Clear the user list on call end
+  };
+
+
+  const handleEndCall = async () => {
+    try {
+      setLoading(true);
+      await axiosClient.post(`/api/doctor/${consultationUUID}/end_consultation`);
+      setLoading(false);
+      MySwal.fire({
+        icon: "success",
+        text: "Consultation ended successfully.",
+        title: "Success"
+      });
+    } catch (error) {
+      setLoading(false);
+      MySwal.fire({
+        icon: "error",
+        text: "Failed to end consultation, try again later.",
+        title: "Error"
+      });
+    }
+  };
+
+  const leaveCall = async () => {
+    try {
+      if (localTracks.audioTrack) localTracks.audioTrack.close();
+      if (localTracks.videoTrack) localTracks.videoTrack.close();
+      if (client) await client.leave();
+      await handleEndCall();
+      navigate('/');
+    } catch (error) {
+      console.error("Error during leaving the call:", error);
+      MySwal.fire({
+        icon: "error",
+        text: "An error occurred while leaving the call.",
+        title: "Error"
+      });
+    }
   };
 
   return (

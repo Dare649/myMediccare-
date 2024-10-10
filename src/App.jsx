@@ -27,12 +27,14 @@ import BookAppointment from './pages/patient/book-appointments/BookAppointment';
 import DoctorDashboard from "./pages/doctors/dashboard/DoctorDashboard";
 import DoctorRoute from "./components/DoctorRoute";
 import Settings from "./pages/doctors/settings/Settings";
+import DoctorAppointment from './components/video/DoctorAppointment';
 import Records from './pages/patient/records/Records';
 import Appointments from './pages/doctors/consultation/Appointments';
 import { VideoRoom } from './components/video/VideoRoom';
 import PrescriptionList from './pages/patient/medications/PrescriptionList';
 import ConsultationPrescriptionList from "./pages/patient/medications/ConsultationPrecriptionList";
 import ViewPatient from "./pages/doctors/patient/ViewPatient";
+import VidRoom from "./components/video/VidRoom";
 
 const App = () => {
   // Destructure token and user from AuthContext
@@ -71,7 +73,7 @@ const App = () => {
                       <Route path="/stripe-payment" element={<StripePayment />} />
                       <Route path="/card-payment" element={<CardPayment />} />
                       <Route path="/book-appointment" element={<BookAppointment />} />
-                      <Route path="/consultation-video-call" element={<VideoRoom />} />
+                      <Route path="/consultation-video-call" element={<VidRoom />} />
                       <Route path="/patient-records" element={<Records />} />
                       <Route path="*" element={<Navigate to="/patient-dashboard" replace />} />
                     </Route>
@@ -84,7 +86,9 @@ const App = () => {
                       <Route path="/doctor-profile" element={<Settings />} />
                       <Route path="/doctor-appointments" element={<Appointments />} />
                       <Route path="/view-patient/:id" element={<ViewPatient />} />
-                      <Route path="/consultation-video-call" element={<VideoRoom />} />
+                      {/* <Route path="/consultation-video-call" element={<VideoRoom />} /> */}
+                      <Route path="/consultation-video-call" element={<VidRoom />} />
+                      <Route path="/agora-video-call" element={<DoctorAppointment />} />
                       <Route path="*" element={<Navigate to="/doctor-dashboard" replace />} />
                     </Route>
                   </>
