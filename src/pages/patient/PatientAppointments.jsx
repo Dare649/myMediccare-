@@ -15,6 +15,7 @@ import doc4 from "../../../public/images/doc4.jpg"
 import doct3 from "../../../public/images/doct3.jpg"
 import Modal from "../../components/Modal";
 import DoctorRating from "../../patientModalPages/DoctorRating";
+import VideoCall from "../../components/call/VideoCall";
 
 
 const PatientAppointments = () => {
@@ -30,6 +31,11 @@ const PatientAppointments = () => {
   const [view, setView] = useState(false);
   const [bookingId, setBookingId] = useState(null);
   const [selectedBookingId, setSelectedBookingId] = useState(null);
+  const [call, setCall] = useState(false);
+  const [token, setToken] = useState('');
+  const [user_uuid, setUserUuid] = useState('');
+  const [role, setRole] = useState(0); // Adjust if necessary
+  const [channelName, setChannelName] = useState('');
 
 
   useEffect(() => {
@@ -85,29 +91,29 @@ const PatientAppointments = () => {
     }
   };
 
-
+  const handleCall = () => {
+    setCall(true); // Or handle the call logic as needed
+  };
+  
   const handleJoin = async (booking_id) => {
     try {
       setLoading(true);
-    
+      
       // Step 1: Fetch Agora token and other details
       const response = await axiosClient.post(`/api/agora_token/${booking_id}/patient`);
+      setToken(response.data.token);
+      setUserUuid(response.data.user_uuid);
+      setRole(response.data.role);
+      setChannelName(response.data.channelName);
       setLoading(false);
+
       MySwal.fire({
         title: "Success",
         icon: "success",
         text: "Joined successfully.",
       }).then(() => {
-        navigate(`/consultation-video-call`, {
-          state: {
-            bookingId: booking_id,
-            token: response?.data?.token,
-            channelName: response?.data?.channelName,
-            user_type: response?.data?.user_type,
-            user_uuid: response?.data?.user_uuid,
-            role: response?.data?.role,
-          }
-        });
+        // Instead of navigating, call handleCall with the necessary data
+        handleCall();
       });
     } catch (error) {
       setLoading(false);
@@ -120,6 +126,7 @@ const PatientAppointments = () => {
       setLoading(false);
     }
   };
+  
 
   const handleView = () => {
     setView((prev) => !prev);
@@ -438,6 +445,18 @@ const PatientAppointments = () => {
             </div>
           </>
         )}
+
+      
+      {
+        call && 
+        <VideoCall 
+            APP_ID={import.meta.env.VITE_MEDICARE_APP_AGORA_APP_ID} 
+            TOKEN={token} 
+            CHANNEL={channelName} 
+            user_uuid={user_uuid} 
+            role={role} 
+        />
+      }
       </main>
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}

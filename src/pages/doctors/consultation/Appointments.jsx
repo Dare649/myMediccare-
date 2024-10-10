@@ -10,6 +10,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import boy1 from "../../../../public/images/boy1.jpg"
 import lady1 from "../../../../public/images/lady1.jpg"
 import { Link } from "react-router-dom";
+import VideoCall from "../../../components/call/VideoCall";
 
 
 const Appointments = () => {
@@ -21,6 +22,11 @@ const Appointments = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState("today");
   const recordsPerPage = 5;
+  const [call, setCall] = useState(false);
+  const [token, setToken] = useState('');
+  const [user_uuid, setUserUuid] = useState('');
+  const [role, setRole] = useState(0); // Adjust if necessary
+  const [channelName, setChannelName] = useState('');
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -99,37 +105,32 @@ const Appointments = () => {
     }
   };
 
+  const handleCall = () => {
+    setCall(true); // Or handle the call logic as needed
+  };
+  
   const handleJoin = async (booking_id) => {
     try {
       setLoading(true);
-    
+      
       // Step 1: Fetch Agora token and other details
-      const response = await axiosClient.post(`/api/agora_token/${booking_id}/doctor`);
-    
-      // Step 2: Start Consultation after Agora token is successfully received
-      const consultationUUID = await handleStartConsultation(booking_id); // Get the consultation UUID
-    
-      if (consultationUUID) {
-        // Step 3: Navigate to the video call page with the required state, including the UUID from the start consultation
-        MySwal.fire({
-          title: "Success",
-          icon: "success",
-          text: "Joined successfully.",
-        }).then(() => {
-          navigate(`/consultation-video-call`, {
-            state: {
-              bookingId: booking_id,
-              token: response?.data?.token,
-              channelName: response?.data?.channelName,
-              user_type: response?.data?.user_type,
-              user_uuid: response?.data?.user_uuid,
-              role: response?.data?.role,
-              consultationUUID: consultationUUID // Pass the consultation UUID to the state
-            }
-          });
-        });
-      }
+      const response = await axiosClient.post(`/api/agora_token/${booking_id}/patient`);
+      setToken(response.data.token);
+      setUserUuid(response.data.user_uuid);
+      setRole(response.data.role);
+      setChannelName(response.data.channelName);
+      setLoading(false);
+
+      MySwal.fire({
+        title: "Success",
+        icon: "success",
+        text: "Joined successfully.",
+      }).then(() => {
+        // Instead of navigating, call handleCall with the necessary data
+        handleCall();
+      });
     } catch (error) {
+      setLoading(false);
       MySwal.fire({
         title: "Error",
         icon: "error",
@@ -474,6 +475,17 @@ const Appointments = () => {
             </div>
           </>
         )}
+
+      {
+        call && 
+        <VideoCall 
+            APP_ID={import.meta.env.VITE_MEDICARE_APP_AGORA_APP_ID} 
+            TOKEN={token} 
+            CHANNEL={channelName} 
+            user_uuid={user_uuid} 
+            role={role} 
+        />
+      }
       </main>
       <Backdrop
             sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}

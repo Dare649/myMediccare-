@@ -5,6 +5,7 @@ import { useAuthContext } from "./context/AuthContext";
 import { IntentProvider } from "./context/IntentContext";
 import { CardProvider } from './context/CardContext';
 import { DoctorProvider } from './context/DoctorContext';
+import Client from './context/Client';
 
 
 
@@ -45,6 +46,7 @@ const App = () => {
       <DoctorProvider>
         <IntentProvider>
         <CardProvider>
+          <Client>
           <Routes>
             {/* Routes for unauthenticated users */}
             {!token ? (
@@ -96,6 +98,7 @@ const App = () => {
               </>
             )}
           </Routes>
+          </Client>
         </CardProvider>
         </IntentProvider>
       </DoctorProvider>
