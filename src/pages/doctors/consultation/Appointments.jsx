@@ -114,7 +114,7 @@ const Appointments = () => {
       setLoading(true);
       
       // Step 1: Fetch Agora token and other details
-      const response = await axiosClient.post(`/api/agora_token/${booking_id}/patient`);
+      const response = await axiosClient.post(`/api/agora_token/${booking_id}/doctor`);
       setToken(response.data.token);
       setUserUuid(response.data.user_uuid);
       setRole(response.data.role);
