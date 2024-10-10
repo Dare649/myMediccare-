@@ -117,10 +117,10 @@ const Appointments = () => {
       setLoading(true);
   
       // Step 1: Start consultation and get the consultation UUID
-      const consultationUUID = await handleStartConsultation(booking_id);
-      setConsult(consultationUUID);
+      const consult = await handleStartConsultation(booking_id);
+      setConsult(consult);
       
-      if (!consultationUUID) {
+      if (!consult) {
         throw new Error("Failed to start consultation.");
       }
   
@@ -159,12 +159,12 @@ const Appointments = () => {
       const response = await axiosClient.post(`/api/doctor/${booking_id}/start_consultation`);
   
       // Step 2: Extract the consultation UUID from the response
-      const consultationUUID = response?.data?.data[0]?.uuid;
+      const consult = response?.data?.data[0]?.uuid;
   
-      console.log("Consultation UUID:", consultationUUID);
+      console.log("Consultation UUID:", consult);
   
       // Return the consultation UUID
-      return consultationUUID;
+      return consult;
     } catch (error) {
       MySwal.fire({
         title: "Error",
@@ -493,7 +493,7 @@ const Appointments = () => {
             CHANNEL={channelName} 
             user_uuid={user_uuid} 
             role={role}
-            consult={consultationUUID}
+            consult={consult}
             user={user} 
           />
         </Modal>
