@@ -11,6 +11,7 @@ import boy1 from "../../../../public/images/boy1.jpg"
 import lady1 from "../../../../public/images/lady1.jpg"
 import { Link } from "react-router-dom";
 import VideoCall from "../../../components/call/VideoCall";
+import Modal from "../../../components/Modal";
 
 
 const Appointments = () => {
@@ -25,8 +26,10 @@ const Appointments = () => {
   const [call, setCall] = useState(false);
   const [token, setToken] = useState('');
   const [user_uuid, setUserUuid] = useState('');
+  const [user, setUser] = useState("")
   const [role, setRole] = useState(0); // Adjust if necessary
   const [channelName, setChannelName] = useState('');
+  const [consult, setConsult] = useState("");
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -112,15 +115,23 @@ const Appointments = () => {
   const handleJoin = async (booking_id) => {
     try {
       setLoading(true);
+  
+      // Step 1: Start consultation and get the consultation UUID
+      const consultationUUID = await handleStartConsultation(booking_id);
+      setConsult(consultationUUID);
       
-      // Step 1: Fetch Agora token and other details
+      if (!consultationUUID) {
+        throw new Error("Failed to start consultation.");
+      }
+  
+      // Step 2: Fetch Agora token and other details
       const response = await axiosClient.post(`/api/agora_token/${booking_id}/doctor`);
       setToken(response.data.token);
       setUserUuid(response.data.user_uuid);
       setRole(response.data.role);
       setChannelName(response.data.channelName);
-      setLoading(false);
-
+      setUser(response.data.user_type);
+  
       MySwal.fire({
         title: "Success",
         icon: "success",
@@ -130,29 +141,28 @@ const Appointments = () => {
         handleCall();
       });
     } catch (error) {
-      setLoading(false);
       MySwal.fire({
         title: "Error",
         icon: "error",
         text: error.message || "An error occurred. Please try again.",
       });
     } finally {
-      setLoading(false);
+      setLoading(false); // Always stop loading
     }
   };
   
   const handleStartConsultation = async (booking_id) => {
     try {
       setLoading(true);
-    
+  
       // Step 1: Make the API request to start consultation
       const response = await axiosClient.post(`/api/doctor/${booking_id}/start_consultation`);
-    
+  
       // Step 2: Extract the consultation UUID from the response
       const consultationUUID = response?.data?.data[0]?.uuid;
-    
+  
       console.log("Consultation UUID:", consultationUUID);
-    
+  
       // Return the consultation UUID
       return consultationUUID;
     } catch (error) {
@@ -161,14 +171,13 @@ const Appointments = () => {
         icon: "error",
         text: "An error occurred while starting consultation.",
       });
-    
+  
       // Return null to indicate failure
       return null;
     } finally {
-      setLoading(false); // Ensure loading is stopped in case of error
+      setLoading(false); // Ensure loading is stopped in case of success or failure
     }
   };
-  
   
   
 
@@ -402,11 +411,10 @@ const Appointments = () => {
                   >
                     <div className="flex flex-row justify-between items-center">
                       <div className="flex flex-row items-center space-x-3">
-                        <img
-                          src={`https://api.example.com/doctor-images/${item.doctor_id}`}
-                          alt={item.doctor_name}
-                          className="h-12 w-12 rounded-full"
-                        />
+                          {
+                              item.appointment_type === "home_consultations" ? <img src={boy1} alt="" className="h-20 w-20 rounded-full"/>:
+                              <img src={lady1} alt="" className="h-20 w-20 rounded-full"/>
+                            }
                         <div className="text-md font-bold capitalize">
                           {item.patient_name}
                         </div>
@@ -478,13 +486,17 @@ const Appointments = () => {
 
       {
         call && 
-        <VideoCall 
+        <Modal visible={call} >
+          <VideoCall 
             APP_ID={import.meta.env.VITE_MEDICARE_APP_AGORA_APP_ID} 
             TOKEN={token} 
             CHANNEL={channelName} 
             user_uuid={user_uuid} 
-            role={role} 
-        />
+            role={role}
+            consult={consultationUUID}
+            user={user} 
+          />
+        </Modal>
       }
       </main>
       <Backdrop

@@ -318,8 +318,18 @@ const VideoCall = () => {
         <button onClick={leaveCall}>
           <FaPhoneSlash />
         </button>
-        <button onClick={handleNotes}>Consultation Notes</button>
-        <button onClick={handlePrescription}>Add Prescription</button>
+        <button 
+          onClick={handleNotes}
+          className='p-3 bg-primary-100 text-white font-bold'
+        >
+          Add Notes
+        </button>
+        <button 
+          onClick={handlePrescription}
+          className='p-3 bg-primary-100 text-white font-bold'
+        >
+          Add Prescription
+        </button>
       </div>
 
       {/* Message Box */}

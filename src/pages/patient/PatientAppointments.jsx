@@ -18,6 +18,7 @@ import DoctorRating from "../../patientModalPages/DoctorRating";
 import VideoCall from "../../components/call/VideoCall";
 
 
+
 const PatientAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const MySwal = withReactContent(Swal);
@@ -36,6 +37,7 @@ const PatientAppointments = () => {
   const [user_uuid, setUserUuid] = useState('');
   const [role, setRole] = useState(0); // Adjust if necessary
   const [channelName, setChannelName] = useState('');
+  const [user, setUser] = useState("")
 
 
   useEffect(() => {
@@ -105,6 +107,7 @@ const PatientAppointments = () => {
       setUserUuid(response.data.user_uuid);
       setRole(response.data.role);
       setChannelName(response.data.channelName);
+      setUser(response.data.user_type);
       setLoading(false);
 
       MySwal.fire({
@@ -447,15 +450,18 @@ const PatientAppointments = () => {
         )}
 
       
-      {
+      {   
         call && 
-        <VideoCall 
+        <Modal visible={call} >
+          <VideoCall 
             APP_ID={import.meta.env.VITE_MEDICARE_APP_AGORA_APP_ID} 
             TOKEN={token} 
             CHANNEL={channelName} 
             user_uuid={user_uuid} 
-            role={role} 
-        />
+            role={role}
+            user={user} 
+          />
+        </Modal>
       }
       </main>
       <Backdrop
