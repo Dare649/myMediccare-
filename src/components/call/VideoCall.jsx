@@ -9,8 +9,10 @@ import { axiosClient } from '../../axios';
 import ConsultationNote from '../../pages/doctors/consultation/ConsultationNote';
 import Prescription from '../../pages/doctors/consultation/Prescription';
 import Modal from '../Modal';
+import { useLocation } from "react-router-dom";
 
-const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid, consult, user, handleCloseCall }) => {
+const VideoCall = () => {
+  const APP_ID = import.meta.env.VITE_MEDICARE_APP_AGORA_APP_ID;
   const [client, setClient] = useState(null);
   const [localAudioTrack, setLocalAudioTrack] = useState(null);
   const [localVideoTrack, setLocalVideoTrack] = useState(null);
@@ -22,6 +24,8 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid, consult, user, handleClo
   const [prescription, setPrescription] = useState(false);
   const [prescriptions, setPrescriptions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  const { bookingId, TOKEN, CHANNEL, role, user_uuid, consult, user } = location.state || {};
   const [formData, setFormData] = useState({
     patient_history: "",
     differential_diagnosis: "",
@@ -41,43 +45,7 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid, consult, user, handleClo
   });
 
 
-  const handleLeave = async () => {
-    try {
-        setLoading(true);
-      // Close local tracks
-      if (localAudioTrack) {
-        localAudioTrack.close();
-      }
-      if (localVideoTrack) {
-        localVideoTrack.close();
-      }
-      
-      // Leave the Agora channel
-      if (client) {
-        await client.leave();
-        console.log("Left the channel");
-        setRemoteUsers({});
-        handleCloseCall();
-      }
 
-      // Make the POST API call to end the consultation
-      await axiosClient.post(`/api/doctor/${consult}/end_consultation`);
-      setLoading(false);
-      MySwal.fire({
-        icon: "success",
-        text: "Consultation ended successfully.",
-        title: "Success"
-      });
-      
-    } catch (error) {
-        setLoading(false);
-        MySwal.fire({
-            icon: "error",
-            text: "Failed to end consultation, try again later.",
-            title: "Error"
-          });
-    }
-  };
 
   const toggleAudio = () => {
     if (localAudioTrack) {
@@ -134,13 +102,13 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid, consult, user, handleClo
           }
           if (mediaType === 'video') {
             const remoteVideoTrack = user.videoTrack;
-            const remotePlayerId = `remote-player-${user.uid}`;
+            const remotePlayerId = remote-player-${user.uid};
             remoteVideoTrack.play(remotePlayerId);
             setRemoteUsers((prev) => ({
               ...prev,
               [user.uid]: remotePlayerId,
             }));
-            console.log(`Remote video published for user: ${user.uid}`);
+            console.log(Remote video published for user: ${user.uid});
           }
         });
   
@@ -162,6 +130,45 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid, consult, user, handleClo
       }
     }
   };
+
+
+  const handleLeave = async () => {
+    try {
+        setLoading(true);
+      // Close local tracks
+      if (localAudioTrack) {
+        localAudioTrack.close();
+      }
+      if (localVideoTrack) {
+        localVideoTrack.close();
+      }
+      
+      // Leave the Agora channel
+      if (client) {
+        await client.leave();
+        console.log("Left the channel");
+        setRemoteUsers({});
+        handleCloseCall();
+      }
+
+      // Make the POST API call to end the consultation
+      await axiosClient.post(/api/doctor/${consult}/end_consultation);
+      setLoading(false);
+      MySwal.fire({
+        icon: "success",
+        text: "Consultation ended successfully.",
+        title: "Success"
+      });
+      
+    } catch (error) {
+        setLoading(false);
+        MySwal.fire({
+            icon: "error",
+            text: "Failed to end consultation, try again later.",
+            title: "Error"
+          });
+    }
+  };
   
 
   useEffect(() => {
@@ -174,17 +181,12 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid, consult, user, handleClo
 
 
   const handleNotes = () => {
-    setNotes(prev => {
-      console.log("Toggling Notes Modal: ", !prev);
-      return !prev;
-    });
+    setNotes((prev) => !prev);
   };
   
   const handlePrescription = () => {
-    setPrescription(prev => {
-      console.log("Toggling Prescription Modal: ", !prev);
-      return !prev;
-    });
+    setPrescription((prev) => !prev)
+    };
   };
   
 
@@ -225,7 +227,7 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid, consult, user, handleClo
         is_present: item.is_present === 1 ? 1 : 0,
       }));
 
-      await axiosClient.post(`/api/doctor/${consult}/update_consultation`, {
+      await axiosClient.post(/api/doctor/${consult}/update_consultation, {
         ...formData,
         ros_items: formattedRosItems,
       });
@@ -267,7 +269,7 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid, consult, user, handleClo
         }))
       };
 
-      await axiosClient.post(`/api/doctor/${consult}/create_prescription`, payload);
+      await axiosClient.post(/api/doctor/${consult}/create_prescription, payload);
 
       Swal.fire({
         title: 'Success!',
@@ -290,18 +292,18 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid, consult, user, handleClo
   };
 
   return (
-    <div className="flex flex-col items-center justify-center mx-auto lg:my-20 sm:my-10">
+    <div className="w-full flex flex-col items-center justify-center mx-auto lg:my-20 sm:my-10">
       <h2>Video Call: {user_uuid}</h2>
       <div className='flex lg:flex-row sm:flex-col items-center gap-5'>
       <div
         id="local-player"
-        style={{ width: "400px", height: "300px", border: "1px solid black", backgroundColor: "black" }}
+        style={{ width: "600px", height: "400px", border: "1px solid black", backgroundColor: "black" }}
       />
       {Object.keys(remoteUsers).map((uid) => (
         <div
           key={uid}
           id={remoteUsers[uid]}
-          style={{ width: "400px", height: "300px", border: "1px solid black", backgroundColor: "gray", marginTop: '10px' }}
+          style={{ width: "600px", height: "400px", border: "1px solid black", backgroundColor: "gray", marginTop: '10px' }}
         />
       ))}
       </div>
@@ -360,6 +362,6 @@ const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid, consult, user, handleClo
       </Backdrop>
     </div>
   );
-};
+
 
 export default VideoCall;

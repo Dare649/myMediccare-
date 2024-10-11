@@ -23,13 +23,13 @@ const Appointments = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState("today");
   const recordsPerPage = 5;
-  const [call, setCall] = useState(false);
-  const [token, setToken] = useState('');
-  const [user_uuid, setUserUuid] = useState('');
-  const [user, setUser] = useState("")
-  const [role, setRole] = useState(0); // Adjust if necessary
-  const [channelName, setChannelName] = useState('');
-  const [consult, setConsult] = useState("");
+  // const [call, setCall] = useState(false);
+  // const [token, setToken] = useState('');
+  // const [user_uuid, setUserUuid] = useState('');
+  // const [user, setUser] = useState("")
+  // const [role, setRole] = useState(0); // Adjust if necessary
+  // const [channelName, setChannelName] = useState('');
+  // const [consult, setConsult] = useState("");
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -108,9 +108,9 @@ const Appointments = () => {
     }
   };
 
-  const handleCall = () => {
-    setCall(true); // Or handle the call logic as needed
-  };
+  // const handleCall = () => {
+  //   setCall(true); // Or handle the call logic as needed
+  // };
   
   const handleJoin = async (booking_id) => {
     try {
@@ -126,20 +126,26 @@ const Appointments = () => {
   
       // Step 2: Fetch Agora token and other details
       const response = await axiosClient.post(`/api/agora_token/${booking_id}/doctor`);
-      setToken(response.data.token);
-      setUserUuid(response.data.user_uuid);
-      setRole(response.data.role);
-      setChannelName(response.data.channelName);
-      setUser(response.data.user_type);
-  
-      MySwal.fire({
-        title: "Success",
-        icon: "success",
-        text: "Joined successfully.",
-      }).then(() => {
-        // Instead of navigating, call handleCall with the necessary data
-        handleCall();
-      });
+      if (consult) {
+        // Step 3: Navigate to the video call page with the required state, including the UUID from the start consultation
+        MySwal.fire({
+          title: "Success",
+          icon: "success",
+          text: "Joined successfully.",
+        }).then(() => {
+          navigate(`/consultation-video-call`, {
+            state: {
+              bookingId: booking_id,
+              TOKEN: response?.data?.token,
+              CHANNEL: response?.data?.channelName,
+              user: response?.data?.user_type,
+              user_uuid: response?.data?.user_uuid,
+              role: response?.data?.role,
+              consult: consult 
+            }
+          });
+        });
+      }
     } catch (error) {
       MySwal.fire({
         title: "Error",
@@ -484,7 +490,7 @@ const Appointments = () => {
           </>
         )}
 
-      {
+      {/* {
         call && 
         <Modal visible={call} >
           <VideoCall 
@@ -498,7 +504,7 @@ const Appointments = () => {
             handleCloseCall={handleCall}
           />
         </Modal>
-      }
+      } */}
       </main>
       <Backdrop
             sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
