@@ -24,8 +24,7 @@ const VideoCall = () => {
   const [prescriptions, setPrescriptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const location = useLocation();
-  
-  // Destructure booking details from location state
+
   const { bookingId, TOKEN, CHANNEL, user_uuid, user_type, consult } = location.state || {};
 
   const [formData, setFormData] = useState({
@@ -63,14 +62,10 @@ const VideoCall = () => {
         await client.publish([audioTrack]); // Publish audio track
 
         // Create and publish video track if available
-        if (localVideoTrack) {
-          await client.publish([localVideoTrack]); // Publish video track
-        } else {
-          const newVideoTrack = await AgoraRTC.createCameraVideoTrack();
-          setLocalVideoTrack(newVideoTrack);
-          await client.publish([newVideoTrack]); // Publish video track
-          newVideoTrack.play('local-player');
-        }
+        const newVideoTrack = await AgoraRTC.createCameraVideoTrack();
+        setLocalVideoTrack(newVideoTrack);
+        await client.publish([newVideoTrack]); // Publish video track
+        newVideoTrack.play('local-player');
 
         // Subscribe to remote users
         client.on('user-published', async (user, mediaType) => {
@@ -109,7 +104,6 @@ const VideoCall = () => {
       }
     }
   };
-
 
   useEffect(() => {
     joinChannel();
@@ -230,7 +224,7 @@ const VideoCall = () => {
         is_present: item.is_present ? 1 : 0,
       }));
 
-      await axiosClient.post(`/api/doctor/${consultationUUID}/update_consultation`, {
+      await axiosClient.post(`/api/doctor/${consult}/update_consultation`, {
         ...formData,
         ros_items: formattedRosItems,
       });
@@ -254,40 +248,61 @@ const VideoCall = () => {
 
   return (
     <div className="w-full flex flex-col items-center justify-center mx-auto pt-40 sm:pt-20">
-       <h2>Video Call: {user_uuid}</h2>
+      <h2>Video Call: {user_uuid}</h2>
       <div className='flex lg:flex-row sm:flex-col items-center gap-5'>
-      <div
-        id="local-player"
-        style={{ width: "400px", height: "300px", border: "1px solid black", backgroundColor: "black" }}
-      />
-      {Object.keys(remoteUsers).map((uid) => (
         <div
-          key={uid}
-          id={remoteUsers[uid]}
-          style={{ width: "400px", height: "300px", border: "1px solid black", backgroundColor: "gray", marginTop: '10px' }}
+          id="local-player"
+          style={{ width: "400px", height: "300px", border: "1px solid black", backgroundColor: "black" }}
         />
-      ))}
+        {Object.keys(remoteUsers).map((uid) => (
+          <div
+            key={uid}
+            id={remoteUsers[uid]}
+            style={{ width: "400px", height: "300px", border: "1px solid black", backgroundColor: "gray", marginTop: '10px' }}
+          />
+        ))}
       </div>
 
       <div className="flex gap-5 mt-5">
         <button onClick={toggleAudio} className="bg-blue-500 text-white px-4 py-2">
           {isAudioMuted ? <FaMicrophoneSlash /> : <FaMicrophone />}
+          {isAudioMuted ? ' Unmute' : ' Mute'}
         </button>
         <button onClick={toggleVideo} className="bg-blue-500 text-white px-4 py-2">
           {isVideoMuted ? <FaVideoSlash /> : <FaVideo />}
+          {isVideoMuted ? ' Start Video' : ' Stop Video'}
         </button>
         <button onClick={handleLeave} className="bg-red-500 text-white px-4 py-2">
-          <FaPhoneSlash />
+          <FaPhoneSlash /> Leave Call
         </button>
-        
+        <button onClick={handleNotes} className="bg-green-500 text-white px-4 py-2">
+          Consultation Notes
+        </button>
+        <button onClick={handlePrescription} className="bg-green-500 text-white px-4 py-2">
+          Prescription
+        </button>
       </div>
 
-      <Backdrop open={loading} style={{ zIndex: 1000 }}>
-        <CircularProgress />
-      </Backdrop>
+      {notes && (
+        <div className="modal">
+          {/* Consultation Note Form goes here */}
+          <form onSubmit={handleSubmit}>
+            <input type="text" placeholder="Patient History" onChange={(e) => setFormData({ ...formData, patient_history: e.target.value })} />
+            {/* Add other fields as needed */}
+            <button type="submit">Submit Notes</button>
+          </form>
+        </div>
+      )}
 
-      {notes && <ConsultationNote style={{ zIndex: 1000 }} formData={formData} setFormData={setFormData} handleSubmit={handleSubmit} />}
-      {prescription && <Prescription style={{ zIndex: 1000 }} handleSubmitPrescription={handleSubmitPrescription} setPrescriptions={setPrescriptions} prescriptions={prescriptions} />}
+      {prescription && (
+        <div className="modal">
+          <Prescription onSubmit={handleSubmitPrescription} />
+        </div>
+      )}
+
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 };
