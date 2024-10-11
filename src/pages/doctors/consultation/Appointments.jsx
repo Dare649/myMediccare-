@@ -459,6 +459,13 @@ const Appointments = () => {
                   
                                 join
                             </button>
+
+                            <Link 
+                            className="text-sm font-bold capitalize bg-neutral-100 text-white p-2 rounded-lg" 
+                            to={`/view-patient/${item.patient_uuid}`}
+                            >
+                              view
+                            </Link> 
                         )
                     }
                     </div>
