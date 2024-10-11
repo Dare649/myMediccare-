@@ -65,19 +65,19 @@ const VideoCall = () => {
         const newVideoTrack = await AgoraRTC.createCameraVideoTrack();
         setLocalVideoTrack(newVideoTrack);
         await client.publish([newVideoTrack]); // Publish video track
-        newVideoTrack.play('local-player');
+        newVideoTrack.play('local-player'); // Play local video
 
         // Subscribe to remote users
         client.on('user-published', async (user, mediaType) => {
           await client.subscribe(user, mediaType);
           console.log("Subscribed to user:", user.uid);
           if (mediaType === 'audio') {
-            user.audioTrack.play();
+            user.audioTrack.play(); // Play remote audio track
           }
           if (mediaType === 'video') {
             const remoteVideoTrack = user.videoTrack;
             const remotePlayerId = `remote-player-${user.uid}`;
-            remoteVideoTrack.play(remotePlayerId);
+            remoteVideoTrack.play(remotePlayerId); // Play remote video track
             setRemoteUsers((prev) => ({
               ...prev,
               [user.uid]: remotePlayerId,
@@ -275,34 +275,16 @@ const VideoCall = () => {
         <button onClick={handleLeave} className="bg-red-500 text-white px-4 py-2">
           <FaPhoneSlash /> Leave Call
         </button>
-        {user_type === "doctor" ? (
-        <div className='flex gap-2 mt-2'>
-          <button onClick={handleNotes} className="bg-green-600 text-white py-2 px-4 rounded">
-            Add Note
-          </button>
-          <button onClick={handlePrescription} className="bg-blue-600 text-white py-2 px-4 rounded">
-            Add Prescription
-          </button>
-        </div>
-      ) : null}
+        <button onClick={handleNotes} className="bg-green-500 text-white px-4 py-2">
+          Consultation Notes
+        </button>
+        <button onClick={handlePrescription} className="bg-green-500 text-white px-4 py-2">
+          Prescription
+        </button>
       </div>
 
-      {notes && (
-        <div className="modal">
-          {/* Consultation Note Form goes here */}
-          <form onSubmit={handleSubmit}>
-            <input type="text" placeholder="Patient History" onChange={(e) => setFormData({ ...formData, patient_history: e.target.value })} />
-            {/* Add other fields as needed */}
-            <button type="submit">Submit Notes</button>
-          </form>
-        </div>
-      )}
-
-      {prescription && (
-        <div className="modal">
-          <Prescription onSubmit={handleSubmitPrescription} />
-        </div>
-      )}
+      {notes && <ConsultationNote formData={formData} setFormData={setFormData} handleSubmit={handleSubmit} handleClose={handleNotes} />}
+      {prescription && <Prescription handleSubmitPrescription={handleSubmitPrescription} setPrescriptions={setPrescriptions} prescriptions={prescriptions} handleClose={handlePrescription}/>}
 
       <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
         <CircularProgress color="inherit" />
