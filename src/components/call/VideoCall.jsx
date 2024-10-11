@@ -43,63 +43,73 @@ const VideoCall = () => {
     ros_items: []
   });
 
+  const [isJoining, setIsJoining] = useState(false); // New state to track if we are joining
+
+  const joinChannel = async () => {
+    if (isJoining || !client) return; // Prevent multiple joins
+
+    setIsJoining(true); // Set joining state to true
+
+    try {
+      await client.join(APP_ID, CHANNEL, TOKEN, user_uuid);
+      console.log("Joined the channel");
+
+      // Create local audio track
+      const audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+      setLocalAudioTrack(audioTrack);
+      await client.publish([audioTrack]);
+
+      // Create local video track
+      const videoTrack = await AgoraRTC.createCameraVideoTrack();
+      setLocalVideoTrack(videoTrack);
+      await client.publish([videoTrack]);
+      videoTrack.play('local-player');
+
+      client.on('user-published', async (user, mediaType) => {
+        if (user.uid !== user_uuid) {
+          await client.subscribe(user, mediaType);
+          console.log("Subscribed to user:", user.uid);
+
+          if (mediaType === 'audio') {
+            user.audioTrack.play();
+          }
+          if (mediaType === 'video') {
+            const remoteVideoTrack = user.videoTrack;
+            const remotePlayerId = `remote-player-${user.uid}`;
+            remoteVideoTrack.play(remotePlayerId);
+            setRemoteUsers((prev) => ({
+              ...prev,
+              [user.uid]: remotePlayerId,
+            }));
+          }
+        }
+      });
+
+      client.on('user-unpublished', (user, mediaType) => {
+        if (mediaType === 'video') {
+          const remotePlayerId = remoteUsers[user.uid];
+          if (remotePlayerId) {
+            document.getElementById(remotePlayerId)?.remove();
+            setRemoteUsers((prev) => {
+              const updated = { ...prev };
+              delete updated[user.uid];
+              return updated;
+            });
+          }
+        }
+      });
+    } catch (error) {
+      console.error("Failed to join channel: ", error);
+    } finally {
+      setIsJoining(false); // Reset the joining state
+    }
+  };
 
   useEffect(() => {
     const initializeAgora = async () => {
       const agoraClient = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
       setClient(agoraClient);
-
-      try {
-        await agoraClient.join(APP_ID, CHANNEL, TOKEN, user_uuid);
-        console.log("Joined the channel");
-
-        // Create local audio track
-        const audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-        setLocalAudioTrack(audioTrack);
-        await agoraClient.publish([audioTrack]);
-
-        // Create local video track
-        const videoTrack = await AgoraRTC.createCameraVideoTrack();
-        setLocalVideoTrack(videoTrack);
-        await agoraClient.publish([videoTrack]);
-        videoTrack.play('local-player');
-
-        agoraClient.on('user-published', async (user, mediaType) => {
-          if (user.uid !== user_uuid) {
-            await agoraClient.subscribe(user, mediaType);
-            console.log("Subscribed to user:", user.uid);
-
-            if (mediaType === 'audio') {
-              user.audioTrack.play();
-            }
-            if (mediaType === 'video') {
-              const remoteVideoTrack = user.videoTrack;
-              const remotePlayerId = `remote-player-${user.uid}`;
-              remoteVideoTrack.play(remotePlayerId);
-              setRemoteUsers((prev) => ({
-                ...prev,
-                [user.uid]: remotePlayerId,
-              }));
-            }
-          }
-        });
-
-        agoraClient.on('user-unpublished', (user, mediaType) => {
-          if (mediaType === 'video') {
-            const remotePlayerId = remoteUsers[user.uid];
-            if (remotePlayerId) {
-              document.getElementById(remotePlayerId)?.remove();
-              setRemoteUsers((prev) => {
-                const updated = { ...prev };
-                delete updated[user.uid];
-                return updated;
-              });
-            }
-          }
-        });
-      } catch (error) {
-        console.error("Failed to join channel: ", error);
-      }
+      await joinChannel(); // Call joinChannel here
     };
 
     initializeAgora();
@@ -160,7 +170,6 @@ const VideoCall = () => {
     }
   };
 
-
   const handleNotes = () => {
     setNotes((prev) => !prev);
   };
@@ -208,6 +217,66 @@ const VideoCall = () => {
     }
   };
 
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const requiredFields = [
+      formData.patient_history,
+      formData.differential_diagnosis,
+      formData.mental_health_screening,
+      formData.radiology,
+      formData.final_diagnosis,
+      formData.recommendation,
+      formData.general_exam,
+      formData.eye_exam,
+      formData.breast_exam,
+      formData.throat_exam,
+      formData.abdomen_exam,
+      formData.chest_exam,
+      formData.reproductive_exam,
+      formData.skin_exam,
+      formData.ros_items.length
+    ];
+
+    if (requiredFields.some(field => !field)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Validation Error',
+        text: 'Please fill in all required fields.'
+      });
+      return;
+    }
+
+    try {
+      const formattedRosItems = formData.ros_items.map(item => ({
+        header_id: item.id,
+        name: item.name || '',
+        is_present: item.is_present === 1 ? 1 : 0,
+      }));
+
+      await axiosClient.post(`/api/doctor/${consultationUUID}/update_consultation`, {
+        ...formData,
+        ros_items: formattedRosItems,
+      });
+
+      Swal.fire({
+        title: 'Success!',
+        text: 'Notes have been added successfully.',
+        icon: 'success'
+      });
+      handleNotes();
+    } catch (error) {
+      console.error('Error during submission:', error);
+      Swal.fire({
+        title: 'Error!',
+        text: 'Something went wrong!',
+        icon: 'error'
+      });
+      handleNotes();
+    }
+  };
+
   return (
     <div className="w-full flex flex-col items-center justify-center mx-auto pt-40 sm:pt-20">
       <h2>Video Call: {user_uuid}</h2>
@@ -248,9 +317,9 @@ const VideoCall = () => {
       ) : null}
 
       {notes && <ConsultationNote formData={formData} setFormData={setFormData} handleSubmit={handleSubmit} handleClose={handleNotes} />}
-      {prescription && <Prescription handleSubmitPrescription={handleSubmitPrescription} setPrescriptions={setPrescriptions} prescriptions={prescriptions} handleClose={handlePrescription}/>}
+      {prescription && <Prescription prescriptions={prescriptions} setPrescriptions={setPrescriptions} handleSubmitPrescription={handleSubmitPrescription} handleClose={handlePrescription} />}
 
-      <Backdrop open={loading} style={{ zIndex: 999 }}>
+      <Backdrop open={loading}>
         <CircularProgress color="inherit" />
       </Backdrop>
     </div>
