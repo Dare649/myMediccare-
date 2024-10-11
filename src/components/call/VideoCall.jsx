@@ -275,12 +275,16 @@ const VideoCall = () => {
         <button onClick={handleLeave} className="bg-red-500 text-white px-4 py-2">
           <FaPhoneSlash /> Leave Call
         </button>
-        <button onClick={handleNotes} className="bg-green-500 text-white px-4 py-2">
-          Consultation Notes
-        </button>
-        <button onClick={handlePrescription} className="bg-green-500 text-white px-4 py-2">
-          Prescription
-        </button>
+        {user_type === "doctor" ? (
+        <div className='flex gap-2 mt-2'>
+          <button onClick={handleNotes} className="bg-green-600 text-white py-2 px-4 rounded">
+            Add Note
+          </button>
+          <button onClick={handlePrescription} className="bg-blue-600 text-white py-2 px-4 rounded">
+            Add Prescription
+          </button>
+        </div>
+      ) : null}
       </div>
 
       {notes && (
