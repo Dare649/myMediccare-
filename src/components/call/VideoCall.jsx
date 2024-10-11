@@ -79,6 +79,7 @@ const VideoCall = () => {
         setLocalAudioTrack(audioTrack);
         await client.publish([audioTrack]);
 
+        // Ensure the local video track is published and plays
         if (localVideoTrack) {
           await client.publish([localVideoTrack]);
         } else {
@@ -88,6 +89,7 @@ const VideoCall = () => {
           newVideoTrack.play('local-player');
         }
   
+        // Ensure that both doctor and patient can subscribe to each other's video
         client.on('user-published', async (user, mediaType) => {
           if (user.uid !== user_uuid) {  // Ensure not subscribing to own stream
             await client.subscribe(user, mediaType);
@@ -145,6 +147,7 @@ const VideoCall = () => {
         console.log("Left the channel");
         setRemoteUsers({});
         handleCloseCall();
+        window.location.reload("/patient-schedules")
       }
   
       // If the user is a doctor, make the POST API call to end the consultation
@@ -154,7 +157,9 @@ const VideoCall = () => {
           icon: "success",
           text: "Consultation ended successfully.",
           title: "Success"
-        });
+        }).then(() => {
+          window.location.reload("/doctor-appointments")
+        })
       }
   
       setLoading(false);
@@ -167,8 +172,6 @@ const VideoCall = () => {
       });
     }
   };
-  
-  
 
   useEffect(() => {
     joinChannel();
@@ -258,42 +261,19 @@ const VideoCall = () => {
       </div>
       {
         user_type === "doctor" ? (
-          <div className='mt-4 flex lg:flex-row sm:flex-col items-center gap-3'>
-            <button 
-              onClick={handleNotes}
-              className='p-3 bg-primary-100 text-white font-bold rounded-lg'>
-              {notes ? "Close Notes" : "Add Notes"}
+          <div className='flex gap-2 mt-2'>
+            <button onClick={handleNotes} className="bg-green-600 text-white py-2 px-4 rounded">
+              add note
             </button>
-            <button 
-              onClick={handlePrescription}
-              className='p-3 bg-primary-100 text-white font-bold rounded-lg'>
-              {prescription ? "Close Prescription" : "Add Prescription"}
+            <button onClick={handlePrescription} className="bg-blue-600 text-white py-2 px-4 rounded">
+              add prescription
             </button>
           </div>
         ) : null
       }
-
-      <Modal show={notes} onClose={handleNotes}>
-        <ConsultationNote 
-          consultationUUID={consult} 
-          bookingId={bookingId} 
-          handleSubmit={handleSubmit} 
-          formData={formData} 
-          setFormData={setFormData}
-        />
-      </Modal>
-
-      <Modal show={prescription} onClose={handlePrescription}>
-        <Prescription 
-          consultationUUID={consult} 
-          bookingId={bookingId}
-          prescriptions={prescriptions}
-          setPrescriptions={setPrescriptions}
-          handleSubmit={handleSubmitPrescription}
-        />
-      </Modal>
-
-      <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
+      {notes && <ConsultationNote formData={formData} setFormData={setFormData} handleSubmit={handleSubmit} />}
+      {prescription && <Prescription prescriptions={prescriptions} setPrescriptions={setPrescriptions} handleSubmitPrescription={handleSubmitPrescription} />}
+      <Backdrop open={loading} style={{ zIndex: 1000 }}>
         <CircularProgress color="inherit" />
       </Backdrop>
     </div>
