@@ -24,7 +24,8 @@ const VideoCall = () => {
   const [prescriptions, setPrescriptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const location = useLocation();
-  const { bookingId, TOKEN, CHANNEL, user_uuid, user_type, consult } = location.state || {};
+  const { bookingId, TOKEN, CHANNEL, role, user_uuid, consult, user_type } = location.state || {};
+
   const [formData, setFormData] = useState({
     patient_history: "",
     differential_diagnosis: "",
@@ -43,30 +44,52 @@ const VideoCall = () => {
     ros_items: []
   });
 
+  const toggleAudio = () => {
+    if (localAudioTrack) {
+      localAudioTrack.setMuted(!isAudioMuted);
+      setIsAudioMuted(!isAudioMuted);
+    }
+  };
 
-  useEffect(() => {
-    const initializeAgora = async () => {
+  const toggleVideo = async () => {
+    if (localVideoTrack) {
+      localVideoTrack.setEnabled(!isVideoMuted);
+      setIsVideoMuted(!isVideoMuted);
+    } else {
+      const newVideoTrack = await AgoraRTC.createCameraVideoTrack();
+      setLocalVideoTrack(newVideoTrack);
+      newVideoTrack.play('local-player');
+      setIsVideoMuted(false);
+    }
+  };
+
+  const joinChannel = async () => {
+    if (!client) {
       const agoraClient = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
       setClient(agoraClient);
+    }
 
+    if (client) {
       try {
-        await agoraClient.join(APP_ID, CHANNEL, TOKEN, user_uuid);
+        await client.join(APP_ID, CHANNEL, TOKEN, user_uuid);
         console.log("Joined the channel");
 
-        // Create local audio track
         const audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
         setLocalAudioTrack(audioTrack);
-        await agoraClient.publish([audioTrack]);
+        await client.publish([audioTrack]);
 
-        // Create local video track
-        const videoTrack = await AgoraRTC.createCameraVideoTrack();
-        setLocalVideoTrack(videoTrack);
-        await agoraClient.publish([videoTrack]);
-        videoTrack.play('local-player');
+        if (localVideoTrack) {
+          await client.publish([localVideoTrack]);
+        } else {
+          const newVideoTrack = await AgoraRTC.createCameraVideoTrack();
+          setLocalVideoTrack(newVideoTrack);
+          await client.publish([newVideoTrack]);
+          newVideoTrack.play('local-player');
+        }
 
-        agoraClient.on('user-published', async (user, mediaType) => {
+        client.on('user-published', async (user, mediaType) => {
           if (user.uid !== user_uuid) {
-            await agoraClient.subscribe(user, mediaType);
+            await client.subscribe(user, mediaType);
             console.log("Subscribed to user:", user.uid);
 
             if (mediaType === 'audio') {
@@ -84,7 +107,7 @@ const VideoCall = () => {
           }
         });
 
-        agoraClient.on('user-unpublished', (user, mediaType) => {
+        client.on('user-unpublished', (user, mediaType) => {
           if (mediaType === 'video') {
             const remotePlayerId = remoteUsers[user.uid];
             if (remotePlayerId) {
@@ -100,33 +123,38 @@ const VideoCall = () => {
       } catch (error) {
         console.error("Failed to join channel: ", error);
       }
-    };
-
-    initializeAgora();
-
-    return () => {
-      handleLeave();
-    };
-  }, [client]);
+    }
+  };
 
   const handleLeave = async () => {
     if (loading) return;
     setLoading(true);
-
+  
     try {
-      // Close local tracks
+      if (user_type === "doctor") {
+        // Make the API call to end the consultation
+        await axiosClient.post(`/api/doctor/${consult}/end_consultation`);
+        MySwal.fire({
+          icon: "success",
+          text: "Consultation ended successfully.",
+          title: "Success"
+        });
+      }
+  
+      // Close the local tracks
       if (localAudioTrack) {
         localAudioTrack.close();
       }
       if (localVideoTrack) {
         localVideoTrack.close();
       }
-
+  
       // Leave the channel
       if (client) {
         await client.leave();
         console.log("Left the channel");
         setRemoteUsers({});
+        // Redirect based on user type after leaving
         window.location.reload(user_type === "doctor" ? "/doctor-appointments" : "/patient-schedules");
       }
     } catch (error) {
@@ -140,26 +168,17 @@ const VideoCall = () => {
     }
   };
 
-  const toggleAudio = () => {
-    if (localAudioTrack) {
-      localAudioTrack.setMuted(!isAudioMuted);
-      setIsAudioMuted(!isAudioMuted);
-    }
-  };
-
-  const toggleVideo = async () => {
-    if (localVideoTrack) {
-      localVideoTrack.setEnabled(!isVideoMuted);
-      setIsVideoMuted(!isVideoMuted);
-    } else {
-      const newVideoTrack = await AgoraRTC.createCameraVideoTrack();
-      setLocalVideoTrack(newVideoTrack);
-      await client.publish([newVideoTrack]);
-      newVideoTrack.play('local-player');
-      setIsVideoMuted(false);
-    }
-  };
-
+  uuseEffect(() => {
+    joinChannel();
+  
+    // No need to call handleLeave here
+    // Only clean up tracks and leave the channel when the component is unmounted
+    return () => {
+      if (client) {
+        handleLeave(); // This will only be called if the component unmounts
+      }
+    };
+  }, [client]);
 
   const handleNotes = () => {
     setNotes((prev) => !prev);
@@ -224,6 +243,12 @@ const VideoCall = () => {
           />
         ))}
       </div>
+
+
+
+        
+
+
 
       <div className="mt-4 flex">
         <button onClick={handleLeave} className="mx-2 bg-red-500 text-white py-2 px-4 rounded">
