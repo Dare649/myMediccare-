@@ -66,7 +66,7 @@ const ConsultationNote = ({ handleSubmit, handleClose, formData, setFormData }) 
   }, []);
 
   return (
-    <div className="h-full lg:w-[50%] fixed right-0 top-0 sm:w-full bg-white flex lg:py-10 lg:px-2 sm:py-5 sm:px-2">
+    <div className="h-full lg:w-[50%] z-50 fixed right-0 top-0 sm:w-full bg-white flex lg:py-20 lg:px-2 sm:py-10 sm:px-2">
       <div 
         className="absolute top-0 left-0 m-2 capitalize text-red-500 font-bold"
         onClick={handleClose}

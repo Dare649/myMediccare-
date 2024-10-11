@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import AgoraRTC from 'agora-rtc-sdk-ng'; 
+import AgoraRTC from 'agora-rtc-sdk-ng';
 import { FaVideo, FaVideoSlash, FaMicrophone, FaMicrophoneSlash, FaPhoneSlash } from 'react-icons/fa';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -8,7 +8,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { axiosClient } from '../../axios';
 import ConsultationNote from '../../pages/doctors/consultation/ConsultationNote';
 import Prescription from '../../pages/doctors/consultation/Prescription';
-import Modal from '../Modal';
 import { useLocation } from "react-router-dom";
 
 const VideoCall = () => {
@@ -18,7 +17,7 @@ const VideoCall = () => {
   const [localVideoTrack, setLocalVideoTrack] = useState(null);
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [isVideoMuted, setIsVideoMuted] = useState(false);
-  const [remoteUsers, setRemoteUsers] = useState({}); 
+  const [remoteUsers, setRemoteUsers] = useState({});
   const MySwal = withReactContent(Swal);
   const [notes, setNotes] = useState(false);
   const [prescription, setPrescription] = useState(false);
@@ -26,7 +25,7 @@ const VideoCall = () => {
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const { bookingId, TOKEN, CHANNEL, role, user_uuid, consult, user_type } = location.state || {};
-  console.log(consult);
+
   const [formData, setFormData] = useState({
     patient_history: "",
     differential_diagnosis: "",
@@ -69,17 +68,16 @@ const VideoCall = () => {
       const agoraClient = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
       setClient(agoraClient);
     }
-  
+
     if (client) {
       try {
         await client.join(APP_ID, CHANNEL, TOKEN, user_uuid);
         console.log("Joined the channel");
-  
+
         const audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
         setLocalAudioTrack(audioTrack);
         await client.publish([audioTrack]);
 
-        // Ensure the local video track is published and plays
         if (localVideoTrack) {
           await client.publish([localVideoTrack]);
         } else {
@@ -88,10 +86,9 @@ const VideoCall = () => {
           await client.publish([newVideoTrack]);
           newVideoTrack.play('local-player');
         }
-  
-        // Ensure that both doctor and patient can subscribe to each other's video
+
         client.on('user-published', async (user, mediaType) => {
-          if (user.uid !== user_uuid) {  // Ensure not subscribing to own stream
+          if (user.uid !== user_uuid) {
             await client.subscribe(user, mediaType);
             console.log("Subscribed to user:", user.uid);
 
@@ -109,7 +106,7 @@ const VideoCall = () => {
             }
           }
         });
-  
+
         client.on('user-unpublished', (user, mediaType) => {
           if (mediaType === 'video') {
             const remotePlayerId = remoteUsers[user.uid];
@@ -130,12 +127,12 @@ const VideoCall = () => {
   };
 
   const handleLeave = async () => {
-    if (loading) return; // Prevent multiple calls while loading
+    if (loading) return;
     setLoading(true);
   
     try {
-      // If the user is a doctor, make the POST API call to end the consultation first
       if (user_type === "doctor") {
+        // Make the API call to end the consultation
         await axiosClient.post(`/api/doctor/${consult}/end_consultation`);
         MySwal.fire({
           icon: "success",
@@ -144,7 +141,7 @@ const VideoCall = () => {
         });
       }
   
-      // Close local tracks
+      // Close the local tracks
       if (localAudioTrack) {
         localAudioTrack.close();
       }
@@ -152,13 +149,12 @@ const VideoCall = () => {
         localVideoTrack.close();
       }
   
-      // Leave the Agora channel
+      // Leave the channel
       if (client) {
         await client.leave();
         console.log("Left the channel");
         setRemoteUsers({});
-        handleCloseCall();
-        // Redirect to the appropriate page after leaving the channel
+        // Redirect based on user type after leaving
         window.location.reload(user_type === "doctor" ? "/doctor-appointments" : "/patient-schedules");
       }
     } catch (error) {
@@ -171,28 +167,25 @@ const VideoCall = () => {
       setLoading(false);
     }
   };
-  
-  useEffect(() => {
+
+  uuseEffect(() => {
     joinChannel();
+  
+    // No need to call handleLeave here
+    // Only clean up tracks and leave the channel when the component is unmounted
     return () => {
-      handleLeave();
+      if (client) {
+        handleLeave(); // This will only be called if the component unmounts
+      }
     };
   }, [client]);
-  
 
   const handleNotes = () => {
-    console.log("Notes button clicked");
     setNotes((prev) => !prev);
   };
-  
-  const handlePrescription = () => {
-    console.log("Prescription button clicked");
-    setPrescription((prev) => !prev);
-  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // Handle submission logic for notes
+  const handlePrescription = () => {
+    setPrescription((prev) => !prev);
   };
 
   const handleSubmitPrescription = async (prescriptions) => {
@@ -221,16 +214,16 @@ const VideoCall = () => {
         icon: 'success'
       });
 
-      setLoading(false);
       handlePrescription();
     } catch (error) {
-      setLoading(false);
       Swal.fire({
         title: 'Error!',
         text: 'Something went wrong!',
         icon: 'error'
       });
       handlePrescription();
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -240,13 +233,13 @@ const VideoCall = () => {
       <div className='flex lg:flex-row sm:flex-col items-center gap-5'>
         <div
           id="local-player"
-          style={{ width: "600px", height: "400px", border: "1px solid black", backgroundColor: "black" }}
+          style={{ width: "400px", height: "300px", border: "1px solid black", backgroundColor: "black" }}
         />
         {Object.keys(remoteUsers).map((uid) => (
           <div
             key={uid}
             id={remoteUsers[uid]}
-            style={{ width: "600px", height: "400px", border: "1px solid black", backgroundColor: "gray", marginTop: '10px' }}
+            style={{ width: "400px", height: "300px", border: "1px solid black", backgroundColor: "gray", marginTop: '10px' }}
           />
         ))}
       </div>
@@ -264,17 +257,18 @@ const VideoCall = () => {
       {user_type === "doctor" ? (
         <div className='flex gap-2 mt-2'>
           <button onClick={handleNotes} className="bg-green-600 text-white py-2 px-4 rounded">
-            add note
+            Add Note
           </button>
           <button onClick={handlePrescription} className="bg-blue-600 text-white py-2 px-4 rounded">
-            add prescription
+            Add Prescription
           </button>
         </div>
       ) : null}
-      
+
       {notes && <ConsultationNote formData={formData} setFormData={setFormData} handleSubmit={handleSubmit} />}
-      {prescription && <Prescription prescriptions={prescriptions} setPrescriptions={setPrescriptions} handleSubmitPrescription={handleSubmitPrescription} />}
-      <Backdrop open={loading} style={{ zIndex: 1000 }}>
+      {prescription && <Prescription handleSubmitPrescription={handleSubmitPrescription} setPrescriptions={setPrescriptions} prescriptions={prescriptions} />}
+
+      <Backdrop open={loading} style={{ zIndex: 999 }}>
         <CircularProgress color="inherit" />
       </Backdrop>
     </div>
