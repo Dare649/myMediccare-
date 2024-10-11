@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import AgoraRTC from 'agora-rtc-sdk-ng';
+import AgoraRTC from 'agora-rtc-sdk-ng'; // Import the Agora RTC SDK
 import { FaVideo, FaVideoSlash, FaMicrophone, FaMicrophoneSlash, FaPhoneSlash } from 'react-icons/fa';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -8,26 +8,21 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { axiosClient } from '../../axios';
 import ConsultationNote from '../../pages/doctors/consultation/ConsultationNote';
 import Prescription from '../../pages/doctors/consultation/Prescription';
-import { useLocation } from "react-router-dom";
+import Modal from '../Modal';
 
-const VideoCall = () => {
-  const APP_ID = import.meta.env.VITE_MEDICARE_APP_AGORA_APP_ID;
+const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid }) => {
+const VideoCall = ({ APP_ID, TOKEN, CHANNEL, user_uuid, consult, user }) => {
   const [client, setClient] = useState(null);
   const [localAudioTrack, setLocalAudioTrack] = useState(null);
   const [localVideoTrack, setLocalVideoTrack] = useState(null);
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [isVideoMuted, setIsVideoMuted] = useState(false);
-  const [remoteUsers, setRemoteUsers] = useState({});
+  const [remoteUsers, setRemoteUsers] = useState({}); // State to store remote users
   const MySwal = withReactContent(Swal);
   const [notes, setNotes] = useState(false);
   const [prescription, setPrescription] = useState(false);
   const [prescriptions, setPrescriptions] = useState([]);
   const [loading, setLoading] = useState(false);
-  const location = useLocation();
-  
-  // Destructure booking details from location state
-  const { bookingId, TOKEN, CHANNEL, user_uuid, user_type, consult } = location.state || {};
-
   const [formData, setFormData] = useState({
     patient_history: "",
     differential_diagnosis: "",
@@ -45,6 +40,72 @@ const VideoCall = () => {
     skin_exam: "",
     ros_items: []
   });
+
+  const handleLeave = async () => {
+    if (localAudioTrack) {
+      localAudioTrack.close();
+    }
+    if (localVideoTrack) {
+      localVideoTrack.close();
+    }
+    if (client) {
+      await client.leave();
+      console.log("Left the channel");
+      setRemoteUsers({}); // Clear remote users on leave
+    try {
+        setLoading(true);
+      // Close local tracks
+      if (localAudioTrack) {
+        localAudioTrack.close();
+      }
+      if (localVideoTrack) {
+        localVideoTrack.close();
+      }
+      
+      // Leave the Agora channel
+      if (client) {
+        await client.leave();
+        console.log("Left the channel");
+        setRemoteUsers({});
+      }
+      // Make the POST API call to end the consultation
+      await axiosClient.post(`/api/doctor/${consult}/end_consultation`);
+      setLoading(false);
+      MySwal.fire({
+        icon: "success",
+        text: "Consultation ended successfully.",
+        title: "Success"
+      });
+      
+    } catch (error) {
+        setLoading(false);
+        MySwal.fire({
+            icon: "error",
+            text: "Failed to end consultation, try again later.",
+            title: "Error"
+          });
+    }
+  };
+
+  const toggleAudio = () => {
+    if (localAudioTrack) {
+      localAudioTrack.setMuted(!isAudioMuted);
+      setIsAudioMuted(!isAudioMuted);
+    }
+  };
+
+  const toggleVideo = async () => {
+    if (localVideoTrack) {
+      localVideoTrack.setEnabled(!isVideoMuted);
+      setIsVideoMuted(!isVideoMuted);
+    } else {
+      // Create a new video track if it's not initialized
+      const newVideoTrack = await AgoraRTC.createCameraVideoTrack();
+      setLocalVideoTrack(newVideoTrack);
+      newVideoTrack.play('local-player');
+      setIsVideoMuted(false);
+    }
+  };
 
   const joinChannel = async () => {
     if (!client) {
@@ -118,103 +179,32 @@ const VideoCall = () => {
     };
   }, [client]); // Add client as a dependency
 
-  const handleLeave = async () => {
-    if (loading) return;
-    setLoading(true);
-
-    try {
-      // Close local tracks
-      if (localAudioTrack) localAudioTrack.close();
-      if (localVideoTrack) localVideoTrack.close();
-
-      // Leave the channel
-      if (client) {
-        await client.leave();
-        console.log("Left the channel");
-        setRemoteUsers({});
-        window.location.reload(user_type === "doctor" ? "/doctor-appointments" : "/patient-schedules");
-      }
-    } catch (error) {
-      MySwal.fire({
-        icon: "error",
-        text: "Failed to leave the call, try again later.",
-        title: "Error"
-      });
-    } finally {
-      setLoading(false);
-    }
+  const handleNotes = () => {
+    setNotes(prev => !prev);
   };
-
-  const toggleAudio = () => {
-    if (localAudioTrack) {
-      localAudioTrack.setMuted(!isAudioMuted);
-      setIsAudioMuted(!isAudioMuted);
-    }
+  const handlePrescription = () => {
+    setPrescription(prev => !prev);
   };
-
-  const toggleVideo = async () => {
-    if (localVideoTrack) {
-      localVideoTrack.setEnabled(!isVideoMuted);
-      setIsVideoMuted(!isVideoMuted);
-    } else {
-      const newVideoTrack = await AgoraRTC.createCameraVideoTrack();
-      setLocalVideoTrack(newVideoTrack);
-      await client.publish([newVideoTrack]);
-      newVideoTrack.play('local-player');
-      setIsVideoMuted(false);
-    }
-  };
-
-  const handleNotes = () => setNotes(prev => !prev);
-  const handlePrescription = () => setPrescription(prev => !prev);
-
-  const handleSubmitPrescription = async (prescriptions) => {
-    setLoading(true);
-    try {
-      const payload = {
-        items: prescriptions.map(prescription => ({
-          drug_name: prescription.drug_name,
-          dosage_form: prescription.dosage_form,
-          dose: prescription.dose,
-          dose_unit: prescription.dose_unit,
-          frequency: prescription.frequency,
-          duration: prescription.duration,
-          duration_unit: prescription.duration_unit,
-          route_of_administration: prescription.route_of_administration,
-          instructions: prescription.instructions,
-          refill: prescription.refill,
-          reminder_times: prescription.reminder_times
-        }))
-      };
-      await axiosClient.post(`/api/doctor/${consult}/create_prescription`, payload);
-
-      Swal.fire({
-        title: 'Success!',
-        text: 'Prescription has been submitted successfully.',
-        icon: 'success'
-      });
-      handlePrescription();
-    } catch (error) {
-      console.error(error);
-      Swal.fire({
-        title: 'Error!',
-        text: 'Something went wrong!',
-        icon: 'error'
-      });
-      handlePrescription();
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const requiredFields = Object.values(formData).every(field => {
-      return field !== "" && (Array.isArray(field) ? field.length > 0 : true);
-    });
-
-    if (!requiredFields) {
+    const requiredFields = [
+      formData.patient_history,
+      formData.differential_diagnosis,
+      formData.mental_health_screening,
+      formData.radiology,
+      formData.final_diagnosis,
+      formData.recommendation,
+      formData.general_exam,
+      formData.eye_exam,
+      formData.breast_exam,
+      formData.throat_exam,
+      formData.abdomen_exam,
+      formData.chest_exam,
+      formData.reproductive_exam,
+      formData.skin_exam,
+      formData.ros_items.length
+    ];
+    if (requiredFields.some(field => !field)) {
       Swal.fire({
         icon: 'error',
         title: 'Validation Error',
@@ -222,19 +212,16 @@ const VideoCall = () => {
       });
       return;
     }
-
     try {
       const formattedRosItems = formData.ros_items.map(item => ({
         header_id: item.id,
         name: item.name || '',
-        is_present: item.is_present ? 1 : 0,
+        is_present: item.is_present === 1 ? 1 : 0,
       }));
-
-      await axiosClient.post(`/api/doctor/${consultationUUID}/update_consultation`, {
+      await axiosClient.post(`/api/doctor/${consult}/update_consultation`, {
         ...formData,
         ros_items: formattedRosItems,
       });
-
       Swal.fire({
         title: 'Success!',
         text: 'Notes have been added successfully.',
@@ -251,10 +238,47 @@ const VideoCall = () => {
       handleNotes();
     }
   };
-
+  const handleSubmitPrescription = async (prescriptions) => {
+    try {
+      setLoading(true);
+      const payload = {
+        items: prescriptions.map(prescription => ({
+          drug_name: prescription.drug_name,
+          dosage_form: prescription.dosage_form,
+          dose: prescription.dose,
+          dose_unit: prescription.dose_unit,
+          frequency: prescription.frequency,
+          duration: prescription.duration,
+          duration_unit: prescription.duration_unit,
+          route_of_administration: prescription.route_of_administration,
+          instructions: prescription.instructions,
+          refill: prescription.refill,
+          reminder_times: prescription.reminder_times
+        }))
+      };
+      await axiosClient.post(`/api/doctor/${consult}/create_prescription`, payload);
+      Swal.fire({
+        title: 'Success!',
+        text: 'Prescription has been submitted successfully.',
+        icon: 'success'
+      });
+      setLoading(false);
+      handlePrescription();
+    } catch (error) {
+      console.error('Error during prescription submission:', error);
+      setLoading(false);
+      Swal.fire({
+        title: 'Error!',
+        text: 'Something went wrong!',
+        icon: 'error'
+      });
+      handlePrescription();
+    }
+  };
   return (
-    <div className="w-full flex flex-col items-center justify-center mx-auto pt-40 sm:pt-20">
-       <h2>Video Call: {user_uuid}</h2>
+    <div className="flex flex-col items-center justify-center mx-auto mt-60">
+    <div className="flex flex-col items-center justify-center mx-auto lg:my-20 sm:my-10">
+      <h2>Video Call: {user_uuid}</h2>
       <div className='flex lg:flex-row sm:flex-col items-center gap-5'>
       <div
         id="local-player"
@@ -268,28 +292,58 @@ const VideoCall = () => {
         />
       ))}
       </div>
-
-      <div className="flex gap-5 mt-5">
-        <button onClick={toggleAudio} className="bg-blue-500 text-white px-4 py-2">
-          {isAudioMuted ? <FaMicrophoneSlash /> : <FaMicrophone />}
-        </button>
-        <button onClick={toggleVideo} className="bg-blue-500 text-white px-4 py-2">
-          {isVideoMuted ? <FaVideoSlash /> : <FaVideo />}
-        </button>
-        <button onClick={handleLeave} className="bg-red-500 text-white px-4 py-2">
+      <div className="mt-4 flex">
+        <button onClick={handleLeave} className="mx-2 bg-red-500 text-white py-2 px-4 rounded">
           <FaPhoneSlash />
         </button>
-        
+        <button onClick={toggleAudio} className="mx-2 bg-blue-500 text-white py-2 px-4 rounded">
+          {isAudioMuted ? <FaMicrophoneSlash /> : <FaMicrophone />}
+        </button>
+        <button onClick={toggleVideo} className="mx-2 bg-green-500 text-white py-2 px-4 rounded">
+          {isVideoMuted ? <FaVideoSlash /> : <FaVideo />}
+        </button>
       </div>
-
-      <Backdrop open={loading} style={{ zIndex: 1000 }}>
-        <CircularProgress />
+      {
+        user === "doctor" ? (
+            <div className='mt-4 flex lg:flex-row sm:flex-col items-center gap-3'>
+                <button 
+                    onClick={handleNotes}
+                    className='p-3 bg-primary-100 text-white font-bold'
+                >
+                    Add Notes
+                </button>
+                <button 
+                    onClick={handlePrescription}
+                    className='p-3 bg-primary-100 text-white font-bold'
+                    >
+                    Add Prescription
+                </button>
+            </div>
+        ): (
+            null
+        )
+      }
+      {/* Modal for Notes */}
+      {notes && (
+        <Modal onClose={handleNotes}>
+          <ConsultationNote handleSubmit={handleSubmit} handleClose={handleNotes} formData={formData} setFormData={setFormData}/>
+        </Modal>
+      )}
+      {/* Modal for Prescription */}
+      {prescription && (
+        <Modal onClose={handlePrescription}>
+          <Prescription
+            consultationUUID={consult}
+            handleSubmit={handleSubmitPrescription}
+            prescriptions={prescriptions}
+            setPrescriptions={setPrescriptions}
+          />
+        </Modal>
+      )}
+      <Backdrop open={loading}>
+        <CircularProgress color="inherit" />
       </Backdrop>
-
-      {notes && <ConsultationNote style={{ zIndex: 1000 }} formData={formData} setFormData={setFormData} handleSubmit={handleSubmit} />}
-      {prescription && <Prescription style={{ zIndex: 1000 }} handleSubmitPrescription={handleSubmitPrescription} setPrescriptions={setPrescriptions} prescriptions={prescriptions} />}
     </div>
   );
 };
 
-export default VideoCall;
