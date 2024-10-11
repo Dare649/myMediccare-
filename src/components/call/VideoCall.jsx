@@ -130,8 +130,19 @@ const VideoCall = () => {
   };
 
   const handleLeave = async () => {
+    if (loading) return; // Prevent multiple calls while loading
+    setLoading(true);
+  
     try {
-      setLoading(true);
+      // If the user is a doctor, make the POST API call to end the consultation first
+      if (user_type === "doctor") {
+        await axiosClient.post(`/api/doctor/${consult}/end_consultation`);
+        MySwal.fire({
+          icon: "success",
+          text: "Consultation ended successfully.",
+          title: "Success"
+        });
+      }
   
       // Close local tracks
       if (localAudioTrack) {
@@ -147,44 +158,35 @@ const VideoCall = () => {
         console.log("Left the channel");
         setRemoteUsers({});
         handleCloseCall();
-        window.location.reload("/patient-schedules")
+        // Redirect to the appropriate page after leaving the channel
+        window.location.reload(user_type === "doctor" ? "/doctor-appointments" : "/patient-schedules");
       }
-  
-      // If the user is a doctor, make the POST API call to end the consultation
-      if (user_type === "doctor") {
-        await axiosClient.post(`/api/doctor/${consult}/end_consultation`);
-        MySwal.fire({
-          icon: "success",
-          text: "Consultation ended successfully.",
-          title: "Success"
-        }).then(() => {
-          window.location.reload("/doctor-appointments")
-        })
-      }
-  
-      setLoading(false);
     } catch (error) {
-      setLoading(false);
       MySwal.fire({
         icon: "error",
         text: "Failed to leave the call, try again later.",
         title: "Error"
       });
+    } finally {
+      setLoading(false);
     }
   };
-
+  
   useEffect(() => {
     joinChannel();
     return () => {
       handleLeave();
     };
   }, [client]);
+  
 
   const handleNotes = () => {
+    console.log("Notes button clicked");
     setNotes((prev) => !prev);
   };
-
+  
   const handlePrescription = () => {
+    console.log("Prescription button clicked");
     setPrescription((prev) => !prev);
   };
 
@@ -233,7 +235,7 @@ const VideoCall = () => {
   };
 
   return (
-    <div className="w-full flex flex-col items-center justify-center mx-auto mt-60 sm:mt-20">
+    <div className="w-full flex flex-col items-center justify-center mx-auto pt-40 sm:pt-20">
       <h2>Video Call: {user_uuid}</h2>
       <div className='flex lg:flex-row sm:flex-col items-center gap-5'>
         <div
@@ -259,18 +261,17 @@ const VideoCall = () => {
           {isVideoMuted ? <FaVideoSlash /> : <FaVideo />}
         </button>
       </div>
-      {
-        user_type === "doctor" ? (
-          <div className='flex gap-2 mt-2'>
-            <button onClick={handleNotes} className="bg-green-600 text-white py-2 px-4 rounded">
-              add note
-            </button>
-            <button onClick={handlePrescription} className="bg-blue-600 text-white py-2 px-4 rounded">
-              add prescription
-            </button>
-          </div>
-        ) : null
-      }
+      {user_type === "doctor" ? (
+        <div className='flex gap-2 mt-2'>
+          <button onClick={handleNotes} className="bg-green-600 text-white py-2 px-4 rounded">
+            add note
+          </button>
+          <button onClick={handlePrescription} className="bg-blue-600 text-white py-2 px-4 rounded">
+            add prescription
+          </button>
+        </div>
+      ) : null}
+      
       {notes && <ConsultationNote formData={formData} setFormData={setFormData} handleSubmit={handleSubmit} />}
       {prescription && <Prescription prescriptions={prescriptions} setPrescriptions={setPrescriptions} handleSubmitPrescription={handleSubmitPrescription} />}
       <Backdrop open={loading} style={{ zIndex: 1000 }}>
