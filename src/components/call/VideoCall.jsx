@@ -66,7 +66,7 @@ const VideoCall = () => {
       const videoTrack = await AgoraRTC.createCameraVideoTrack();
       setLocalVideoTrack(videoTrack);
       await client.publish([videoTrack]);
-      videoTrack.play('local-player');
+      videoTrack.play(`local-player-${user_uuid}`); // Unique ID for each participant
 
       // Handle remote user publishing
       client.on('user-published', async (user, mediaType) => {
@@ -120,25 +120,26 @@ const VideoCall = () => {
     initializeAgora();
 
     return () => {
-      handleLeave();
+      // Ensure local tracks are closed when component unmounts
+      if (localAudioTrack) localAudioTrack.close();
+      if (localVideoTrack) localVideoTrack.close();
+
+      handleLeave(); // Call handleLeave only on unmount
     };
   }, [client]);
 
   const handleLeave = async () => {
-    if (loading) return;
+    if (loading) return; // Prevent concurrent calls
     setLoading(true);
 
     try {
-      // Close local tracks
-      if (localAudioTrack) localAudioTrack.close();
-      if (localVideoTrack) localVideoTrack.close();
-
       // Leave the channel
       if (client) {
         await client.leave();
         console.log("Left the channel");
-        setRemoteUsers({});
-        window.location.reload(user_type === "doctor" ? "/doctor-appointments" : "/patient-schedules");
+        setRemoteUsers({}); // Clear remote users
+        // Navigate based on user type without refreshing
+        window.history.pushState(null, '', user_type === "doctor" ? "/doctor-appointments" : "/patient-schedules");
       }
     } catch (error) {
       MySwal.fire({
@@ -166,7 +167,7 @@ const VideoCall = () => {
       const newVideoTrack = await AgoraRTC.createCameraVideoTrack();
       setLocalVideoTrack(newVideoTrack);
       await client.publish([newVideoTrack]);
-      newVideoTrack.play('local-player');
+      newVideoTrack.play(`local-player-${user_uuid}`); // Unique ID for each participant
       setIsVideoMuted(false);
     }
   };
@@ -259,21 +260,11 @@ const VideoCall = () => {
   };
 
   return (
-    <div className="w-full flex flex-col items-center justify-center mx-auto pt-40 sm:pt-20">
-      <h2>Video Call: {user_uuid}</h2>
-      <div className='flex lg:flex-row sm:flex-col items-center gap-5'>
-        <div
-          id="local-player"
-          style={{ width: "400px", height: "300px", border: "1px solid black", backgroundColor: "black" }}
-        />
-        {Object.keys(remoteUsers).map(uid => (
-          <div
-            key={uid}
-            id={remoteUsers[uid]}
-            style={{ width: "400px", height: "300px", border: "1px solid black", backgroundColor: "gray", marginTop: '10px' }}
-          />
-        ))}
-      </div>
+    <div className="video-call-container">
+      <div id={`local-player-${user_uuid}`} className="local-player"></div>
+      {Object.keys(remoteUsers).map(uid => (
+        <div key={uid} id={remoteUsers[uid]} className="remote-player"></div>
+      ))}
 
       <div className="flex gap-5 mt-5">
         <button onClick={toggleAudio} className="bg-blue-500 text-white px-4 py-2">
@@ -291,7 +282,7 @@ const VideoCall = () => {
               <button onClick={handleNotes} className="bg-green-500 text-white px-4 py-2">Add Notes</button>
               <button onClick={handlePrescription} className="bg-yellow-500 text-white px-4 py-2">Add Prescription</button>
             </>
-          ): (null)
+          ):(null)
         }
       </div>
 
