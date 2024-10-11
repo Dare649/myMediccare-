@@ -37,7 +37,7 @@ const PatientAppointments = () => {
   // const [user_uuid, setUserUuid] = useState('');
   // const [role, setRole] = useState(0); // Adjust if necessary
   // const [channelName, setChannelName] = useState('');
-  // const [user, setUser] = useState("")
+  const [user, setUser] = useState("")
 
 
   useEffect(() => {

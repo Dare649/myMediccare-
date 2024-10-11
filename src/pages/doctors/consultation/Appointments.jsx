@@ -29,7 +29,7 @@ const Appointments = () => {
   // const [user, setUser] = useState("")
   // const [role, setRole] = useState(0); // Adjust if necessary
   // const [channelName, setChannelName] = useState('');
-  // const [consult, setConsult] = useState("");
+  const [consult, setConsult] = useState("");
 
   useEffect(() => {
     const fetchAppointments = async () => {
