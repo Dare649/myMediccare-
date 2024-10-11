@@ -104,25 +104,22 @@ const PatientAppointments = () => {
       
       // Step 1: Fetch Agora token and other details
       const response = await axiosClient.post(`/api/agora_token/${booking_id}/patient`);
-      if (consult) {
-        // Step 3: Navigate to the video call page with the required state, including the UUID from the start consultation
-        MySwal.fire({
-          title: "Success",
-          icon: "success",
-          text: "Joined successfully.",
-        }).then(() => {
-          navigate(`/consultation-video-call`, {
-            state: {
-              bookingId: booking_id,
-              TOKEN: response?.data?.token,
-              CHANNEL: response?.data?.channelName,
-              user_type: response?.data?.user_type,
-              user_uuid: response?.data?.user_uuid,
-              role: response?.data?.role,
-            }
-          });
+      MySwal.fire({
+        title: "Success",
+        icon: "success",
+        text: "Joined successfully.",
+      }).then(() => {
+        navigate(`/consultation-video-call`, {
+          state: {
+            bookingId: booking_id,
+            TOKEN: response?.data?.token,
+            CHANNEL: response?.data?.channelName,
+            user_type: response?.data?.user_type,
+            user_uuid: response?.data?.user_uuid,
+            role: response?.data?.role,
+          }
         });
-      }
+      });
     } catch (error) {
       setLoading(false);
       MySwal.fire({
