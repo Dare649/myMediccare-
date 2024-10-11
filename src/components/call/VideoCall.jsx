@@ -27,24 +27,6 @@ const VideoCall = () => {
 
   const { bookingId, TOKEN, CHANNEL, user_uuid, user_type, consult } = location.state || {};
 
-  const [formData, setFormData] = useState({
-    patient_history: "",
-    differential_diagnosis: "",
-    mental_health_screening: "",
-    radiology: "",
-    final_diagnosis: "",
-    recommendation: "",
-    general_exam: "",
-    eye_exam: "",
-    breast_exam: "",
-    throat_exam: "",
-    abdomen_exam: "",
-    chest_exam: "",
-    reproductive_exam: "",
-    skin_exam: "",
-    ros_items: []
-  });
-
   const joinChannel = async () => {
     if (!client) {
       const agoraClient = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
@@ -266,27 +248,19 @@ const VideoCall = () => {
       <div className="flex gap-5 mt-5">
         <button onClick={toggleAudio} className="bg-blue-500 text-white px-4 py-2">
           {isAudioMuted ? <FaMicrophoneSlash /> : <FaMicrophone />}
-          {isAudioMuted ? ' Unmute' : ' Mute'}
         </button>
         <button onClick={toggleVideo} className="bg-blue-500 text-white px-4 py-2">
           {isVideoMuted ? <FaVideoSlash /> : <FaVideo />}
-          {isVideoMuted ? ' Start Video' : ' Stop Video'}
         </button>
         <button onClick={handleLeave} className="bg-red-500 text-white px-4 py-2">
-          <FaPhoneSlash /> Leave Call
-        </button>
-        <button onClick={handleNotes} className="bg-green-500 text-white px-4 py-2">
-          Consultation Notes
-        </button>
-        <button onClick={handlePrescription} className="bg-green-500 text-white px-4 py-2">
-          Prescription
+          <FaPhoneSlash />
         </button>
       </div>
 
       {notes && <ConsultationNote formData={formData} setFormData={setFormData} handleSubmit={handleSubmit} handleClose={handleNotes} />}
       {prescription && <Prescription handleSubmitPrescription={handleSubmitPrescription} setPrescriptions={setPrescriptions} prescriptions={prescriptions} handleClose={handlePrescription}/>}
-
-      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
+      
+      <Backdrop open={loading}>
         <CircularProgress color="inherit" />
       </Backdrop>
     </div>
