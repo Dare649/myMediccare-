@@ -115,7 +115,7 @@ const PatientAppointments = () => {
               bookingId: booking_id,
               TOKEN: response?.data?.token,
               CHANNEL: response?.data?.channelName,
-              user: response?.data?.user_type,
+              user_type: response?.data?.user_type,
               user_uuid: response?.data?.user_uuid,
               role: response?.data?.role,
             }

@@ -138,7 +138,7 @@ const Appointments = () => {
               bookingId: booking_id,
               TOKEN: response?.data?.token,
               CHANNEL: response?.data?.channelName,
-              user: response?.data?.user_type,
+              user_type: response?.data?.user_type,
               user_uuid: response?.data?.user_uuid,
               role: response?.data?.role,
               consult: consult 
@@ -452,7 +452,8 @@ const Appointments = () => {
                       <div className="text-md">{item.appointment_time}</div>
                       {
                         filter === 'today' && (
-                            <button 
+                            <div className="flex flex-row items-center gap-x-3">
+                              <button 
                               className="text-sm font-bold capitalize bg-primary-100 text-white p-2 rounded-lg text-center"
                               onClick={() => handleJoin(item.booking_id)}
                             >
@@ -460,12 +461,13 @@ const Appointments = () => {
                                 join
                             </button>
 
-                            <Link 
+                          <Link 
                             className="text-sm font-bold capitalize bg-neutral-100 text-white p-2 rounded-lg" 
-                            to={`/view-patient/${item.patient_uuid}`}
-                            >
-                              view
-                            </Link> 
+                            to={`/view-patient/${item?.patient_uuid}`} >
+                          View
+                          </Link>
+                            </div>
+
                         )
                     }
                     </div>

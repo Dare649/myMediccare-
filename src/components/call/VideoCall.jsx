@@ -25,7 +25,7 @@ const VideoCall = () => {
   const [prescriptions, setPrescriptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const location = useLocation();
-  const { bookingId, TOKEN, CHANNEL, role, user_uuid, consult, user } = location.state || {};
+  const { bookingId, TOKEN, CHANNEL, role, user_uuid, consult, user_type } = location.state || {};
   const [formData, setFormData] = useState({
     patient_history: "",
     differential_diagnosis: "",
@@ -102,13 +102,13 @@ const VideoCall = () => {
           }
           if (mediaType === 'video') {
             const remoteVideoTrack = user.videoTrack;
-            const remotePlayerId = remote-player-${user.uid};
+            const remotePlayerId = `remote-player-${user.uid}`;
             remoteVideoTrack.play(remotePlayerId);
             setRemoteUsers((prev) => ({
               ...prev,
               [user.uid]: remotePlayerId,
             }));
-            console.log(Remote video published for user: ${user.uid});
+            // console.log(Remote video published for user: ${user.uid});
           }
         });
   
@@ -152,7 +152,7 @@ const VideoCall = () => {
       }
 
       // Make the POST API call to end the consultation
-      await axiosClient.post(/api/doctor/${consult}/end_consultation);
+      await axiosClient.post(`/api/doctor/${consult}/end_consultation`);
       setLoading(false);
       MySwal.fire({
         icon: "success",
@@ -186,7 +186,7 @@ const VideoCall = () => {
   
   const handlePrescription = () => {
     setPrescription((prev) => !prev)
-    };
+
   };
   
 
@@ -227,7 +227,7 @@ const VideoCall = () => {
         is_present: item.is_present === 1 ? 1 : 0,
       }));
 
-      await axiosClient.post(/api/doctor/${consult}/update_consultation, {
+      await axiosClient.post(`/api/doctor/${consult}/update_consultation`, {
         ...formData,
         ros_items: formattedRosItems,
       });
@@ -269,7 +269,7 @@ const VideoCall = () => {
         }))
       };
 
-      await axiosClient.post(/api/doctor/${consult}/create_prescription, payload);
+      await axiosClient.post(`/api/doctor/${consult}/create_prescription`, payload);
 
       Swal.fire({
         title: 'Success!',
@@ -361,7 +361,6 @@ const VideoCall = () => {
         <CircularProgress color="inherit" />
       </Backdrop>
     </div>
-  );
-
-
+  )
+};
 export default VideoCall;
